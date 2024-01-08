@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import ForOutlet from "./ForOutlet";
+import ForOutlet from "./pages/ForOutlet";
 import MainPage from "./pages/MainPage/MainPage";
 
 export default createBrowserRouter([
@@ -13,4 +13,4 @@ export default createBrowserRouter([
             }
         ]
     }
-])
+]);
