@@ -1,5 +1,7 @@
 This projected is created with Simplify-React-App.
 
+Simplify-React-App simplifies the structure of applications created with create-react-app for easier management
+
 ## How can I use Simplify-React-App?
 If you want to use it, 
 

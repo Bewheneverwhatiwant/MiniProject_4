@@ -4,4 +4,4 @@ export default function Component() {
       <p> SubPage </p>
     </div>
   );
-}
+};
