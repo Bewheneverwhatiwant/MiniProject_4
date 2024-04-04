@@ -1,7 +1,7 @@
 export default function Component() {
-    return(
+    return (
         <footer>
-            Footer
+            여기는 Footer
         </footer>
     )
 };

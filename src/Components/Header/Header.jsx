@@ -1,7 +1,7 @@
 export default function Component() {
-    return(
+    return (
         <header>
-            Header
+            여기는 Header
         </header>
     )
 };
