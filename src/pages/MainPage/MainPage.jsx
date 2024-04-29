@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import StyledImg from "../../Components/Container/StyledImg";
 import CustomFont from "../../Components/Container/CustomFont";
 import CustomColumn from "../../Components/Container/CustomColumn";
+import ImgCarousel from './MainPage_banner';
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -38,6 +39,8 @@ export default function Component() {
           </CustomRow>
 
           <CustomFont fontWeight='bold' color='black' font='2rem'>각종 문서, AI가 생성해드릴게요!</CustomFont>
+
+          <ImgCarousel />
 
         </CustomColumn>
       </PageContainer>
