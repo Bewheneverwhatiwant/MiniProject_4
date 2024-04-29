@@ -4,6 +4,7 @@ import StyledImg from "../../Components/Container/StyledImg";
 import CustomFont from "../../Components/Container/CustomFont";
 import CustomColumn from "../../Components/Container/CustomColumn";
 import ImgCarousel from './MainPage_banner';
+import Buttons from './MainPage_buttons';
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -30,7 +31,7 @@ export default function Component() {
   return (
     <ContainerCenter>
       <PageContainer>
-        <CustomColumn width='100%' justifyContent='center' alignItems='center' gap='2rem'>
+        <CustomColumn width='100%' justifyContent='center' alignItems='center' gap='5rem'>
 
           <CustomRow width='90%' justifyContent='center' alignItems='flex-end' gap='0.1rem'>
             <StyledImg src={'icon_boo_small.png'} />
@@ -41,6 +42,8 @@ export default function Component() {
           <CustomFont fontWeight='bold' color='black' font='2rem'>각종 문서, AI가 생성해드릴게요!</CustomFont>
 
           <ImgCarousel />
+
+          <Buttons />
 
         </CustomColumn>
       </PageContainer>

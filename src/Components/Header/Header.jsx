@@ -31,7 +31,14 @@ border: 2px solid #D9D9D9;
 border-radius: 10px;
 width: 80px;
 padding: 10px;
+cursor: pointer;
 `;
+
+const LogoButton = styled.button`
+cursor: pointer;
+border: none;
+background-color: transparent;
+`
 
 export default function Header() {
 
@@ -53,7 +60,9 @@ export default function Header() {
 
         <HeaderContainer>
             <CustomRow width='97%' justifyContent='space-between'>
-                <StyledImg src={'icon_logo.png'} width='100px' height='40px' onClick={Back} />
+                <LogoButton>
+                    <StyledImg src={'icon_logo.png'} width='100px' height='40px' onClick={Back} />
+                </LogoButton>
                 <CustomRow width='10%' justifyContent='center'>
                     <HeaderButton onClick={Login}>로그인</HeaderButton>
                     <HeaderButton onClick={Signup}>회원가입</HeaderButton>

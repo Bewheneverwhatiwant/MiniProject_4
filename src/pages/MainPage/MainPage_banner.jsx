@@ -30,25 +30,11 @@ const StyledImage = styled.img`
   object-fit: contain; // 이미지 비율 유지
 `;
 
-const CarouselButton = styled.button`
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: rgba(135, 206, 235, 0.5);
-  color: white;
-  border: 2px skyblue;
-  border-radius: 10px;
-  padding: 10px;
-  cursor: pointer;
-  &:focus {
-    outline: none;
-  }
-`;
-
 const DotContainer = styled.div`
   position: relative;
   bottom: 10px;
-  left: 50%;
+  align-items: center;
+  justify-content: center;
   display: flex;
   margin: 10px;
 `;
