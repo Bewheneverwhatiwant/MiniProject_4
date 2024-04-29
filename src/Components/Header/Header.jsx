@@ -49,11 +49,11 @@ export default function Header() {
     }
 
     const Signup = () => {
-        navigate('/signup');
+        navigate('/signuppage');
     }
 
     const Login = () => {
-        navigate('/login');
+        navigate('/loginpage');
     }
 
     return (

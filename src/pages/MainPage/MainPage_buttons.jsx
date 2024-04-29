@@ -25,6 +25,7 @@ width: 20rem;
 height: 7rem;
 padding: 20px;
 box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+cursor: pointer;
 `;
 
 export default function Component() {
@@ -66,15 +67,15 @@ export default function Component() {
         <ButtonsContainer>
             <CustomColumn width='100%' alignItems='center' justifyContents='center' gap='2rem'>
                 <CustomRow width='100%' alignItems='center' justifyContents='center' gap='2rem' >
-                    <Button backColor='#FFEBEB'>사과문</Button>
-                    <Button backColor='#ECFFE0'>보고서</Button>
-                    <Button backColor='#FFF6E0'>편지</Button>
+                    <Button backColor='#FFEBEB' onClick={paper_sorry}>사과문</Button>
+                    <Button backColor='#ECFFE0' onClick={paper_notice}>보고서</Button>
+                    <Button backColor='#FFF6E0' onClick={paper_letter}>편지</Button>
                 </CustomRow>
 
                 <CustomRow width='100%' alignItems='center' justifyContents='center' gap='2rem'>
-                    <Button backColor='#DFF2FF'>광고/포스터</Button>
-                    <Button backColor='#F4E5FF'>이력서</Button>
-                    <Button backColor='#EBEBEB'>모집/채용공고</Button>
+                    <Button backColor='#DFF2FF' onClick={paper_poster}>광고/포스터</Button>
+                    <Button backColor='#F4E5FF' onClick={paper_job}>이력서</Button>
+                    <Button backColor='#EBEBEB' onClick={paper_hire}>모집/채용공고</Button>
                 </CustomRow>
             </CustomColumn>
         </ButtonsContainer>
