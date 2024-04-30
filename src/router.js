@@ -10,6 +10,7 @@ import Paper_letter from "./pages/MainPage/ButtonCategory/Paper_letter/Paper_let
 import Paper_notice from "./pages/MainPage/ButtonCategory/Paper_notice/Paper_notice";
 import Paper_poster from "./pages/MainPage/ButtonCategory/Paper_poster/Paper_poster";
 import Paper_sorry from "./pages/MainPage/ButtonCategory/Paper_sorry/Paper_sorry";
+import MyAsk from "./pages/SubPage/Mypage/MyCategory/MyAsk/MyAsk";
 
 export default createBrowserRouter([
     {
@@ -55,6 +56,10 @@ export default createBrowserRouter([
             {
                 path: "/paper_sorry",
                 element: <Paper_sorry />
+            },
+            {
+                path: "/myask",
+                element: <MyAsk />
             }
         ]
     }

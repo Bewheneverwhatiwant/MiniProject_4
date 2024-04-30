@@ -28,7 +28,7 @@ justify-content: center;
 
 border: 2px solid #D9D9D9;
 border-radius: 10px;
-width: 80px;
+width: 90px;
 padding: 10px;
 cursor: pointer;
 `;
@@ -55,6 +55,10 @@ export default function Header() {
         navigate('/loginpage');
     }
 
+    const Mypage = () => {
+        navigate('/mypage');
+    }
+
     return (
 
         <HeaderContainer>
@@ -62,9 +66,10 @@ export default function Header() {
                 <LogoButton>
                     <StyledImg src={'icon_logo.png'} width='100px' height='40px' onClick={Back} />
                 </LogoButton>
-                <CustomRow width='10%' justifyContent='center'>
+                <CustomRow width='20%' justifyContent='center'>
                     <HeaderButton onClick={Login}>로그인</HeaderButton>
                     <HeaderButton onClick={Signup}>회원가입</HeaderButton>
+                    <HeaderButton onClick={Mypage}>마이페이지</HeaderButton>
                 </CustomRow>
             </CustomRow>
         </HeaderContainer>

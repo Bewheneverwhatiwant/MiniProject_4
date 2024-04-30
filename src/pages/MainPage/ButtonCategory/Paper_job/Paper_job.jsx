@@ -66,7 +66,7 @@ const TextareaForm = styled.textarea`
 `;
 
 const SendButton = styled.button`
-  width: 30%;
+  width: 60%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -124,14 +124,14 @@ export default function Component() {
   return (
     <ContainerCenter>
       <PageContainer>
-        <CustomColumn width='80%' gap='4rem' justify-content='center' align-items='center'>
+        <CustomColumn width='80%' gap='4rem' justifyContent='center' alignItems='center'>
 
-          <CustomRow width='100%' gap='1rem' justify-content='center' align-items='center' >
+          <CustomRow width='100%' gap='1rem' justifyContent='center' alignItems='center' >
             <StyledImg src={'icon_boo_glass.png'} />
             <Boo_says>나에게 맡겨!</Boo_says>
           </CustomRow>
 
-          <CustomColumn width='100%' justify-content='center' align-items='center'>
+          <CustomColumn width='60%' justifyContent='center' alignItems='center'>
 
             <CustomRow width='100%' justifyContent='flex-start' alignItems='center' gap='1rem'>
               <CustomFont color='black' font='1rem'>문서를 보내는 대상을 설명해주세요</CustomFont>
