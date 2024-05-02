@@ -1,9 +1,11 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+import { useNavigate } from "react-router-dom";
 import CustomColumn from '../../../../Components/Container/CustomColumn';
 import CustomRow from '../../../../Components/Container/CustomRow';
 import CustomFont from '../../../../Components/Container/CustomFont';
 import StyledImg from '../../../../Components/Container/StyledImg';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import OpenAI from "openai";
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -101,11 +103,102 @@ const ErrorMessage = styled.div`
   margin-top: 5px; // InputForm 바로 아래에 표시되도록 margin-top 설정
 `;
 
+const LoadingMessage = styled.div`
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 50vh;
+    height: 70vh;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+`;
+
+const ColumnCenterContainer = styled.div`
+display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    gap : ${props => props.$gap ? props.$gap : "10px"}
+`;
+
+const spin = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
+
+const Loader = styled.div`
+  border: 4px solid #f3f3f3; /* Light grey */
+  border-top: 4px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: ${spin} 2s linear infinite;
+`;
+
 export default function Component() {
   const [recipient, setRecipient] = useState('');
   const [volume, setVolume] = useState('');
   const [reason, setReason] = useState('');
   const [volumeError, setVolumeError] = useState('');
+
+  // chat gpt ai api 관련
+  const [sendContent, setSendContent] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [runGPT, setRunGPT] = useState(false);
+
+  const openai = new OpenAI({
+    apiKey: process.env.REACT_APP_OPENAI_API_KEY,
+    dangerouslyAllowBrowser: true
+  });
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!runGPT) {
+      return;
+    }
+
+    setIsLoading(true);
+
+    openai.chat.completions.create({
+      messages: [
+        {
+          role: 'user',
+          // content: sendContent,
+          content: `다음의 정보를 바탕으로, 조건에 맞는 문서를 생성하라.
+                ${sendContent}
+
+                작성 가이드라인:
+                - 이 문서는 직업을 구하고 있거나 직장을 얻기 위한 목적으로 내용이 작성되어야 한다.
+                - 사용자가 전달해준 정보를 전부 사용하여 문서를 생성해야 한다.`
+        }],
+      model: 'gpt-4-turbo',
+    })
+      .then((res) => {
+        const content = res.choices[0].message.content;
+        console.log(content);
+        localStorage.setItem('content', content);
+        navigate('/paperhirereply'); // ai 답변 페이지 만든 후 여기 수정하기
+      })
+      .catch((err) => {
+        console.error("Error calling OpenAI API:", err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });;
+    setRunGPT(false);
+  }, [sendContent])
+
+  const handleAiReplyClick = () => {
+
+    let content = `문서를 보내는 대상: ${recipient} || 문서의 최대 분량 : ${volume} || 문서를 작성하는 이유 : ${reason}`;
+    console.log(content);
+    setRunGPT(true);
+    setSendContent(content);
+  }
 
   const handleVolumeChange = (e) => {
     const value = e.target.value;
@@ -155,7 +248,23 @@ export default function Component() {
             {!reason && <ErrorMessage>필수 필드입니다.</ErrorMessage>}
           </CustomColumn>
 
-          <SendButton isActive={isFormValid}>문서 생성하기</SendButton>
+          {/* <SendButton isActive={isFormValid}>문서 생성하기</SendButton> */}
+          {!isLoading &&
+            <SendButton isActive={isFormValid} onClick={handleAiReplyClick}>
+              생성형 AI에게 법률 제안서 작성 요청하기
+            </SendButton>
+          }
+
+          {isLoading &&
+            <LoadingMessage>
+              <ColumnCenterContainer>
+                <CustomFont color='black'>응답을 생성중입니다</CustomFont>
+                <CustomFont color='black'>잠시만 기다려주세요</CustomFont>
+                <CustomFont color='black'><br />약 1분정도 소요될 수 있습니다</CustomFont>
+                <Loader />
+              </ColumnCenterContainer>
+            </LoadingMessage>
+          }
         </CustomColumn>
       </PageContainer>
     </ContainerCenter>

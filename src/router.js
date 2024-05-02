@@ -11,6 +11,7 @@ import Paper_notice from "./pages/MainPage/ButtonCategory/Paper_notice/Paper_not
 import Paper_poster from "./pages/MainPage/ButtonCategory/Paper_poster/Paper_poster";
 import Paper_sorry from "./pages/MainPage/ButtonCategory/Paper_sorry/Paper_sorry";
 import MyAsk from "./pages/SubPage/Mypage/MyCategory/MyAsk/MyAsk";
+import Paper_hire_reply from "./pages/MainPage/ButtonCategory/Paper_hire/Paper_hire_reply";
 
 export default createBrowserRouter([
     {
@@ -60,6 +61,10 @@ export default createBrowserRouter([
             {
                 path: "/myask",
                 element: <MyAsk />
+            },
+            {
+                path: "/paperhirereply",
+                element: <Paper_hire_reply />
             }
         ]
     }
