@@ -108,7 +108,7 @@ const LoadingMessage = styled.div`
     top: 50%;
     left: 50%;
     width: 50vh;
-    height: 70vh;
+    height: 50vh;
     transform: translate(-50%, -50%);
     background-color: white;
     padding: 20px;
@@ -116,26 +116,32 @@ const LoadingMessage = styled.div`
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 `;
 
-const ColumnCenterContainer = styled.div`
-display: flex;
-    flex-direction: column;
-    justify-content: center;
-    height: 100%;
-    gap : ${props => props.$gap ? props.$gap : "10px"}
-`;
-
 const spin = keyframes`
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 `;
 
-const Loader = styled.div`
-  border: 4px solid #f3f3f3; /* Light grey */
-  border-top: 4px solid #3498db; /* Blue */
+// Loader와 이미지를 결합하는 컴포넌트
+const LoaderWithImage = styled.div`
+  position: relative;
+  border: 4px solid #f3f3f3; // Light grey
+  border-top: 4px solid #8CC63F;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 200px;
+  height: 200px;
   animation: ${spin} 2s linear infinite;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background-image: url('icon_boo_loading.png');
+    background-size: cover;
+    width: 100px;
+    height: 100px;
+    transform: translate(-50%, -50%);
+  }
 `;
 
 export default function Component() {
@@ -257,12 +263,14 @@ export default function Component() {
 
           {isLoading &&
             <LoadingMessage>
-              <ColumnCenterContainer>
-                <CustomFont color='black'>응답을 생성중입니다</CustomFont>
-                <CustomFont color='black'>잠시만 기다려주세요</CustomFont>
-                <CustomFont color='black'><br />약 1분정도 소요될 수 있습니다</CustomFont>
-                <Loader />
-              </ColumnCenterContainer>
+              <CustomColumn width='100%' gap='2rem' alignItems='center' justifyContent='center'>
+                <CustomColumn width='100%' gap='0.5rem' alignItems='center' justifyContent='center'>
+                  <CustomFont color='#8CC63F' fontWeignt='bold'>Boo가 문서를 생성 중입니다.</CustomFont>
+                  <CustomFont color='#8CC63F' fontWeignt='bold'>잠시만 기다려주세요...</CustomFont>
+                  <CustomFont color='#8CC63F' fontWeignt='bold'><br />약 1분정도 소요될 수 있습니다...</CustomFont>
+                </CustomColumn>
+                <LoaderWithImage />
+              </CustomColumn>
             </LoadingMessage>
           }
         </CustomColumn>
