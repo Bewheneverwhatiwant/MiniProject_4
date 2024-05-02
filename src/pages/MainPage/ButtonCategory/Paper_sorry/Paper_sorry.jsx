@@ -182,7 +182,7 @@ export default function Component() {
         const content = res.choices[0].message.content;
         console.log(content);
         localStorage.setItem('content', content);
-        navigate('/paperhirereply'); // ai 답변 페이지 만든 후 여기 수정하기
+        navigate('/papersorryreply');
       })
       .catch((err) => {
         console.error("Error calling OpenAI API:", err);

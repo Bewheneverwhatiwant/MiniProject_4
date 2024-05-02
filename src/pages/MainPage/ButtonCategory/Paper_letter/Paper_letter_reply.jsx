@@ -39,24 +39,27 @@ const SaveButton = styled.button`
   cursor: pointer;
 `;
 
-const BoxRadius = styled.div`
-display : flex;
-flex-direction : column;
-flex-shrink : 0;
-width: ${props => props.width || "100%"};
-height: ${props => props.height || null};
+const ReplyDiv = styled.div`
+width: 80%;
+height: 500px;
+background-color: rgba(255, 199, 199, 0.5);
+border-radius: 20px;
+inline-height: 1.5;
+padding: 10px;
+display: flex;
+flex-direction: column;
+`;
 
-padding: ${props => props.$padding || "20px 20px 40px 20px"};
-margin : ${props => props.$is_container ? "-20px 0px 0px 0px" : null};
-gap : ${props => props.$gap || "15px"};
-
-border : ${props => props.$border || null};
-border-radius : ${props => props.border_radius || "15px"};
-
-color : ${props => props.color || null};
-box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.25);
-background : ${props => props.$background || "white"};
-z-index: ${props => props.zindex || 0};
+const Buttoms = styled.button`
+width: ${props => props.width || '200px'};
+hwight: 70px;
+background-color: #FFC7C7;
+border-radius: 10px;
+padding: 10px;
+display: flex;
+justify-content: center;
+align-items: center;
+border: none;
 `;
 
 export default function Component() {
@@ -89,19 +92,28 @@ export default function Component() {
             <PageContainer>
 
                 <CustomCenter>
-                    <CustomFont color='black'>
-                        AI의 법률 제안서 작성이 완료되었습니다.
+                    <CustomFont color='#8CC63F' font='2rem' fontWeight='bold'>
+                        Boo가 생성한 편지가 도착했습니다!
                     </CustomFont>
                 </CustomCenter>
 
-                <BoxRadius>
+                <ReplyDiv>
                     {content ? content : '답변이 없습니다.'}
-                    {content && (
-                        <SaveButton onClick={handleSaveContent}>
-                            AI가 작성한 법률 제안서 보관하기
-                        </SaveButton>
-                    )}
-                </BoxRadius>
+                </ReplyDiv>
+
+                {content && (
+                    <CustomColumn width='100%' gap='1.5rem' justifyContent='center' alignItems='center'>
+                        <CustomRow width='100%' gap='0.5rem'>
+                            <Buttoms><CustomFont color="white" fontWeight='bold'>복사하기</CustomFont></Buttoms>
+                            <Buttoms><CustomFont color="white" fontWeight='bold'>재생성하기</CustomFont></Buttoms>
+                            <Buttoms onClick={handleSaveContent}>
+                                <CustomFont color="white" fontWeight='bold'>저장하기</CustomFont>
+                            </Buttoms>
+                        </CustomRow>
+                        <Buttoms width='620px'> <CustomFont color="white" fontWeight='bold'>카카오톡으로 공유하기</CustomFont></Buttoms>
+                    </CustomColumn>
+                )}
+
             </PageContainer>
         </ContainerCenter>
     );

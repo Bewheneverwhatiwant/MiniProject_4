@@ -12,6 +12,11 @@ import Paper_poster from "./pages/MainPage/ButtonCategory/Paper_poster/Paper_pos
 import Paper_sorry from "./pages/MainPage/ButtonCategory/Paper_sorry/Paper_sorry";
 import MyAsk from "./pages/SubPage/Mypage/MyCategory/MyAsk/MyAsk";
 import Paper_hire_reply from "./pages/MainPage/ButtonCategory/Paper_hire/Paper_hire_reply";
+import Paper_job_reply from "./pages/MainPage/ButtonCategory/Paper_job/Paper_job_reply";
+import Paper_letter_reply from "./pages/MainPage/ButtonCategory/Paper_letter/Paper_letter_reply";
+import Paper_notice_reply from "./pages/MainPage/ButtonCategory/Paper_notice/Paper_notice_reply";
+import Paper_poster_reply from "./pages/MainPage/ButtonCategory/Paper_poster/Paper_poster_reply";
+import Paper_sorry_reply from "./pages/MainPage/ButtonCategory/Paper_sorry/Paper_sorry_reply";
 
 export default createBrowserRouter([
     {
@@ -65,6 +70,26 @@ export default createBrowserRouter([
             {
                 path: "/paperhirereply",
                 element: <Paper_hire_reply />
+            },
+            {
+                path: "paperjobreply",
+                element: <Paper_job_reply />
+            },
+            {
+                path: "/paperletterreply",
+                element: <Paper_letter_reply />
+            },
+            {
+                path: "/papernoticereply",
+                element: <Paper_notice_reply />
+            },
+            {
+                path: "/paperposterreply",
+                element: <Paper_poster_reply />
+            },
+            {
+                path: "papersorryreply",
+                element: <Paper_sorry_reply />
             }
         ]
     }
