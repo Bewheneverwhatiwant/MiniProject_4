@@ -79,6 +79,10 @@ export default function Component() {
         alert("문서가 복사되었습니다.");
     };
 
+    const BackToGen = () => {
+        navigate('/paper_hire');
+    }
+
     const handleSaveContent = () => {
         const existingContents = JSON.parse(localStorage.getItem('savedContents')) || [];
         existingContents.push(content);
@@ -104,8 +108,8 @@ export default function Component() {
                 {content && (
                     <CustomColumn width='100%' gap='1.5rem' justifyContent='center' alignItems='center'>
                         <CustomRow width='100%' gap='0.5rem'>
-                            <Buttoms><CustomFont color="white" fontWeight='bold'>복사하기</CustomFont></Buttoms>
-                            <Buttoms><CustomFont color="white" fontWeight='bold'>재생성하기</CustomFont></Buttoms>
+                            <Buttoms><CustomFont color="white" fontWeight='bold' onClick={copyToClipboard}>복사하기</CustomFont></Buttoms>
+                            <Buttoms><CustomFont color="white" fontWeight='bold' onClick={BackToGen}>재생성하기</CustomFont></Buttoms>
                             <Buttoms onClick={handleSaveContent}>
                                 <CustomFont color="white" fontWeight='bold'>저장하기</CustomFont>
                             </Buttoms>

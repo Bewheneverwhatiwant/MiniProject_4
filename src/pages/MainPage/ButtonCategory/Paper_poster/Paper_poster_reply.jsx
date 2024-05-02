@@ -86,6 +86,9 @@ export default function Component() {
         console.log(content);
         navigate('/ai-mygen'); // 실제 모아보기 경로로 바꾸기
     };
+    const BackToGen = () => {
+        navigate('/paper_poster');
+    }
 
     return (
         <ContainerCenter>
@@ -104,8 +107,8 @@ export default function Component() {
                 {content && (
                     <CustomColumn width='100%' gap='1.5rem' justifyContent='center' alignItems='center'>
                         <CustomRow width='100%' gap='0.5rem'>
-                            <Buttoms><CustomFont color="white" fontWeight='bold'>복사하기</CustomFont></Buttoms>
-                            <Buttoms><CustomFont color="white" fontWeight='bold'>재생성하기</CustomFont></Buttoms>
+                            <Buttoms><CustomFont color="white" fontWeight='bold' onClick={copyToClipboard}>복사하기</CustomFont></Buttoms>
+                            <Buttoms><CustomFont color="white" fontWeight='bold' onClick={BackToGen}>재생성하기</CustomFont></Buttoms>
                             <Buttoms onClick={handleSaveContent}>
                                 <CustomFont color="white" fontWeight='bold'>저장하기</CustomFont>
                             </Buttoms>
