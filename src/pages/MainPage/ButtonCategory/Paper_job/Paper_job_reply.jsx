@@ -30,15 +30,6 @@ const PageContainer = styled(ContainerCenter)`
   align-items: center;
 `;
 
-const SaveButton = styled.button`
-  padding: 10px;
-  margin: auto;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  cursor: pointer;
-`;
-
 const ReplyDiv = styled.div`
 width: 80%;
 height: 500px;
@@ -62,10 +53,72 @@ align-items: center;
 border: none;
 `;
 
+const LoadingMessage = styled.div`
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 50vh;
+    height: 20vh;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+`;
+
+const ConfirmButton = styled.button`
+width: 80px;
+height: 30px;
+display: flex;
+align-items: center;
+justify-content: center;
+
+  background-color: ${props => props.disabled ? '#D9D9D9' : '#FFC7C7'};
+  border: none;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
+`;
+
+const CancelButton = styled.button`
+width: 80px;
+height: 30px;
+display: flex;
+align-items: center;
+justify-content: center;
+
+  background-color: white;
+  border: 1px solid #FFC7C7;
+  color: #FFC7C7;
+  padding: 10px;
+  border-radius: 5px;
+`;
+
+const InputForm = styled.input`
+  display: flex;
+  border: 1.5px solid #FFC7C7;
+  background-color: transparent;
+  border-radius: 15px;
+  width: 80%;
+  height: 2rem;
+  padding: 0.3rem;
+
+  &::placeholder {
+    color: #D9D9D9;
+  }
+
+  &:active {
+    outline: none;
+  }
+`;
+
 export default function Component() {
 
     const [content, setContent] = useState('');
     const navigate = useNavigate();
+    const [title, setTitle] = useState('');
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         const storedContent = localStorage.getItem('content');
@@ -79,16 +132,25 @@ export default function Component() {
         alert("문서가 복사되었습니다.");
     };
 
+    const BackToGen = () => {
+        navigate('/paper_hire');
+    }
+
     const handleSaveContent = () => {
         const existingContents = JSON.parse(localStorage.getItem('savedContents')) || [];
-        existingContents.push(content);
+        existingContents.push({ title, content });
         localStorage.setItem('savedContents', JSON.stringify(existingContents));
-        console.log(content);
+        alert('저장되었습니다.');
+        setShowModal(false);
         navigate('/ai-mygen'); // 실제 모아보기 경로로 바꾸기
     };
 
-    const BackToGen = () => {
-        navigate('/paper_job');
+    const showModalSaveContent = () => {
+        setShowModal(true);
+    }
+
+    const handleTitleChange = (e) => {
+        setTitle(e.target.value);
     }
 
     return (
@@ -110,12 +172,25 @@ export default function Component() {
                         <CustomRow width='100%' gap='0.5rem'>
                             <Buttoms><CustomFont color="white" fontWeight='bold' onClick={copyToClipboard}>복사하기</CustomFont></Buttoms>
                             <Buttoms><CustomFont color="white" fontWeight='bold' onClick={BackToGen}>재생성하기</CustomFont></Buttoms>
-                            <Buttoms onClick={handleSaveContent}>
+                            <Buttoms onClick={showModalSaveContent}>
                                 <CustomFont color="white" fontWeight='bold'>저장하기</CustomFont>
                             </Buttoms>
                         </CustomRow>
                         <Buttoms width='620px'> <CustomFont color="white" fontWeight='bold'>카카오톡으로 공유하기</CustomFont></Buttoms>
                     </CustomColumn>
+                )}
+
+                {showModal && (
+                    <LoadingMessage>
+                        <CustomColumn width='100%' justifyContent='center' alignItems='center' gap='2rem'>
+                            <CustomFont color='black' font='1rem'>문서를 저장할 제목을 입력해주세요.</CustomFont>
+                            <InputForm value={title} onChange={handleTitleChange} />
+                            <CustomRow width='100%' alignItems='center' justifyContent='center' gap='1rem'>
+                                <ConfirmButton onClick={handleSaveContent} disabled={!title.trim()}>확인</ConfirmButton>
+                                <CancelButton onClick={() => setShowModal(false)}>취소</CancelButton>
+                            </CustomRow>
+                        </CustomColumn>
+                    </LoadingMessage>
                 )}
 
             </PageContainer>
