@@ -35,10 +35,13 @@ width: 80%;
 height: 500px;
 background-color: rgba(255, 199, 199, 0.5);
 border-radius: 20px;
-inline-height: 1.5;
+line-height: 30px;
 padding: 10px;
 display: flex;
 flex-direction: column;
+align-items: center;
+justify-content: center;
+color: black;
 `;
 
 const Buttoms = styled.button`
