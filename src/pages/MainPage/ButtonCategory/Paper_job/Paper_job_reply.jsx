@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useNavigate } from "react-router-dom";
 import CustomColumn from "../../../../Components/Container/CustomColumn";
 import CustomFont from "../../../../Components/Container/CustomFont";
@@ -116,6 +116,37 @@ const InputForm = styled.input`
   }
 `;
 
+// 45도로 기울어지도록 애니메이션
+const rotateAnimation = keyframes`
+  from { transform: rotate(0deg); }
+  to { transform: rotate(45deg); }
+`;
+
+// 회전, 확대, 축소 애니메이션
+const complexAnimation = keyframes`
+  0% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(45deg) scale(1); }
+  50% { transform: rotate(45deg) scale(2); }
+  75% { transform: rotate(45deg) scale(2); }
+  100% { transform: rotate(45deg) scale(1); }
+`;
+
+const AnimatedButton = styled.button`
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: inline-block;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:active {
+    animation: ${rotateAnimation} 2s ease forwards, ${complexAnimation} 2s ease forwards;
+  }
+`;
+
 export default function Component() {
 
     const [content, setContent] = useState('');
@@ -172,6 +203,19 @@ export default function Component() {
 
                 {content && (
                     <CustomColumn width='100%' gap='1.5rem' justifyContent='center' alignItems='center'>
+                        <CustomColumn width='100%' gap='1.5rem' justifyContent='center' alignItems='center'>
+                            <CustomRow width='100%' gap='1.5rem' justifyContent='center' alignItems='center'>
+                                <CustomFont color='black' font='1rem'>답변이 마음에 드시나요?</CustomFont>
+                            </CustomRow>
+                            <CustomRow width='100%' gap='1.5rem' justifyContent='center' alignItems='center'>
+                                <AnimatedButton>
+                                    <StyledImg src={'icon_good.png'} />
+                                </AnimatedButton>
+                                <AnimatedButton>
+                                    <StyledImg src={'icon_bad.png'} />
+                                </AnimatedButton>
+                            </CustomRow>
+                        </CustomColumn>
                         <CustomRow width='100%' gap='0.5rem'>
                             <Buttoms><CustomFont color="white" fontWeight='bold' onClick={copyToClipboard}>복사하기</CustomFont></Buttoms>
                             <Buttoms><CustomFont color="white" fontWeight='bold' onClick={BackToGen}>재생성하기</CustomFont></Buttoms>

@@ -228,7 +228,7 @@ export default function Component() {
     }
   };
 
-  const isFormValid = who && where && how && why && when && recipient && volume && reason && !volumeError;
+  const isFormValid = who && where && how && why && when && recipient && volume && !volumeError;
 
   return (
     <ContainerCenter>

@@ -208,8 +208,9 @@ export default function Component() {
 
   const handleAiReplyClick = () => {
 
-    let content = `문서의 최대 분량 : ${volume} || 문서를 작성하는 이유 : ${reason} ||
-    누가 : ${who} || 누구에게 : ${recipient} || 언제 : ${when} || 어디서 : ${where} || 무엇을 :${what} || 어떻게 : ${how} || 왜 : ${why}`;
+    let content = `문서의 최대 분량 : ${volume} ||
+    회사이름 : ${who} || 모집하는 인원수와 직무 : ${recipient} || 지원자에게 요구하는 역량 : ${when} || 신입 또는 경력 등 선호하는 형태 :${what}
+    || 회사의 작년 매출 : ${how} || 회사가 제시하는 연봉 범위와 협상 여부 : ${why} || 회사의 복지: ${where}`;
     console.log(content);
     setRunGPT(true);
     setSendContent(content);
