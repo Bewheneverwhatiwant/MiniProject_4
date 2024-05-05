@@ -25,7 +25,7 @@ export default function Component() {
   return (
     <ContainerCenter>
       <PageContainer>
-        <CustomFont color='black' fontWeight='bold' font='1.5rem'>잘 가, 내 캐릭터!</CustomFont>
+        <CustomFont color='black' fontWeight='bold' font='1.5rem'>추후 개발 예정</CustomFont>
       </PageContainer>
     </ContainerCenter>
   );
