@@ -145,10 +145,18 @@ const LoaderWithImage = styled.div`
 `;
 
 export default function Component() {
-  const [recipient, setRecipient] = useState('');
   const [volume, setVolume] = useState('');
   const [reason, setReason] = useState('');
   const [volumeError, setVolumeError] = useState('');
+
+  // 육하원칙에 따른 보고서 양식
+  const [who, setWho] = useState(''); // 누가
+  const [recipient, setRecipient] = useState(''); // 누구에게
+  const [when, setWhen] = useState('');
+  const [what, setWhat] = useState('');
+  const [where, setWhere] = useState(' ');
+  const [how, setHow] = useState('');
+  const [why, setWhy] = useState('');
 
   // chat gpt ai api 관련
   const [sendContent, setSendContent] = useState('');
@@ -200,7 +208,8 @@ export default function Component() {
 
   const handleAiReplyClick = () => {
 
-    let content = `문서를 보내는 대상: ${recipient} || 문서의 최대 분량 : ${volume} || 문서를 작성하는 이유 : ${reason}`;
+    let content = `문서의 최대 분량 : ${volume} || 문서를 작성하는 이유 : ${reason} ||
+    누가 : ${who} || 누구에게 : ${recipient} || 언제 : ${when} || 어디서 : ${where} || 무엇을 :${what} || 어떻게 : ${how} || 왜 : ${why}`;
     console.log(content);
     setRunGPT(true);
     setSendContent(content);
@@ -218,7 +227,7 @@ export default function Component() {
     }
   };
 
-  const isFormValid = recipient && volume && reason && !volumeError;
+  const isFormValid = who && where && how && why && when && recipient && volume && !volumeError;
 
   return (
     <ContainerCenter>
@@ -227,17 +236,59 @@ export default function Component() {
 
           <CustomRow width='100%' gap='1rem' justifyContent='center' alignItems='center' >
             <StyledImg src={'icon_boo_glass.png'} />
-            <Boo_says>나에게 맡겨!</Boo_says>
+            <Boo_says>모집/채용공고, 나에게 맡겨!</Boo_says>
           </CustomRow>
 
           <CustomColumn width='60%' justifyContent='center' alignItems='center'>
 
             <CustomRow width='100%' justifyContent='flex-start' alignItems='center' gap='1rem'>
-              <CustomFont color='black' font='1rem'>문서를 보내는 대상을 설명해주세요</CustomFont>
+              <CustomFont color='black' font='1rem'>귀사의 이름을 알려주세요.</CustomFont>
+              <CustomFont color='red' font='1rem'>*</CustomFont>
+            </CustomRow>
+            <InputForm value={who} onChange={(e) => setWho(e.target.value)} />
+            {!who && <ErrorMessage>필수 필드입니다.</ErrorMessage>}
+
+            <CustomRow width='100%' justifyContent='flex-start' alignItems='center' gap='1rem'>
+              <CustomFont color='black' font='1rem'>모집 직군 또는 직무와 모집 인원을 알려주세요.</CustomFont>
               <CustomFont color='red' font='1rem'>*</CustomFont>
             </CustomRow>
             <InputForm value={recipient} onChange={(e) => setRecipient(e.target.value)} />
             {!recipient && <ErrorMessage>필수 필드입니다.</ErrorMessage>}
+
+            <CustomRow width='100%' justifyContent='flex-start' alignItems='center' gap='1rem'>
+              <CustomFont color='black' font='1rem'>지원자에게 요구하는 역량이 있으신가요?</CustomFont>
+              <CustomFont color='red' font='1rem'>*</CustomFont>
+            </CustomRow>
+            <InputForm value={when} onChange={(e) => setWhen(e.target.value)} />
+            {!when && <ErrorMessage>필수 필드입니다.</ErrorMessage>}
+
+            <CustomRow width='100%' justifyContent='flex-start' alignItems='center' gap='1rem'>
+              <CustomFont color='black' font='1rem'>신입 또는 경력 중 어떤 유형을 모집하시는지 알려주세요.</CustomFont>
+              <CustomFont color='red' font='1rem'>*</CustomFont>
+            </CustomRow>
+            <InputForm value={what} onChange={(e) => setWhat(e.target.value)} />
+            {!what && <ErrorMessage>필수 필드입니다.</ErrorMessage>}
+
+            <CustomRow width='100%' justifyContent='flex-start' alignItems='center' gap='1rem'>
+              <CustomFont color='black' font='1rem'>귀사의 작년 매출을 알려주세요.</CustomFont>
+              <CustomFont color='red' font='1rem'>*</CustomFont>
+            </CustomRow>
+            <InputForm value={how} onChange={(e) => setHow(e.target.value)} />
+            {!how && <ErrorMessage>필수 필드입니다.</ErrorMessage>}
+
+            <CustomRow width='100%' justifyContent='flex-start' alignItems='center' gap='1rem'>
+              <CustomFont color='black' font='1rem'>귀사의 복지를 알려주세요.</CustomFont>
+              <CustomFont color='red' font='1rem'>*</CustomFont>
+            </CustomRow>
+            <InputForm value={where} onChange={(e) => setWhere(e.target.value)} />
+            {!where && <ErrorMessage>필수 필드입니다.</ErrorMessage>}
+
+            <CustomRow width='100%' justifyContent='flex-start' alignItems='center' gap='1rem'>
+              <CustomFont color='black' font='1rem'>귀사가 제시하는 연봉의 범위와 협의 가능 여부를 알려주세요.</CustomFont>
+              <CustomFont color='red' font='1rem'>*</CustomFont>
+            </CustomRow>
+            <InputForm value={why} onChange={(e) => setWhy(e.target.value)} />
+            {!why && <ErrorMessage>필수 필드입니다.</ErrorMessage>}
 
             <CustomRow width='100%' justifyContent='flex-start' alignItems='center' gap='1rem'>
               <CustomFont color='black' font='1rem'>문서의 분량을 설정해주세요</CustomFont>
@@ -245,13 +296,6 @@ export default function Component() {
             </CustomRow>
             <InputForm placeholder='3000자 이내로 설정해주세요.' value={volume} onChange={handleVolumeChange} />
             {volumeError && <ErrorMessage>{volumeError}</ErrorMessage>}
-
-            <CustomRow width='100%' justifyContent='flex-start' alignItems='center' gap='1rem'>
-              <CustomFont color='black' font='1rem'>문서를 생성하는 이유를 알려주세요</CustomFont>
-              <CustomFont color='red' font='1rem'>*</CustomFont>
-            </CustomRow>
-            <TextareaForm value={reason} onChange={(e) => setReason(e.target.value)} />
-            {!reason && <ErrorMessage>필수 필드입니다.</ErrorMessage>}
           </CustomColumn>
 
           {/* <SendButton isActive={isFormValid}>문서 생성하기</SendButton> */}
