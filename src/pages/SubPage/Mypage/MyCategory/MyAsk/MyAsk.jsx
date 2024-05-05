@@ -150,7 +150,7 @@ export default function MyAsk() {
 
           <DivideLine />
 
-          <CustomColumn width='50%' justify-content='center' align-items='center'>
+          <CustomColumn width='50%' height='100vh' justifyContent='center' alignItems='flex-start'>
             {filteredData.map((item, index) => (
               <AnswerContainer key={index} title={item.title} onClick={() => openModal(index)} />
             ))}
@@ -162,18 +162,18 @@ export default function MyAsk() {
         <ModalContent>
           {selectedItemIndex !== null && (
             <>
-            <CustomFont color='#00000' font='1.8rem'>나의 요청 사항</CustomFont>
-            <MyAnswerContainer>
-            <CustomFont color='#00000' font='1.5rem'>대상: {filteredData[selectedItemIndex].to}</CustomFont>
-            <CustomFont color='#00000' font='1.5rem'>분량: {filteredData[selectedItemIndex].amount}</CustomFont>
-            <CustomFont color='#00000' font='1.5rem'>사유: {filteredData[selectedItemIndex].reason}</CustomFont>
-            </MyAnswerContainer>
-            <div style={{ marginBottom: '50px' }}></div>
+              <CustomFont color='#00000' font='1.5rem'>나의 요청 사항</CustomFont>
+              <MyAnswerContainer>
+                <CustomFont color='#00000' font='1rem'>대상: {filteredData[selectedItemIndex].to}</CustomFont>
+                <CustomFont color='#00000' font='1rem'>분량: {filteredData[selectedItemIndex].amount}</CustomFont>
+                <CustomFont color='#00000' font='1rem'>사유: {filteredData[selectedItemIndex].reason}</CustomFont>
+              </MyAnswerContainer>
+              <div style={{ marginBottom: '50px' }}></div>
 
-            <CustomFont color='#00000' font='1.8rem'>AI가 생성한 문서</CustomFont>
-            <MyAnswerContainer>
-            ai여기에
-            </MyAnswerContainer>
+              <CustomFont color='#00000' font='1.5rem'>AI가 생성한 문서</CustomFont>
+              <MyAnswerContainer>
+                <CustomFont color="#000000" font='1rem'>문서 여기</CustomFont>
+              </MyAnswerContainer>
 
 
             </>

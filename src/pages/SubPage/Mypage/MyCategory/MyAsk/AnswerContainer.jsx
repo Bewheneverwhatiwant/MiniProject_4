@@ -41,19 +41,19 @@ const MyAnswerContainer = styled.div`
 `;
 
 function AnswerContainer({ title, onClick }) {
-    return (
-      <ContainerCenter>
-        <PageContainer>
-          <CustomColumn width='80%' justifyContent='center' alignItems='center' gap='2rem'>
-            <MyAnswerContainer onClick={onClick}>
-              <CustomRow alignItems='center'>
-                <CustomFont color='#00000' font='1.5rem'>{title}</CustomFont>
-              </CustomRow>
-            </MyAnswerContainer>
-          </CustomColumn>
-        </PageContainer>
-      </ContainerCenter>
-    );
-  }
+  return (
+    <ContainerCenter>
+      <PageContainer>
+        <CustomColumn width='80%' justifyContent='center' alignItems='flex-start' gap='2rem'>
+          <MyAnswerContainer onClick={onClick}>
+            <CustomRow alignItems='center'>
+              <CustomFont color='#00000' font='1rem' fontWeight='bold'>{title}</CustomFont>
+            </CustomRow>
+          </MyAnswerContainer>
+        </CustomColumn>
+      </PageContainer>
+    </ContainerCenter>
+  );
+}
 
 export default AnswerContainer;
