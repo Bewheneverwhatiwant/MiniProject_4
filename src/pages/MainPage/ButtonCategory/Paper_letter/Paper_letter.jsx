@@ -145,10 +145,16 @@ const LoaderWithImage = styled.div`
 `;
 
 export default function Component() {
-  const [recipient, setRecipient] = useState('');
   const [volume, setVolume] = useState('');
   const [reason, setReason] = useState('');
   const [volumeError, setVolumeError] = useState('');
+
+  const [who, setWho] = useState(''); // 누가
+  const [recipient, setRecipient] = useState(''); // 누구에게
+  const [atmosphere, setAtmosphere] = useState(''); // 어떤 분위기
+  const [duzen, setDuzen] = useState(''); // 반말 또는 존댓발의 어투
+  const [why, setWhy] = useState(''); // 편지 작성 이유
+
 
   // chat gpt ai api 관련
   const [sendContent, setSendContent] = useState('');
@@ -200,7 +206,8 @@ export default function Component() {
 
   const handleAiReplyClick = () => {
 
-    let content = `문서를 보내는 대상: ${recipient} || 문서의 최대 분량 : ${volume} || 문서를 작성하는 이유 : ${reason}`;
+    let content = `문서의 최대 분량 : ${volume} ||
+    누가 : ${who} || 누구에게 : ${recipient} || 편지의 분위기는 : ${atmosphere} || 편지의 어투는 : ${duzen} || 편지를 쓰는 이유는 : ${why}`;
     console.log(content);
     setRunGPT(true);
     setSendContent(content);
@@ -218,7 +225,7 @@ export default function Component() {
     }
   };
 
-  const isFormValid = recipient && volume && reason && !volumeError;
+  const isFormValid = who && recipient && volume && !volumeError && atmosphere && duzen && why;
 
   return (
     <ContainerCenter>
@@ -233,11 +240,39 @@ export default function Component() {
           <CustomColumn width='60%' justifyContent='center' alignItems='center'>
 
             <CustomRow width='100%' justifyContent='flex-start' alignItems='center' gap='1rem'>
-              <CustomFont color='black' font='1rem'>문서를 보내는 대상을 설명해주세요</CustomFont>
+              <CustomFont color='black' font='1rem'>누가 적어주는 편지인가요?</CustomFont>
+              <CustomFont color='red' font='1rem'>*</CustomFont>
+            </CustomRow>
+            <InputForm value={who} onChange={(e) => setWho(e.target.value)} />
+            {!who && <ErrorMessage>필수 필드입니다.</ErrorMessage>}
+
+            <CustomRow width='100%' justifyContent='flex-start' alignItems='center' gap='1rem'>
+              <CustomFont color='black' font='1rem'>누구에게 주는 편지인가요?</CustomFont>
               <CustomFont color='red' font='1rem'>*</CustomFont>
             </CustomRow>
             <InputForm value={recipient} onChange={(e) => setRecipient(e.target.value)} />
             {!recipient && <ErrorMessage>필수 필드입니다.</ErrorMessage>}
+
+            <CustomRow width='100%' justifyContent='flex-start' alignItems='center' gap='1rem'>
+              <CustomFont color='black' font='1rem'>어떤 분위기의 편지를 원하시나요?</CustomFont>
+              <CustomFont color='red' font='1rem'>*</CustomFont>
+            </CustomRow>
+            <InputForm value={atmosphere} onChange={(e) => setAtmosphere(e.target.value)} />
+            {!atmosphere && <ErrorMessage>필수 필드입니다.</ErrorMessage>}
+
+            <CustomRow width='100%' justifyContent='flex-start' alignItems='center' gap='1rem'>
+              <CustomFont color='black' font='1rem'>반말과 존댓말 중 어떤 어투의 편지를 원하시나요?</CustomFont>
+              <CustomFont color='red' font='1rem'>*</CustomFont>
+            </CustomRow>
+            <InputForm value={duzen} onChange={(e) => setDuzen(e.target.value)} />
+            {!duzen && <ErrorMessage>필수 필드입니다.</ErrorMessage>}
+
+            <CustomRow width='100%' justifyContent='flex-start' alignItems='center' gap='1rem'>
+              <CustomFont color='black' font='1rem'>편지를 쓰는 이유가 무엇인가요?</CustomFont>
+              <CustomFont color='red' font='1rem'>*</CustomFont>
+            </CustomRow>
+            <InputForm value={why} onChange={(e) => setWhy(e.target.value)} />
+            {!why && <ErrorMessage>필수 필드입니다.</ErrorMessage>}
 
             <CustomRow width='100%' justifyContent='flex-start' alignItems='center' gap='1rem'>
               <CustomFont color='black' font='1rem'>문서의 분량을 설정해주세요</CustomFont>
@@ -245,13 +280,6 @@ export default function Component() {
             </CustomRow>
             <InputForm placeholder='3000자 이내로 설정해주세요.' value={volume} onChange={handleVolumeChange} />
             {volumeError && <ErrorMessage>{volumeError}</ErrorMessage>}
-
-            <CustomRow width='100%' justifyContent='flex-start' alignItems='center' gap='1rem'>
-              <CustomFont color='black' font='1rem'>문서를 생성하는 이유를 알려주세요</CustomFont>
-              <CustomFont color='red' font='1rem'>*</CustomFont>
-            </CustomRow>
-            <TextareaForm value={reason} onChange={(e) => setReason(e.target.value)} />
-            {!reason && <ErrorMessage>필수 필드입니다.</ErrorMessage>}
           </CustomColumn>
 
           {/* <SendButton isActive={isFormValid}>문서 생성하기</SendButton> */}
