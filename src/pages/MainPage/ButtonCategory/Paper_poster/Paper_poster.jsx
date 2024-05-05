@@ -228,13 +228,13 @@ export default function Component() {
 
           <CustomRow width='100%' gap='1rem' justifyContent='center' alignItems='center' >
             <StyledImg src={'icon_boo_glass.png'} />
-            <Boo_says>나에게 맡겨!</Boo_says>
+            <Boo_says>광고/포스터, 나에게 맡겨!</Boo_says>
           </CustomRow>
 
           <CustomColumn width='60%' justifyContent='center' alignItems='center'>
 
             <CustomRow width='100%' justifyContent='flex-start' alignItems='center' gap='1rem'>
-              <CustomFont color='black' font='1rem'>문서를 보내는 대상을 설명해주세요</CustomFont>
+              <CustomFont color='black' font='1rem'>문서를 보여주고 싶은 대상을 설명해주세요</CustomFont>
               <CustomFont color='red' font='1rem'>*</CustomFont>
             </CustomRow>
             <InputForm value={recipient} onChange={(e) => setRecipient(e.target.value)} />

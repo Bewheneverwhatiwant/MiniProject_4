@@ -234,7 +234,7 @@ export default function Component() {
 
           <CustomRow width='100%' gap='1rem' justifyContent='center' alignItems='center' >
             <StyledImg src={'icon_boo_glass.png'} />
-            <Boo_says>나에게 맡겨!</Boo_says>
+            <Boo_says>편지, 나에게 맡겨!</Boo_says>
           </CustomRow>
 
           <CustomColumn width='60%' justifyContent='center' alignItems='center'>
