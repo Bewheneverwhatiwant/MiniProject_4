@@ -65,6 +65,8 @@ const ModalOverlay = styled.div`
 
 const ModalContent = styled.div`
 width: 55%;
+height: 50vh;
+
   position: fixed;
   top: 50%;
   left: 50%;
@@ -83,10 +85,32 @@ const MyAnswerContainer = styled.div`
     background-color: #FFD7D7;
     border: none;
     border-radius: 10px;
-    padding:15px;
+    padding: 15px;
+
     width: 100%;
+    height: 30%;
+    
     line-height: 1.5;
     margin-top: 10px;
+
+    overflow-y: auto; // 스크롤 활성화
+    scrollbar-width: thin;
+    scrollbar-color: white #FFD7D7;
+
+    &::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: #FFD7D7;
+        border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: white;
+        border-radius: 10px;
+        border: 3px solid #FFD7D7;
+    }
 `;
 
 export default function MyAsk() {
@@ -167,11 +191,23 @@ export default function MyAsk() {
                 <CustomFont color='#00000' font='1rem'>대상: {filteredData[selectedItemIndex].to}</CustomFont>
                 <CustomFont color='#00000' font='1rem'>분량: {filteredData[selectedItemIndex].amount}</CustomFont>
                 <CustomFont color='#00000' font='1rem'>사유: {filteredData[selectedItemIndex].reason}</CustomFont>
+                ..... 스크롤바 테스트를 위해 아무거나 추가...
+                <CustomFont color='#00000' font='1rem'>대상: {filteredData[selectedItemIndex].to}</CustomFont>
+                <CustomFont color='#00000' font='1rem'>분량: {filteredData[selectedItemIndex].amount}</CustomFont>
+                <CustomFont color='#00000' font='1rem'>사유: {filteredData[selectedItemIndex].reason}</CustomFont>
+                <CustomFont color='#00000' font='1rem'>대상: {filteredData[selectedItemIndex].to}</CustomFont>
+                <CustomFont color='#00000' font='1rem'>분량: {filteredData[selectedItemIndex].amount}</CustomFont>
+                <CustomFont color='#00000' font='1rem'>사유: {filteredData[selectedItemIndex].reason}</CustomFont>
               </MyAnswerContainer>
               <div style={{ marginBottom: '50px' }}></div>
 
               <CustomFont color='#00000' font='1.5rem'>AI가 생성한 문서</CustomFont>
               <MyAnswerContainer>
+                <CustomFont color="#000000" font='1rem'>문서 여기</CustomFont>
+                <CustomFont color="#000000" font='1rem'>문서 여기</CustomFont>
+                <CustomFont color="#000000" font='1rem'>문서 여기</CustomFont>
+                <CustomFont color="#000000" font='1rem'>문서 여기</CustomFont>
+                <CustomFont color="#000000" font='1rem'>문서 여기</CustomFont>
                 <CustomFont color="#000000" font='1rem'>문서 여기</CustomFont>
               </MyAnswerContainer>
 
