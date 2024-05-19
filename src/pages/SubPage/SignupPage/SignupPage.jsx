@@ -5,6 +5,7 @@ import CustomColumn from '../../../Components/Container/CustomColumn';
 import CustomRow from '../../../Components/Container/CustomRow';
 import StyledImg from '../../../Components/Container/StyledImg';
 import CustomFont from '../../../Components/Container/CustomFont';
+import axios from 'axios';
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -101,10 +102,25 @@ export default function Component() {
     setIsValid(true);
   };
 
-  const SignupSuccess = () => {
+  // 회원가입 API 연동 부분
+  const handleSignup = async () => {
     if (isFormFilled) {
-      alert('회원가입 완료되었습니다.');
-      navigate('/');
+      try {
+        const response = await axios.post(`${process.env.REACT_APP_SERVER_IP}/join`, {
+          username: userId,
+          password: password,
+          email: email,
+          free_tickets: 0,
+          paid_tickets: 0,
+          nick_name: userId,  // nick_name을 userId로 설정
+        });
+        console.log(response);
+        alert('회원가입에 성공했습니다!');
+        navigate('/');
+      } catch (error) {
+        console.error(error);
+        alert('회원가입에 실패했습니다.');
+      }
     }
   };
 
@@ -172,7 +188,7 @@ export default function Component() {
             </CustomRow>
 
             {/* 회원가입 버튼 */}
-            <SignupButton isActive={isFormFilled} onClick={SignupSuccess}>
+            <SignupButton isActive={isFormFilled} onClick={handleSignup}>
               <CustomFont font='1rem' color='white' fontWeight='bold'>회원가입 하기</CustomFont>
             </SignupButton>
           </CustomColumn>

@@ -5,6 +5,7 @@ import CustomColumn from '../../../Components/Container/CustomColumn';
 import CustomRow from '../../../Components/Container/CustomRow';
 import StyledImg from '../../../Components/Container/StyledImg';
 import CustomFont from '../../../Components/Container/CustomFont';
+import axios from 'axios';
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -79,10 +80,27 @@ export default function Component() {
 
   const navigate = useNavigate();
 
-  const LoginSuccess = () => {
-    if (isFormFilled) { // 조건을 추가하여 아이디와 비밀번호가 모두 입력되었는지 확인
-      alert('로그인 완료되었습니다.');
-      navigate('/');
+  // const LoginSuccess = () => {
+  //   if (isFormFilled) { // 조건을 추가하여 아이디와 비밀번호가 모두 입력되었는지 확인
+  //     alert('로그인 완료되었습니다.');
+  //     navigate('/');
+  //   }
+  // }
+
+  const handleLogin = async () => {
+    if (isFormFilled) {
+      try {
+        const response = await axios.post(`${process.env.REACT_APP_SERVER_IP}/login`, {
+          id: userId,
+          password: password,
+        });
+        console.log(response);
+        alert('로그인에 성공하였습니다!');
+        navigate('/');
+      } catch (error) {
+        console.error(error);
+        alert('로그인에 실패하였습니다.');
+      }
     }
   }
 
@@ -112,7 +130,7 @@ export default function Component() {
               <InputForm placeholder='비밀번호를 입력하세요.' value={password} onChange={e => setPassword(e.target.value)} />
             </CustomColumn>
 
-            <LoginButton isActive={isFormFilled} onClick={LoginSuccess}>
+            <LoginButton isActive={isFormFilled} onClick={handleLogin}>
               <CustomFont font='1rem' color='white' fontWeight='bold'>로그인 하기</CustomFont>
             </LoginButton>
 
