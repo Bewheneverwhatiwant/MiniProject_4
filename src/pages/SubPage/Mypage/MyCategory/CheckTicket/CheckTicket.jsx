@@ -62,17 +62,20 @@ const Divider = styled.div`
 
 export default function Component() {
 
+  // 매일 5번 무려 질문 가능한, 24시간 단위 갱신되는 티켓 개수
   const [remainingFreeQuestions, setRemainingFreeQuestions] = useState(null); // 초기값을 null로 설정
   const { isLoggedIn } = useAuth(); // useAuth 훅에서 로그인 상태와 유저 정보를 가져옴
+  // 닉네임, 보유 무료티켓(매일 5개 무료 x, 이벤트 등 보유하고 있는 무료 티켓 o), 보유 유료티켓
   const [userData, setUserData] = useState({ username: '', free_tickets: 0, paid_tickets: 0 });
 
+  // 유저 보유 유/무료 티켓을 가져오기 위함
   useEffect(() => {
     const fetchUserData = async () => {
       if (isLoggedIn) {
         try {
-          console.log('Fetching user data...');
+          console.log('사용자 데이터 불러오는 중...');
           const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/user_total_info`);
-          console.log('User data response:', response.data);
+          console.log(response.data);
           const userData = response.data.find(u => u.username === isLoggedIn);
           if (userData) {
             setUserData({
@@ -80,11 +83,10 @@ export default function Component() {
               free_tickets: userData.free_tickets,
               paid_tickets: userData.paid_tickets
             });
-            setRemainingFreeQuestions(userData.free_tickets);
-            console.log('User data fetched:', userData);
+            console.log(userData);
           }
         } catch (error) {
-          console.error('Failed to fetch user data', error);
+          console.error(error);
         }
       } else {
         console.log('User is not logged in or user data is not available.');
@@ -94,10 +96,32 @@ export default function Component() {
     fetchUserData();
   }, [isLoggedIn]);
 
-  const paidTickets = userData.paid_tickets;
-  const freeTickets = userData.free_tickets;
+  // 당일 무료 티켓 반환 및 업데이트 API 호출
+  useEffect(() => {
+    const fetchRemainingFreeQuestions = async () => {
+      if (isLoggedIn && userData.username) {
+        try {
+          console.log('무료 티켓 개수 불러오는 중');
+          const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/today_free_ask`, {
+            params: { user_name: userData.username }
+          });
+          console.log('남은 무료 티켓 개수는:', response.data);
+          setRemainingFreeQuestions(response.data); // 응답 데이터를 직접 설정
+          console.log('업데이트한 남은 무료 티켓 개수는:', response.data);
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        console.log('User is not logged in or username is not available.');
+      }
+    };
 
-  // 나중에 문서 저장 후 불러오는 걸로 바꾸기
+    fetchRemainingFreeQuestions();
+  }, [isLoggedIn, userData]);
+
+  const paidTickets = userData.paid_tickets; // 사용자 보유 유료 티켓
+  const freeTickets = userData.free_tickets // 사용자 보유 무료 티켓
+
   const ticketHistory = [
     {
       date: '2024.04.02.14:23',
@@ -157,14 +181,14 @@ export default function Component() {
 
           <MyTicketContainer>
             {ticketHistory.map((ticket, index) => (
-              <>
-                <CustomRow key={index} width='90%' justifyContent='space-between' alignItems='center'>
+              <React.Fragment key={index}>
+                <CustomRow width='90%' justifyContent='space-between' alignItems='center'>
                   <CustomFont color='white' font='1.3rem'>{ticket.date}</CustomFont>
                   <CustomFont color='white' font='1.3rem'>티켓 {ticket.tickets}장</CustomFont>
                   <CustomFont color='white' font='1.3rem'>{ticket.price}</CustomFont>
                 </CustomRow>
                 {index < ticketHistory.length - 1 && <Divider key={`divider-${index}`} />}
-              </>
+              </React.Fragment>
             ))}
           </MyTicketContainer>
 
