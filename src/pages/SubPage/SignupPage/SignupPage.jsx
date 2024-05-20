@@ -97,9 +97,24 @@ export default function Component() {
 
   const navigate = useNavigate();
 
-  const handleIdCheck = () => {
-    alert('사용 가능한 아이디입니다.');
-    setIsValid(true);
+  const handleIdCheck = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/duplicate_confirmation`, {
+        params: {
+          user_name: userId,
+        }
+      });
+      alert('사용 가능한 아이디입니다.');
+      setIsValid(true);
+    } catch (error) {
+      if (error.response && error.response.status === 409) {
+        alert('이미 사용 중인 아이디입니다.');
+        setIsValid(false);
+      } else {
+        console.error('아이디 중복 검사 실패', error);
+        alert('아이디 중복 검사에 실패했습니다.');
+      }
+    }
   };
 
   const handleSignup = async () => {
