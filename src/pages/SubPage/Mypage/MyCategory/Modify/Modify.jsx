@@ -3,6 +3,8 @@ import CustomFont from '../../../../../Components/Container/CustomFont';
 import CustomColumn from '../../../../../Components/Container/CustomColumn';
 import CustomRow from '../../../../../Components/Container/CustomRow';
 import StyledImg from '../../../../../Components/Container/StyledImg';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -74,18 +76,51 @@ const Button = styled.button`
   }
 `;
 
+const LogOutImg = styled.div`
+display: flex;
+justify-content: center;
+align-items: center;
+width: 150px;
+height:150px;
+border-radius: 20px;
+`;
+
+const username = 'lny021102';
+const userImg = 'ex_myprofile.png';
 
 export default function Component() {
+
+  const [isLoggedOut, setIsLoggedOut] = useState(false); // 로그아웃 상태관리!
+
+  const handleLogout = () => {
+    setIsLoggedOut(true);
+  };
+
+  const navigate = useNavigate();
+
+  const handleChangePassword = () => {
+    const newPassword = prompt('변경할 비밀번호를 입력하세요.');
+    if (newPassword !== null) {
+      alert('변경이 완료되었습니다. 다시 로그인해주세요.');
+      navigate('/');
+    }
+  };
+
   return (
     <ContainerCenter>
       <PageContainer>
         <CustomColumn width='80%' justifyContent='center' alignItems='center' gap='1rem'>
 
           <CustomRow width='100%' justifyContent='flex-start' alignItems='center' gap='1.5rem'>
-            <StyledImg src={'ex_myprofile.png'} width='150px' height='150px' borderRadius='20px' />
+            {isLoggedOut ? (
+              <LogOutImg>로그인해주세요</LogOutImg>
+            ) : (
+              <StyledImg src={'ex_myprofile.png'} width='150px' height='150px' borderRadius='20px' />
+            )}
             <CustomColumn width='100%' justifyContent='flex-start' alignItems='flex-start' gap='1rem'>
-              <CustomFont color='black' fontWeight='bold' font='1.7rem'>lny021102님 환영합니다.</CustomFont>
-              <LogoutButton>
+
+              {isLoggedOut ? '로그인해주세요' : `${username}님 환영합니다.`}
+              <LogoutButton onClick={handleLogout}>
                 <CustomFont color='#979797' font='1rem' fontWeight='bold'>로그아웃</CustomFont>
               </LogoutButton>
             </CustomColumn>
@@ -94,14 +129,16 @@ export default function Component() {
           <InfoContainer>
             <CustomRow width='80%' justifyContent='space-between' alignItems='center'>
               <CustomFont color='#8CC63F' fontWeight='bold' font='1.2rem'>아이디</CustomFont>
-              <CustomFont color='#8CC63F' fontWeight='bold' font='1.2rem'>lny021102</CustomFont>
+              <CustomFont color='#8CC63F' fontWeight='bold' font='1.2rem'>
+                {isLoggedOut ? '로그인해주세요' : username}
+              </CustomFont>
             </CustomRow>
 
             <Divider />
 
             <CustomRow width='80%' justifyContent='space-between' alignItems='center'>
               <CustomFont color='#8CC63F' fontWeight='bold' font='1.2rem'>비밀번호</CustomFont>
-              <Button>
+              <Button onClick={handleChangePassword}>
                 <CustomFont color='white' fontWeight='bold' font='1.2rem'>비밀번호 변경</CustomFont>
               </Button>
             </CustomRow>
@@ -112,3 +149,11 @@ export default function Component() {
     </ContainerCenter>
   );
 };
+
+/*
+ {isLoggedOut ? (
+              <LogOutImg>로그인해주세요</LogOutImg>
+            ) : (
+              <StyledImg src={'ex_myprofile.png'} width='150px' height='150px' borderRadius='20px' />
+            )}
+*/

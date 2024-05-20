@@ -5,6 +5,7 @@ import CustomColumn from '../../../Components/Container/CustomColumn';
 import CustomRow from '../../../Components/Container/CustomRow';
 import StyledImg from '../../../Components/Container/StyledImg';
 import CustomFont from '../../../Components/Container/CustomFont';
+import { useAuth } from '../AuthContext';
 import axios from 'axios';
 
 const ContainerCenter = styled.div`
@@ -79,23 +80,20 @@ export default function Component() {
   const isFormFilled = userId && password;
 
   const navigate = useNavigate();
-
-  // const LoginSuccess = () => {
-  //   if (isFormFilled) { // 조건을 추가하여 아이디와 비밀번호가 모두 입력되었는지 확인
-  //     alert('로그인 완료되었습니다.');
-  //     navigate('/');
-  //   }
-  // }
+  const { login } = useAuth();
 
   const handleLogin = async () => {
     if (isFormFilled) {
       try {
-        const response = await axios.post(`${process.env.REACT_APP_SERVER_IP}/login`, {
-          id: userId,
-          password: password,
+        const response = await axios.post(`${process.env.REACT_APP_SERVER_IP}/login`, null, {
+          params: {
+            id: userId,
+            password: password,
+          }
         });
         console.log(response);
         alert('로그인에 성공하였습니다!');
+        login(); // 로그인 상태 업데이트
         navigate('/');
       } catch (error) {
         console.error(error);

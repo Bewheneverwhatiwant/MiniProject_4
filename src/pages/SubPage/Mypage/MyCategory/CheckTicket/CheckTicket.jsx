@@ -58,6 +58,23 @@ const Divider = styled.div`
   background-color: white;
 `;
 
+// 나중에 서버에서 데이터 받아오는 형식으로 고치기
+const remainingFreeQuestions = 1;
+const paidTickets = 4;
+const freeTickets = 2;
+const ticketHistory = [
+  {
+    date: '2024.04.02.14:23',
+    tickets: 4,
+    price: '40000원',
+  },
+  {
+    date: '2024.04.02.14:23',
+    tickets: 4,
+    price: '40000원',
+  },
+];
+
 
 export default function Component() {
   return (
@@ -68,7 +85,7 @@ export default function Component() {
           <CustomRow width='100%' justifyContent='space-between' align-items='center'>
             <CustomRow>
               <CustomFont color='black' fontWeight='bold' font='1.5rem'>오늘 남은 무료 질문 횟수</CustomFont>
-              <CustomFont color='#8CC63F' fontWeight='bold' font='2rem'>(1/5)</CustomFont>
+              <CustomFont color='#8CC63F' fontWeight='bold' font='2rem'>({remainingFreeQuestions}/5)</CustomFont>
             </CustomRow>
 
             <BuyButton>
@@ -83,7 +100,7 @@ export default function Component() {
                 <CustomFont color='#8CC63F' font='1.3rem'>내 보유 유료 티켓</CustomFont>
               </CustomRow>
 
-              <CustomFont color='#8CC63F' fontWeight='bold' font='1.3rem'>4장</CustomFont>
+              <CustomFont color='#8CC63F' fontWeight='bold' font='1.3rem'>{paidTickets}장</CustomFont>
             </CustomRow>
 
             <Divider />
@@ -94,7 +111,7 @@ export default function Component() {
                 <CustomFont color='#8CC63F' font='1.3rem'>내 보유 무료 티켓</CustomFont>
               </CustomRow>
 
-              <CustomFont color='#8CC63F' fontWeight='bold' font='1.3rem'>2장</CustomFont>
+              <CustomFont color='#8CC63F' fontWeight='bold' font='1.3rem'>{freeTickets}장</CustomFont>
             </CustomRow>
           </MyTicketContainer>
 
@@ -103,19 +120,16 @@ export default function Component() {
           </CustomRow>
 
           <MyTicketContainer>
-            <CustomRow width='90%' justifyContent='space-between' alignItems='center'>
-              <CustomFont color='white' font='1.3rem'>2024.04.02.14:23</CustomFont>
-              <CustomFont color='white' font='1.3rem'>티켓 4장</CustomFont>
-              <CustomFont color='white' font='1.3rem'>40000원</CustomFont>
-            </CustomRow>
-
-            <Divider />
-
-            <CustomRow width='90%' justifyContent='space-between' alignItems='center'>
-              <CustomFont color='white' font='1.3rem'>2024.04.02.14:23</CustomFont>
-              <CustomFont color='white' font='1.3rem'>티켓 4장</CustomFont>
-              <CustomFont color='white' font='1.3rem'>40000원</CustomFont>
-            </CustomRow>
+            {ticketHistory.map((ticket, index) => (
+              <>
+                <CustomRow key={index} width='90%' justifyContent='space-between' alignItems='center'>
+                  <CustomFont color='white' font='1.3rem'>{ticket.date}</CustomFont>
+                  <CustomFont color='white' font='1.3rem'>티켓 {ticket.tickets}장</CustomFont>
+                  <CustomFont color='white' font='1.3rem'>{ticket.price}</CustomFont>
+                </CustomRow>
+                {index < ticketHistory.length - 1 && <Divider key={`divider-${index}`} />}
+              </>
+            ))}
           </MyTicketContainer>
 
         </CustomColumn>

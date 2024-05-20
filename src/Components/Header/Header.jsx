@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import StyledImg from '../Container/StyledImg';
 import CustomRow from '../Container/CustomRow';
+import { useAuth } from '../../pages/SubPage/AuthContext';
 
 const HeaderContainer = styled.header`
 position: fixed;
@@ -41,6 +42,8 @@ background-color: transparent;
 
 export default function Header() {
 
+    const { isLoggedIn, logout } = useAuth();
+
     const navigate = useNavigate();
 
     const Back = () => {
@@ -59,6 +62,11 @@ export default function Header() {
         navigate('/mypage');
     }
 
+    const handleLogout = () => {
+        logout();
+        navigate('/');
+    }
+
     return (
 
         <HeaderContainer>
@@ -67,9 +75,17 @@ export default function Header() {
                     <StyledImg src={'icon_logo.png'} width='100px' height='40px' onClick={Back} />
                 </LogoButton>
                 <CustomRow width='20%' justifyContent='center'>
-                    <HeaderButton onClick={Login}>로그인</HeaderButton>
-                    <HeaderButton onClick={Signup}>회원가입</HeaderButton>
-                    <HeaderButton onClick={Mypage}>마이페이지</HeaderButton>
+                    {!isLoggedIn ? (
+                        <>
+                            <HeaderButton onClick={Login}>로그인</HeaderButton>
+                            <HeaderButton onClick={Signup}>회원가입</HeaderButton>
+                        </>
+                    ) : (
+                        <>
+                            <HeaderButton onClick={Mypage}>마이페이지</HeaderButton>
+                            <HeaderButton onClick={handleLogout}>로그아웃</HeaderButton>
+                        </>
+                    )}
                 </CustomRow>
             </CustomRow>
         </HeaderContainer>

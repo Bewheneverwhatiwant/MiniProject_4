@@ -102,7 +102,6 @@ export default function Component() {
     setIsValid(true);
   };
 
-  // 회원가입 API 연동 부분
   const handleSignup = async () => {
     if (isFormFilled) {
       try {
@@ -112,7 +111,7 @@ export default function Component() {
           email: email,
           free_tickets: 0,
           paid_tickets: 0,
-          nick_name: userId,  // nick_name을 userId로 설정
+          nick_name: userId,
         });
         console.log(response);
         alert('회원가입에 성공했습니다!');
