@@ -124,7 +124,7 @@ export default function Component() {
           username: userId,
           password: password,
           email: email,
-          free_tickets: 0,
+          free_tickets: 5, // 하루에 5번까지 무료 질문 가능, 24시간 주기로 갱신됨
           paid_tickets: 0,
           nick_name: userId,
         });

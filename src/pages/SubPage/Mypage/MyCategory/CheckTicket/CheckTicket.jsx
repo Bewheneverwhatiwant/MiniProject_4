@@ -3,6 +3,9 @@ import CustomFont from '../../../../../Components/Container/CustomFont';
 import CustomColumn from '../../../../../Components/Container/CustomColumn';
 import CustomRow from '../../../../../Components/Container/CustomRow';
 import StyledImg from '../../../../../Components/Container/StyledImg';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useAuth } from '../../../AuthContext';
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -45,7 +48,6 @@ const MyTicketContainer = styled.div`
   background-color: #C1EEA580;
   border: none;
   border-radius: 20px;
-
   padding-top: 10px;
   padding-bottom: 10px;
   width: 100%;
@@ -58,25 +60,57 @@ const Divider = styled.div`
   background-color: white;
 `;
 
-// 나중에 서버에서 데이터 받아오는 형식으로 고치기
-const remainingFreeQuestions = 1;
-const paidTickets = 4;
-const freeTickets = 2;
-const ticketHistory = [
-  {
-    date: '2024.04.02.14:23',
-    tickets: 4,
-    price: '40000원',
-  },
-  {
-    date: '2024.04.02.14:23',
-    tickets: 4,
-    price: '40000원',
-  },
-];
-
-
 export default function Component() {
+
+  const [remainingFreeQuestions, setRemainingFreeQuestions] = useState(null); // 초기값을 null로 설정
+  const { isLoggedIn } = useAuth(); // useAuth 훅에서 로그인 상태와 유저 정보를 가져옴
+  const [userData, setUserData] = useState({ username: '', free_tickets: 0, paid_tickets: 0 });
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (isLoggedIn) {
+        try {
+          console.log('Fetching user data...');
+          const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/user_total_info`);
+          console.log('User data response:', response.data);
+          const userData = response.data.find(u => u.username === isLoggedIn);
+          if (userData) {
+            setUserData({
+              username: userData.username,
+              free_tickets: userData.free_tickets,
+              paid_tickets: userData.paid_tickets
+            });
+            setRemainingFreeQuestions(userData.free_tickets);
+            console.log('User data fetched:', userData);
+          }
+        } catch (error) {
+          console.error('Failed to fetch user data', error);
+        }
+      } else {
+        console.log('User is not logged in or user data is not available.');
+      }
+    };
+
+    fetchUserData();
+  }, [isLoggedIn]);
+
+  const paidTickets = userData.paid_tickets;
+  const freeTickets = userData.free_tickets;
+
+  // 나중에 문서 저장 후 불러오는 걸로 바꾸기
+  const ticketHistory = [
+    {
+      date: '2024.04.02.14:23',
+      tickets: 4,
+      price: '40000원',
+    },
+    {
+      date: '2024.04.02.14:23',
+      tickets: 4,
+      price: '40000원',
+    },
+  ];
+
   return (
     <ContainerCenter>
       <PageContainer>
@@ -85,7 +119,9 @@ export default function Component() {
           <CustomRow width='100%' justifyContent='space-between' align-items='center'>
             <CustomRow>
               <CustomFont color='black' fontWeight='bold' font='1.5rem'>오늘 남은 무료 질문 횟수</CustomFont>
-              <CustomFont color='#8CC63F' fontWeight='bold' font='2rem'>({remainingFreeQuestions}/5)</CustomFont>
+              <CustomFont color='#8CC63F' fontWeight='bold' font='2rem'>
+                {remainingFreeQuestions !== null ? `(${remainingFreeQuestions}/5)` : 'Loading...'}
+              </CustomFont>
             </CustomRow>
 
             <BuyButton>
