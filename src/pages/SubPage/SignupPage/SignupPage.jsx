@@ -129,8 +129,8 @@ export default function Component() {
           nick_name: userId,
         });
         console.log(response);
-        alert('회원가입에 성공했습니다!');
-        navigate('/');
+        alert('회원가입에 성공했습니다. 로그인 화면으로 이동합니다.');
+        navigate('/loginpage');
       } catch (error) {
         console.error(error);
         alert('회원가입에 실패했습니다.');
