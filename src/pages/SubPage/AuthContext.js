@@ -5,8 +5,8 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    const login = () => {
-        setIsLoggedIn(true);
+    const login = (username) => {
+        setIsLoggedIn(username); // 로그인 시 사용자명을 저장
     };
 
     const logout = () => {

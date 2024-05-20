@@ -93,7 +93,7 @@ export default function Component() {
         });
         console.log(response);
         alert('로그인에 성공하였습니다!');
-        login(); // 로그인 상태 업데이트
+        login(userId); // 로그인 상태 업데이트
         navigate('/');
       } catch (error) {
         console.error(error);
