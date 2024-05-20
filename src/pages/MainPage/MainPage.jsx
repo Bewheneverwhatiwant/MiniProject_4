@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CustomRow from "../../Components/Container/CustomRow";
 import styled from 'styled-components';
 import StyledImg from "../../Components/Container/StyledImg";
@@ -6,6 +6,8 @@ import CustomFont from "../../Components/Container/CustomFont";
 import CustomColumn from "../../Components/Container/CustomColumn";
 import ImgCarousel from './MainPage_banner';
 import Buttons from './MainPage_buttons';
+import { useAuth } from '../SubPage/AuthContext';
+import axios from 'axios'
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -48,6 +50,31 @@ const Boo_says = styled.div`
 
 export default function Component() {
   const [showBoo, setShowBoo] = useState(false);
+  const [userData, setUserData] = useState({ username: '' });
+
+  const { isLoggedIn } = useAuth(); // useAuth를 이용하여 로그인 상태 가져오기
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      // console.log('홈화면 배너  정보 요청 시작');
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/user_total_info`);
+        console.log(response.data);
+        const user = response.data.find(user => user.username === isLoggedIn);
+        if (user) {
+          console.log('유저 확인!');
+          setUserData({ username: user.username });
+          // console.log({ username: user.username });
+        }
+      } catch (error) {
+        console.error('Failed to fetch user data', error);
+      }
+    };
+
+    if (isLoggedIn) {
+      fetchUserData();
+    }
+  }, [isLoggedIn]);
 
   return (
     <ContainerCenter>
@@ -56,7 +83,11 @@ export default function Component() {
           <CustomColumn width='100%' justifyContent='center' alignItems='center' gap='1rem'>
 
 
-            {showBoo && <Boo_says onMouseEnter={() => setShowBoo(true)} onMouseLeave={() => setShowBoo(false)}>로그인 후 모든 기능을 이용할 수 있어요!</Boo_says>}
+            {isLoggedIn ? (
+              showBoo && <Boo_says onMouseEnter={() => setShowBoo(true)} onMouseLeave={() => setShowBoo(false)}>{userData.username}님, 환영합니다!</Boo_says>
+            ) : (
+              showBoo && <Boo_says onMouseEnter={() => setShowBoo(true)} onMouseLeave={() => setShowBoo(false)}>로그인 후 모든 기능을 이용할 수 있어요!</Boo_says>
+            )}
 
             <CustomColumn width='100%' justifyContent='center' alignItems='center' gap='1rem'>
               <CustomRow width='100%' justofyContent='center' alignItems='center'>

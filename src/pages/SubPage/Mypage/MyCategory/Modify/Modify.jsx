@@ -92,7 +92,8 @@ export default function Component() {
   const [isLoggedOut, setIsLoggedOut] = useState(false);
   const [userData, setUserData] = useState({ username: '', password: '' });
 
-  const { isLoggedIn } = useAuth(); // useAuth를 이용하여 로그인 상태 가져오기
+  const { isLoggedIn, logout } = useAuth(); // useAuth를 이용하여 로그인 상태 가져오기
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -118,9 +119,9 @@ export default function Component() {
   }, [isLoggedIn]);
 
   const handleLogout = () => {
-    setIsLoggedOut(true);
+    logout();
     navigate('/');
-  };
+  }
 
   const handleChangePassword = () => {
     const newPassword = prompt(`변경할 비밀번호를 입력하세요. 현재 비밀번호는 ${userData.password}입니다.`);
