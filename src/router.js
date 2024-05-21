@@ -17,6 +17,7 @@ import Paper_letter_reply from "./pages/MainPage/ButtonCategory/Paper_letter/Pap
 import Paper_notice_reply from "./pages/MainPage/ButtonCategory/Paper_notice/Paper_notice_reply";
 import Paper_poster_reply from "./pages/MainPage/ButtonCategory/Paper_poster/Paper_poster_reply";
 import Paper_sorry_reply from "./pages/MainPage/ButtonCategory/Paper_sorry/Paper_sorry_reply";
+import BuyTicket from "./pages/SubPage/Mypage/MyCategory/CheckTicket/BuyTicket/BuyTicket";
 
 export default createBrowserRouter([
     {
@@ -72,7 +73,7 @@ export default createBrowserRouter([
                 element: <Paper_hire_reply />
             },
             {
-                path: "paperjobreply",
+                path: "/paperjobreply",
                 element: <Paper_job_reply />
             },
             {
@@ -88,8 +89,12 @@ export default createBrowserRouter([
                 element: <Paper_poster_reply />
             },
             {
-                path: "papersorryreply",
+                path: "/papersorryreply",
                 element: <Paper_sorry_reply />
+            },
+            {
+                path: "/buyticketpage",
+                element: <BuyTicket />
             }
         ]
     }

@@ -6,6 +6,7 @@ import StyledImg from '../../../../../Components/Container/StyledImg';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../../AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -67,6 +68,12 @@ export default function Component() {
   const { isLoggedIn } = useAuth(); // useAuth 훅에서 로그인 상태와 유저 정보를 가져옴
   // 닉네임, 보유 무료티켓(매일 5개 무료 x, 이벤트 등 보유하고 있는 무료 티켓 o), 보유 유료티켓
   const [userData, setUserData] = useState({ username: '', free_tickets: 0, paid_tickets: 0 });
+
+  const navigate = useNavigate();
+
+  const BuyTrue = () => {
+    navigate('/buyticketpage');
+  }
 
   // 유저 보유 유/무료 티켓을 가져오기 위함
   useEffect(() => {
@@ -149,7 +156,7 @@ export default function Component() {
             </CustomRow>
 
             <BuyButton>
-              <CustomFont color='white' fontWeight='bold' font='1.5rem'>티켓 구매</CustomFont>
+              <CustomFont color='white' fontWeight='bold' font='1.5rem' onClick={BuyTrue}>티켓 구매</CustomFont>
             </BuyButton>
           </CustomRow>
 
