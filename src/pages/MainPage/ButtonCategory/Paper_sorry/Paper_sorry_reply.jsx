@@ -177,7 +177,7 @@ export default function Component() {
         localStorage.setItem('savedContents', JSON.stringify(existingContents));
         alert('저장되었습니다.');
         setShowModal(false);
-        navigate('/ai-mygen'); // 실제 모아보기 경로로 바꾸기
+        navigate('/myask');
     };
 
     const showModalSaveContent = () => {

@@ -146,6 +146,35 @@ const LoaderWithImage = styled.div`
   }
 `;
 
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ModalContent = styled.div`
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+`;
+
+const ModalButton = styled.button`
+  margin: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: ${props => props.primary ? '#8CC63F' : '#D9D9D9'};
+  color: white;
+`;
+
 export default function Component() {
   const [recipient, setRecipient] = useState('');
   const [volume, setVolume] = useState('');
@@ -202,6 +231,8 @@ export default function Component() {
     setRunGPT(false);
   }, [sendContent])
 
+  const [showModal, setShowModal] = useState(false);
+
   const handleAiReplyClick = () => {
     let content = `문서의 최대 분량 : ${volume} || 문서를 작성하는 이유 : ${reason} ||
     누구에게 : ${recipient}`;
@@ -222,9 +253,28 @@ export default function Component() {
     })
       .then(response => {
         console.log('API Response:', response.data);
+        const responseMessage = response.data;
+        const docIdMatch = responseMessage.match(/doc_id는 (\d+)/);
+        if (docIdMatch) {
+          const docId = docIdMatch[1];
+          localStorage.setItem('doc_id', docId);
+        }
       })
       .catch(error => {
         console.error('Error:', error.response ? error.response.data : error.message);
+      });
+
+    axios.post(`${serverIp}/update_user_daily_tickets`, null, {
+      params: {
+        user_name: isLoggedIn, // AuthContext에서 가져온 사용자명
+        usedDailyTicketCount: 1
+      }
+    })
+      .then(response => {
+        console.log('Ticket API Response:', response.data);
+      })
+      .catch(error => {
+        console.error('Ticket API Error:', error.response ? error.response.data : error.message);
       });
   };
 
@@ -238,6 +288,19 @@ export default function Component() {
     } else {
       setVolumeError('');
     }
+  };
+
+  const handleSendButtonClick = () => {
+    setShowModal(true);
+  };
+
+  const handleConfirm = () => {
+    setShowModal(false);
+    handleAiReplyClick();
+  };
+
+  const handleCancel = () => {
+    setShowModal(false);
   };
 
   const isFormValid = recipient && volume && reason && !volumeError;
@@ -278,10 +341,20 @@ export default function Component() {
 
           {/* <SendButton isActive={isFormValid}>문서 생성하기</SendButton> */}
           {!isLoading &&
-            <SendButton isActive={isFormValid} onClick={handleAiReplyClick}>
+            <SendButton isActive={isFormValid} onClick={handleSendButtonClick}>
               생성형 AI에게 문서 작성 요청하기
             </SendButton>
           }
+
+          {showModal && (
+            <ModalOverlay>
+              <ModalContent>
+                <p>무료 티켓 1개를 차감하여 문서를 생성합니다.</p>
+                <ModalButton primary onClick={handleConfirm}>확인</ModalButton>
+                <ModalButton onClick={handleCancel}>취소</ModalButton>
+              </ModalContent>
+            </ModalOverlay>
+          )}
 
           {isLoading &&
             <LoadingMessage>
