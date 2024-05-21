@@ -125,7 +125,7 @@ export default function Component() {
 
             <CustomColumn width='30%' justifyContent='center' alignItems='flex-start' gap='1rem'>
               <CustomFont color='black' font='1rem' fontWeight='bold'>비밀번호</CustomFont>
-              <InputForm placeholder='비밀번호를 입력하세요.' value={password} onChange={e => setPassword(e.target.value)} />
+              <InputForm type='password' placeholder='비밀번호를 입력하세요.' value={password} onChange={e => setPassword(e.target.value)} />
             </CustomColumn>
 
             <LoginButton isActive={isFormFilled} onClick={handleLogin}>

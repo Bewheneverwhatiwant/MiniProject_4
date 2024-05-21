@@ -143,7 +143,10 @@ export default function Component() {
               <StyledImg src={userImg} width='150px' height='150px' borderRadius='20px' />
             )}
             <CustomColumn width='100%' justifyContent='flex-start' alignItems='flex-start' gap='1rem'>
-              {isLoggedOut ? '로그인해주세요' : `${userData.username}님 환영합니다.`}
+
+              {isLoggedOut ?
+                (<CustomFont font='2rem' color='979797' fontWeight='bold'>'로그인해주세요'</CustomFont>) :
+                (<CustomFont font='2rem' color='979797' fontWeight='bold'>{userData.username}님 환영합니다.</CustomFont>)}
               <LogoutButton onClick={handleLogout}>
                 <CustomFont color='#979797' font='1rem' fontWeight='bold'>로그아웃</CustomFont>
               </LogoutButton>
