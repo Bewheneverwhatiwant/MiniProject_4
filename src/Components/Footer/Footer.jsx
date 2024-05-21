@@ -60,7 +60,7 @@ export default function Component() {
     // 로그인 여부를 확인하는 함수
     const checkLogin = async () => {
         if (isLoggedIn) {
-            const confirmDelete = window.confirm('정말 탈퇴하시겠습니까?');
+            const confirmDelete = window.confirm(`${userData.username}님, 정말 탈퇴하시겠어요?`);
             if (confirmDelete) {
                 try {
                     const response = await axios.delete(`${process.env.REACT_APP_SERVER_IP}/delete_user`, {
