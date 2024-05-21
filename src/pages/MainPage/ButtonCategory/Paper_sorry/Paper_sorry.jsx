@@ -303,7 +303,7 @@ export default function Component() {
           {/* <SendButton isActive={isFormValid}>문서 생성하기</SendButton> */}
           {!isLoading &&
             <SendButton isActive={isFormValid} onClick={handleAiReplyClick}>
-              생성형 AI에게 법률 제안서 작성 요청하기
+              생성형 AI에게 문서 작성 요청하기
             </SendButton>
           }
 
