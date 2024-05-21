@@ -175,6 +175,16 @@ const ModalButton = styled.button`
   color: white;
 `;
 
+const TicketAlertModal = ({ onConfirm, onCancel }) => (
+  <ModalOverlay>
+    <ModalContent>
+      <p>티켓이 부족합니다! 티켓 구매 화면으로 이동하시겠습니까?</p>
+      <ModalButton primary onClick={onConfirm}>확인</ModalButton>
+      <ModalButton onClick={onCancel}>취소</ModalButton>
+    </ModalContent>
+  </ModalOverlay>
+);
+
 export default function Component() {
   const [volume, setVolume] = useState('');
   const [reason, setReason] = useState('');
@@ -301,9 +311,37 @@ export default function Component() {
     setShowModal(true);
   };
 
-  const handleConfirm = () => {
+  const [showTicketAlert, setShowTicketAlert] = useState(false);
+
+  const handleConfirm = async () => {
     setShowModal(false);
-    handleAiReplyClick();
+
+    const serverIp = process.env.REACT_APP_SERVER_IP;
+
+    try {
+      const todayFreeAskResponse = await axios.get(`${serverIp}/today_free_ask`, {
+        params: { user_name: isLoggedIn }
+      });
+
+      if (todayFreeAskResponse.data < 1) {
+        alert('티켓이 부족합니다!');
+        return;
+      }
+
+      handleAiReplyClick();
+
+    } catch (error) {
+      console.error('Error:', error.response ? error.response.data : error.message);
+    }
+  };
+
+  const handleTicketAlertConfirm = () => {
+    setShowTicketAlert(false);
+    navigate('/buypage');
+  };
+
+  const handleTicketAlertCancel = () => {
+    setShowTicketAlert(false);
   };
 
   const handleCancel = () => {
@@ -391,11 +429,18 @@ export default function Component() {
           {showModal && (
             <ModalOverlay>
               <ModalContent>
-                <p>무료 티켓 1개를 차감하여 문서를 생성합니다.</p>
+                <p>티켓 1개를 차감하여 문서를 생성합니다.</p>
                 <ModalButton primary onClick={handleConfirm}>확인</ModalButton>
                 <ModalButton onClick={handleCancel}>취소</ModalButton>
               </ModalContent>
             </ModalOverlay>
+          )}
+
+          {showTicketAlert && (
+            <TicketAlertModal
+              onConfirm={handleTicketAlertConfirm}
+              onCancel={handleTicketAlertCancel}
+            />
           )}
 
           {isLoading &&
