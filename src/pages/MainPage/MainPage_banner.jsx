@@ -70,7 +70,7 @@ export default function Component() {
       <CarouselSlider style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
         {Array.from({ length: 3 }, (_, index) => (
           <CarouselItem key={index}>
-            <StyledImage src={`ex_banner_img_${index + 1}.png`} alt={`Slide ${index + 1}`} />
+            <StyledImage src={`banner_img_${index + 1}.png`} alt={`Slide ${index + 1}`} />
           </CarouselItem>
         ))}
       </CarouselSlider>
