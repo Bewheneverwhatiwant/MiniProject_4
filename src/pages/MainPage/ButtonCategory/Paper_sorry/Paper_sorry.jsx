@@ -6,6 +6,8 @@ import CustomFont from '../../../../Components/Container/CustomFont';
 import StyledImg from '../../../../Components/Container/StyledImg';
 import React, { useState, useEffect } from 'react';
 import OpenAI from "openai";
+import { useAuth } from '../../../SubPage/AuthContext';
+import axios from 'axios';
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -38,24 +40,6 @@ const InputForm = styled.input`
 
   width: 100%;
   height: 2rem;
-  padding: 0.3rem;
-
-  &::placeholder {
-    color: #D9D9D9;
-  }
-
-  &:active {
-    outline: none;
-  }
-`;
-
-const TextareaForm = styled.textarea`
-  display: flex;
-  border: 1.5px solid #8CC63F;
-  background-color: transparent;
-  border-radius: 15px;
-  width: 100%;
-  height: 4rem;
   padding: 0.3rem;
 
   &::placeholder {
@@ -169,6 +153,7 @@ export default function Component() {
   });
 
   const navigate = useNavigate();
+  const { isLoggedIn } = useAuth(); // AuthContext에서 사용자명 가져오기
 
   useEffect(() => {
     if (!runGPT) {
@@ -207,15 +192,6 @@ export default function Component() {
     setRunGPT(false);
   }, [sendContent])
 
-  const handleAiReplyClick = () => {
-
-    let content = `문서의 최대 분량 : ${volume} || 문서를 작성하는 이유 : ${reason} ||
-    누가 : ${who} || 누구에게 : ${recipient} || 언제 : ${when} || 어디서 : ${where} || 무엇을 :${what} || 어떻게 : ${how} || 왜 : ${why}`;
-    console.log(content);
-    setRunGPT(true);
-    setSendContent(content);
-  }
-
   const handleVolumeChange = (e) => {
     const value = e.target.value;
     setVolume(value);
@@ -226,6 +202,32 @@ export default function Component() {
     } else {
       setVolumeError('');
     }
+  };
+
+  const handleAiReplyClick = () => {
+    let content = `문서의 최대 분량 : ${volume} || 문서를 작성하는 이유 : ${reason} ||
+    누가 : ${who} || 누구에게 : ${recipient} || 언제 : ${when} || 어디서 : ${where} || 무엇을 :${what} || 어떻게 : ${how} || 왜 : ${why}`;
+    console.log(content);
+    setRunGPT(true);
+    setSendContent(content);
+
+    const serverIp = process.env.REACT_APP_SERVER_IP;
+
+    axios.post(`${serverIp}/save_doc_input`, null, {
+      params: {
+        user_name: isLoggedIn, // AuthContext에서 가져온 사용자명
+        type: 'sorry',
+        target: recipient,
+        amount: parseInt(volume), // volume을 정수로 변환
+        text: what
+      }
+    })
+      .then(response => {
+        console.log('API Response:', response.data);
+      })
+      .catch(error => {
+        console.error('Error:', error.response ? error.response.data : error.message);
+      });
   };
 
   const isFormValid = who && where && how && why && when && recipient && volume && !volumeError;

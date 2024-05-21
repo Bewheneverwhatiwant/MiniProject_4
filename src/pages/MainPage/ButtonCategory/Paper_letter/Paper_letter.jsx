@@ -6,6 +6,8 @@ import CustomFont from '../../../../Components/Container/CustomFont';
 import StyledImg from '../../../../Components/Container/StyledImg';
 import React, { useState, useEffect } from 'react';
 import OpenAI from "openai";
+import { useAuth } from '../../../SubPage/AuthContext';
+import axios from 'axios';
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -167,6 +169,7 @@ export default function Component() {
   });
 
   const navigate = useNavigate();
+  const { isLoggedIn } = useAuth(); // AuthContext에서 사용자명 가져오기
 
   useEffect(() => {
     if (!runGPT) {
@@ -205,13 +208,30 @@ export default function Component() {
   }, [sendContent])
 
   const handleAiReplyClick = () => {
-
-    let content = `문서의 최대 분량 : ${volume} ||
+    let content = `문서의 최대 분량 : ${volume} || 문서를 작성하는 이유 : ${reason} ||
     누가 : ${who} || 누구에게 : ${recipient} || 편지의 분위기는 : ${atmosphere} || 편지의 어투는 : ${duzen} || 편지를 쓰는 이유는 : ${why}`;
     console.log(content);
     setRunGPT(true);
     setSendContent(content);
-  }
+
+    const serverIp = process.env.REACT_APP_SERVER_IP;
+
+    axios.post(`${serverIp}/save_doc_input`, null, {
+      params: {
+        user_name: isLoggedIn, // AuthContext에서 가져온 사용자명
+        type: 'letter',
+        target: recipient,
+        amount: parseInt(volume), // volume을 정수로 변환
+        text: why
+      }
+    })
+      .then(response => {
+        console.log('API Response:', response.data);
+      })
+      .catch(error => {
+        console.error('Error:', error.response ? error.response.data : error.message);
+      });
+  };
 
   const handleVolumeChange = (e) => {
     const value = e.target.value;
