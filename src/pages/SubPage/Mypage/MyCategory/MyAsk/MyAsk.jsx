@@ -71,6 +71,18 @@ const ModalContent = styled.div`
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
 `;
 
+const TitleAnswer = styled.div`
+display: flex;
+align-items: center;
+justify-content: center;
+width: 100%;
+height: 100px;
+background-color: #FFD7D7;
+border: none;
+border-radius: 10px;
+margin: 10px;
+`;
+
 const MyAnswerContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -80,7 +92,7 @@ const MyAnswerContainer = styled.div`
   border-radius: 10px;
   padding: 15px;
   width: 100%;
-  max-height: 20%;
+  height: 80%;
   line-height: 1.5;
   margin-top: 10px;
   overflow-y: auto; // 스크롤 활성화
@@ -98,6 +110,24 @@ const MyAnswerContainer = styled.div`
     border-radius: 10px;
     border: 3px solid #FFD7D7;
   }
+`;
+
+const DocContainer = styled.div`
+width: 100%;
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+justify-content: center;
+padding: 10px;
+`;
+
+const Xbutton = styled.button`
+background-color: #D9D9D9;
+border: none;
+border-radius: 50px;
+display: flex;
+align-items: center;
+justify-contents: center;
 `;
 
 export default function MyAsk() {
@@ -177,26 +207,33 @@ export default function MyAsk() {
 
           <DivideLine />
 
-          {/* title민 보이도록 수정하기 */}
-          <CustomColumn width='50%' height='100vh' justifyContent='flex-start' alignItems='flex-start'>
-            {documents.length > 0 ? (
-              documents.map((doc, index) => (
-                <MyAnswerContainer key={index} onClick={() => openModal(doc)}>
-                  <CustomFont color='#00000' font='1rem'>제목: {doc.name}</CustomFont>
-                  <CustomFont color='#00000' font='1rem'>대상: {doc.target}</CustomFont>
-                  <CustomFont color='#00000' font='1rem'>분량: {doc.amount}</CustomFont>
-                  <CustomFont color='#00000' font='1rem'>내용: {doc.text}</CustomFont>
-                </MyAnswerContainer>
-              ))
-            ) : (
-              <CustomFont color='#00000' font='1.5rem'>
-                <CustomCenter width='100%' height='100vh'>
-                  <CustomFont font='2rem' color='#D9D9D9' fontWeight='bold'>
-                    아직 이 카테고리의 문서를 생성하지 않았어요.
-                  </CustomFont>
-                </CustomCenter>
-              </CustomFont>
-            )}
+          <CustomColumn width='50%' height='100vh' justifyContent='center' alignItems='flex-start'>
+            <DocContainer>
+              <CustomRow width='100%' alignItems='center' justifyContent='center'>
+                <CustomFont font='1rem' fontWeight='bold' color='#D9D9D9'>문서를 클릭하여 모든 내용을 볼 수 있어요.</CustomFont>
+              </CustomRow>
+              {documents.length > 0 ? (
+                documents.map((doc, index) => (
+                  <CustomRow key={index} width='100%' justifyContent='space-between' alignItems='center'>
+                    <TitleAnswer onClick={() => openModal(doc)}>
+                      <CustomFont color='white' font='1.6rem' fontWeight='bold'>{doc.name}</CustomFont>
+                    </TitleAnswer>
+
+                    <Xbutton>
+                      <CustomFont color='white' fontWeight='bold' font='1.6rem'>X</CustomFont>
+                    </Xbutton>
+                  </CustomRow>
+                ))
+              ) : (
+                <CustomFont color='#00000' font='1.5rem'>
+                  <CustomCenter width='100%' height='100vh'>
+                    <CustomFont font='2rem' color='#D9D9D9' fontWeight='bold'>
+                      아직 이 카테고리의 문서를 생성하지 않았어요.
+                    </CustomFont>
+                  </CustomCenter>
+                </CustomFont>
+              )}
+            </DocContainer>
           </CustomColumn>
         </CustomRow>
       </PageContainer>
@@ -208,9 +245,9 @@ export default function MyAsk() {
             <CustomFont color='#000000' font='1.5rem'>문서 상세 정보</CustomFont>
             <MyAnswerContainer>
               <CustomFont color='#000000' font='1rem'>제목: {selectedDocument.name}</CustomFont>
-              <CustomFont color='#000000' font='1rem'>대상(target): {selectedDocument.target}</CustomFont>
-              <CustomFont color='#000000' font='1rem'>분량(amount): {selectedDocument.amount}</CustomFont>
-              <CustomFont color='#000000' font='1rem'>내용(text): {selectedDocument.text}</CustomFont>
+              <CustomFont color='#000000' font='1rem'>대상: {selectedDocument.target}</CustomFont>
+              <CustomFont color='#000000' font='1rem'>분량: {selectedDocument.amount}</CustomFont>
+              <CustomFont color='#000000' font='1rem'>내용: {selectedDocument.content}</CustomFont>
             </MyAnswerContainer>
           </ModalContent>
         </ModalOverlay>
