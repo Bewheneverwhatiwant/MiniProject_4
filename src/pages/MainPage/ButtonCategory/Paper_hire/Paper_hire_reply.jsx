@@ -6,6 +6,7 @@ import CustomFont from "../../../../Components/Container/CustomFont";
 import CustomRow from "../../../../Components/Container/CustomRow";
 import StyledImg from "../../../../Components/Container/StyledImg";
 import CustomCenter from '../../../../Components/Container/CustomCenter';
+import axios from 'axios';
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -33,7 +34,7 @@ const PageContainer = styled(ContainerCenter)`
 const ReplyDiv = styled.div`
 width: 80%;
 height: 500px;
-background-color: rgba(255, 199, 199, 0.5);
+background-color: #4A4A4A;
 border-radius: 20px;
 line-height: 30px;
 padding: 10px;
@@ -41,12 +42,12 @@ display: flex;
 flex-direction: column;
 align-items: center;
 justify-content: center;
-color: black;
+color: white;
 `;
 
 const Buttoms = styled.button`
 width: ${props => props.width || '200px'};
-hwight: 70px;
+height: 70px;
 background-color: #FFC7C7;
 border-radius: 10px;
 padding: 10px;
@@ -116,13 +117,11 @@ const InputForm = styled.input`
   }
 `;
 
-// 45도로 기울어지도록 애니메이션
 const rotateAnimation = keyframes`
   from { transform: rotate(0deg); }
   to { transform: rotate(45deg); }
 `;
 
-// 회전, 확대, 축소 애니메이션
 const complexAnimation = keyframes`
   0% { transform: rotate(0deg) scale(1); }
   25% { transform: rotate(45deg) scale(1); }
@@ -174,6 +173,7 @@ export default function Component() {
         const existingContents = JSON.parse(localStorage.getItem('savedContents')) || [];
         existingContents.push({ title, content });
         localStorage.setItem('savedContents', JSON.stringify(existingContents));
+
         alert('저장되었습니다.');
         setShowModal(false);
         navigate('/myask');
@@ -187,13 +187,40 @@ export default function Component() {
         setTitle(e.target.value);
     }
 
+    const handleApiSave = () => {
+        const serverIp = process.env.REACT_APP_SERVER_IP;
+        const docId = localStorage.getItem('doc_id'); // 서버에서 doc_id 받아오는 걸로 바꾸기
+
+        if (!docId) {
+            alert('doc_id가 없습니다. 다시 시도해 주세요.');
+            return;
+        }
+
+        console.log('요창된 데이터는', { doc_id: docId, document_name: title, content: content });
+
+        axios.post(`${serverIp}/save_doc_output`, null, {
+            params: {
+                doc_id: docId,
+                document_name: title,
+                content: encodeURIComponent(content)
+            }
+        })
+            .then(response => {
+                console.log('API 응답은?', response.data);
+                handleSaveContent();
+            })
+            .catch(error => {
+                console.error('Error:', error.response ? error.response.data : error.message);
+            });
+    }
+
     return (
         <ContainerCenter>
             <PageContainer>
 
                 <CustomCenter>
                     <CustomFont color='#8CC63F' font='2rem' fontWeight='bold'>
-                        Boo가 생성한 모집/채용공고가 도착했습니다!
+                        Boo가 생성한 모집/공고문이 도착했습니다!
                     </CustomFont>
                 </CustomCenter>
 
@@ -233,7 +260,7 @@ export default function Component() {
                             <CustomFont color='black' font='1rem'>문서를 저장할 제목을 입력해주세요.</CustomFont>
                             <InputForm value={title} onChange={handleTitleChange} />
                             <CustomRow width='100%' alignItems='center' justifyContent='center' gap='1rem'>
-                                <ConfirmButton onClick={handleSaveContent} disabled={!title.trim()}>확인</ConfirmButton>
+                                <ConfirmButton onClick={handleApiSave} disabled={!title.trim()}>확인</ConfirmButton>
                                 <CancelButton onClick={() => setShowModal(false)}>취소</CancelButton>
                             </CustomRow>
                         </CustomColumn>

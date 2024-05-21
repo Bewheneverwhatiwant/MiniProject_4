@@ -6,6 +6,7 @@ import CustomFont from "../../../../Components/Container/CustomFont";
 import CustomRow from "../../../../Components/Container/CustomRow";
 import StyledImg from "../../../../Components/Container/StyledImg";
 import CustomCenter from '../../../../Components/Container/CustomCenter';
+import axios from 'axios';
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -170,10 +171,39 @@ export default function Component() {
         navigate('/paper_hire');
     }
 
+    const handleApiSave = () => {
+        const serverIp = process.env.REACT_APP_SERVER_IP;
+        const docId = localStorage.getItem('doc_id'); // 서버에서 doc_id 받아오는 걸로 바꾸기
+
+        if (!docId) {
+            alert('doc_id가 없습니다. 다시 시도해 주세요.');
+            return;
+        }
+
+        console.log('요창된 데이터는', { doc_id: docId, document_name: title, content: content });
+
+        axios.post(`${serverIp}/save_doc_output`, null, {
+            params: {
+                doc_id: docId,
+                document_name: title,
+                content: encodeURIComponent(content) // 여기서 encode 처리 안해주면 400 bad req 오류남
+                // content: ""
+            }
+        })
+            .then(response => {
+                console.log('API 응답은?', response.data);
+                handleSaveContent();
+            })
+            .catch(error => {
+                console.error('Error:', error.response ? error.response.data : error.message);
+            });
+    }
+
     const handleSaveContent = () => {
         const existingContents = JSON.parse(localStorage.getItem('savedContents')) || [];
         existingContents.push({ title, content });
         localStorage.setItem('savedContents', JSON.stringify(existingContents));
+
         alert('저장되었습니다.');
         setShowModal(false);
         navigate('/myask');
@@ -233,7 +263,7 @@ export default function Component() {
                             <CustomFont color='black' font='1rem'>문서를 저장할 제목을 입력해주세요.</CustomFont>
                             <InputForm value={title} onChange={handleTitleChange} />
                             <CustomRow width='100%' alignItems='center' justifyContent='center' gap='1rem'>
-                                <ConfirmButton onClick={handleSaveContent} disabled={!title.trim()}>확인</ConfirmButton>
+                                <ConfirmButton onClick={handleApiSave} disabled={!title.trim()}>확인</ConfirmButton>
                                 <CancelButton onClick={() => setShowModal(false)}>취소</CancelButton>
                             </CustomRow>
                         </CustomColumn>

@@ -171,15 +171,6 @@ export default function Component() {
         navigate('/paper_hire');
     }
 
-    const handleSaveContent = () => {
-        const existingContents = JSON.parse(localStorage.getItem('savedContents')) || [];
-        existingContents.push({ title, content });
-        localStorage.setItem('savedContents', JSON.stringify(existingContents));
-        alert('저장되었습니다.');
-        setShowModal(false);
-        navigate('/myask');
-    };
-
     const showModalSaveContent = () => {
         setShowModal(true);
     }
@@ -197,21 +188,34 @@ export default function Component() {
             return;
         }
 
+        console.log('요창된 데이터는', { doc_id: docId, document_name: title, content: content });
+
         axios.post(`${serverIp}/save_doc_output`, null, {
             params: {
                 doc_id: docId,
                 document_name: title,
-                content: content
+                content: encodeURIComponent(content) // 여기서 encode 처리 안해주면 400 bad req 오류남
+                // content: ""
             }
         })
             .then(response => {
-                console.log('API Response:', response.data);
+                console.log('API 응답은?', response.data);
                 handleSaveContent();
             })
             .catch(error => {
                 console.error('Error:', error.response ? error.response.data : error.message);
             });
     }
+
+    const handleSaveContent = () => {
+        const existingContents = JSON.parse(localStorage.getItem('savedContents')) || [];
+        existingContents.push({ title, content });
+        localStorage.setItem('savedContents', JSON.stringify(existingContents));
+
+        alert('저장되었습니다.');
+        setShowModal(false);
+        navigate('/myask');
+    };
 
     return (
         <ContainerCenter>
