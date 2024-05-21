@@ -7,6 +7,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../../../AuthContext';
 import { useNavigate } from 'react-router-dom';
+import CardCarousel from './CardCarousel';
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -39,8 +40,8 @@ const BuyModal = styled.div`
     position: fixed;
     top: 50%;
     left: 50%;
-    width: 50vh;
-    height: 30vh;
+    width: 60%;
+    height: 60vh;
     transform: translate(-50%, -50%);
     background-color: white;
     padding: 20px;
@@ -245,7 +246,8 @@ export default function Component() {
 
                                     <CustomFont font='1rem' color='black'>결제 수단을 선택해주세요.</CustomFont>
 
-                                    <StyledImg src={'icon_card_ex.png'} width='150px' height='70px' />
+                                    {/* <StyledImg src={'icon_card_ex1.png'} width='150px' height='70px' /> */}
+                                    <CardCarousel />
                                     <CustomRow width='80%' alignItems='center' justifyContent='space-between'>
                                         <RealBuyButton onClick={RealBuyTrue}>확인</RealBuyButton>
                                         <RealBuyButton onClick={BuyFalse}>취소</RealBuyButton>
