@@ -20,7 +20,7 @@ const PageContainer = styled(ContainerCenter)`
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   padding-top: 8vh;
   padding-bottom: 5vh;
   gap: 20px;
@@ -40,7 +40,7 @@ const BuyModal = styled.div`
     top: 50%;
     left: 50%;
     width: 50vh;
-    height: 50vh;
+    height: 30vh;
     transform: translate(-50%, -50%);
     background-color: white;
     padding: 20px;
@@ -59,7 +59,47 @@ align-items: center;
 justify-content: center;
 `;
 
+const TicketDiv = styled.div`
+display: flex;
+flex-direction: row;
+align-items: center;
+justify-content: space-between;
+border-radius: 20px;
+background-color: rgba(193, 238, 165, 0.5);
+border: none;
+width: 100%;
+height: 100px;
+`;
+
+const PM = styled.button`
+display: flex;
+justify-content: center;
+align-items: center;
+border: none;
+background-color: white;
+border-radius: 10px;
+width: 40px;
+height: 40px;
+color: #8CC63F;
+`;
+
 export default function Component() {
+    const [ticketCount, setTicketCount] = useState(1); // 초기값 및 최소값 1
+    const [totalPrice, setTotalPrice] = useState(500); // 초기 총 가격 500원
+
+    useEffect(() => {
+        setTotalPrice(ticketCount * 500); // ticketCount가 변경될 때마다 총 가격을 업데이트
+    }, [ticketCount]);
+
+    const incrementCount = () => {
+        setTicketCount(ticketCount + 1);
+    };
+
+    const decrementCount = () => {
+        if (ticketCount > 1) {
+            setTicketCount(ticketCount - 1);
+        }
+    };
 
     // 매일 5번 무려 질문 가능한, 24시간 단위 갱신되는 티켓 개수
     const [remainingFreeQuestions, setRemainingFreeQuestions] = useState(null); // 초기값을 null로 설정
@@ -143,23 +183,55 @@ export default function Component() {
         <ContainerCenter>
             <PageContainer>
                 <CustomColumn width='80%' justifyContent='center' alignItems='center' gap='2rem'>
-                    <isBuying>
-                        <CustomColumn width='100%' justifyContent='center' alignItems='center' >
-                            <CustomRow width='80%' justifyContent='flex-start' alignItems='center'>
-                                <CustomFont font='1rem' color='black'>구매하실 티켓의 수량을 선택해주세요.</CustomFont>
+
+                    <CustomColumn width='100%' justifyContent='center' alignItems='center' >
+                        <CustomRow width='100%' justifyContent='flex-start' alignItems='center'>
+                            <CustomFont font='1.5rem' color='black'>구매하실 티켓의 수량을 선택해주세요.</CustomFont>
+                        </CustomRow>
+
+                        <TicketDiv>
+                            <CustomRow width='20%' alignItems='center' justifyContent='space-around'>
+                                <StyledImg src={'icon_ticket.png'} width='100px' height='60' />
+                                <CustomFont font='1rem' color='#8CC63F' fontWeight='bold'>유료티켓</CustomFont>
                             </CustomRow>
 
-                            <CustomRow width='80%' justifyContent='flex-start' alignItems='center'>
-                                <CustomFont font='1rem' color='black'>결제하실 가격을 확인해주세요.</CustomFont>
+                            <CustomRow width='20%' alignItems='center' justifyContent='space-around'>
+                                <PM onClick={decrementCount}>
+                                    <CustomFont color='#8CC63F' font='1rem' fontWeight='bold'>
+                                        -
+                                    </CustomFont>
+                                </PM>
+                                <CustomFont color='#8CC63F' font='1rem' fontWeight='bold'>{ticketCount}</CustomFont>
+                                <PM onClick={incrementCount}>
+                                    <CustomFont color='#8CC63F' font='1rem' fontWeight='bold'>
+                                        +
+                                    </CustomFont>
+                                </PM>
                             </CustomRow>
+                        </TicketDiv>
 
-                            <CustomRow width='80%' justifyContent='space-around' alignItems='center'>
-                                <RealBuyButton onClick={RealBuyTrue}>유료 티켓 결제하기</RealBuyButton>
-                                <RealBuyButton onClick={BuyFalse}>취소</RealBuyButton>
+                        <CustomRow width='100%' justifyContent='flex-start' alignItems='center'>
+                            <CustomFont font='1.5rem' color='black'>결제하실 가격을 확인해주세요.</CustomFont>
+                        </CustomRow>
+
+                        <TicketDiv>
+                            <CustomRow width='95%' alignItems='center' justifyContent='flex-end'>
+                                <CustomFont font='1rem' color='#8CC63F' fontWeight='bold'>
+                                    500원 X {ticketCount} = {totalPrice}원
+                                </CustomFont>
                             </CustomRow>
+                        </TicketDiv>
 
-                        </CustomColumn>
-                    </isBuying>
+                        <CustomRow width='80%' justifyContent='flex-end' alignItems='center' gap='0.5rem'>
+                            <RealBuyButton onClick={RealBuyTrue}>
+                                <CustomFont color='#8CC63F' font='1rem' fontWeight='bold'> 결제하기</CustomFont>
+                            </RealBuyButton>
+                            <RealBuyButton onClick={BuyFalse}>
+                                <CustomFont color='#8CC63F' font='1rem' fontWeight='bold'>취소</CustomFont>
+                            </RealBuyButton>
+                        </CustomRow>
+
+                    </CustomColumn>
 
                     {
                         isRealBuy && (
