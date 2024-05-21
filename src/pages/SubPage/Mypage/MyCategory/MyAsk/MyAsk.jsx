@@ -3,15 +3,8 @@ import styled from 'styled-components';
 import CustomColumn from '../../../../../Components/Container/CustomColumn';
 import CustomRow from '../../../../../Components/Container/CustomRow';
 import CustomFont from '../../../../../Components/Container/CustomFont';
-// import AskHire from './AskHire/AskHire';
-// import AskJob from './AskJob/AskJob';
-// import AskNotice from './AskNotice/AskNotice';
-// import AskLetter from './AskLetter/AskLetter';
-// import AskPoster from './AskPoster/AskPoster';
-// import AskSorry from './AskSorry/AskSorry';
-import AnswerContainer from './AnswerContainer'
-
-import data from '../../../../../data/MyAsk.json';
+import axios from 'axios';
+import { useAuth } from '../../../AuthContext';
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -64,9 +57,8 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-width: 55%;
-height: 50vh;
-
+  width: 55%;
+  height: 50vh;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -79,55 +71,64 @@ height: 50vh;
 `;
 
 const MyAnswerContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    background-color: #FFD7D7;
-    border: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  background-color: #FFD7D7;
+  border: none;
+  border-radius: 10px;
+  padding: 15px;
+  width: 100%;
+  height: 30%;
+  line-height: 1.5;
+  margin-top: 10px;
+  overflow-y: auto; // 스크롤 활성화
+  scrollbar-width: thin;
+  scrollbar-color: white #FFD7D7;
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #FFD7D7;
     border-radius: 10px;
-    padding: 15px;
-
-    width: 100%;
-    height: 30%;
-    
-    line-height: 1.5;
-    margin-top: 10px;
-
-    overflow-y: auto; // 스크롤 활성화
-    scrollbar-width: thin;
-    scrollbar-color: white #FFD7D7;
-
-    &::-webkit-scrollbar {
-        width: 10px;
-    }
-
-    &::-webkit-scrollbar-track {
-        background: #FFD7D7;
-        border-radius: 10px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        background-color: white;
-        border-radius: 10px;
-        border: 3px solid #FFD7D7;
-    }
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: white;
+    border-radius: 10px;
+    border: 3px solid #FFD7D7;
+  }
 `;
 
 export default function MyAsk() {
-  const [selectedCategory, setSelectedCategory] = useState('sorry');
-  const [filteredData, setFilteredData] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedItemIndex, setSelectedItemIndex] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState('sorry');
+  const [documents, setDocuments] = useState([]);
+  const [selectedDocument, setSelectedDocument] = useState(null);
+  const { isLoggedIn } = useAuth(); // 로그인 상태에서 사용자명을 가져옴
 
   useEffect(() => {
-    if (selectedCategory) {
-      const filtered = data.filter(item => item.category === selectedCategory);
-      setFilteredData(filtered);
+    if (isLoggedIn) {
+      fetchDocuments(selectedCategory);
     }
-  }, [selectedCategory]);
+  }, [selectedCategory, isLoggedIn]);
 
-  const openModal = index => {
-    setSelectedItemIndex(index);
+  const fetchDocuments = async (category) => {
+    const serverIp = process.env.REACT_APP_SERVER_IP;
+    try {
+      const response = await axios.get(`${serverIp}/category_documents`, {
+        params: {
+          user_name: isLoggedIn,
+          type: category
+        }
+      });
+      setDocuments(response.data);
+    } catch (error) {
+      console.error('Error fetching documents:', error);
+    }
+  };
+
+  const openModal = (document) => {
+    setSelectedDocument(document);
     setModalVisible(true);
   };
 
@@ -175,47 +176,31 @@ export default function MyAsk() {
           <DivideLine />
 
           <CustomColumn width='50%' height='100vh' justifyContent='center' alignItems='flex-start'>
-            {filteredData.map((item, index) => (
-              <AnswerContainer key={index} title={item.title} onClick={() => openModal(index)} />
+            {documents.map((doc, index) => (
+              <MyAnswerContainer key={index} onClick={() => openModal(doc)}>
+                <CustomFont color='#00000' font='1rem'>제목: {doc.name}</CustomFont>
+                <CustomFont color='#00000' font='1rem'>대상: {doc.target}</CustomFont>
+                <CustomFont color='#00000' font='1rem'>분량: {doc.amount}</CustomFont>
+                <CustomFont color='#00000' font='1rem'>내용: {doc.text}</CustomFont>
+              </MyAnswerContainer>
             ))}
           </CustomColumn>
         </CustomRow>
       </PageContainer>
 
-      <ModalOverlay show={modalVisible} onClick={closeModal}>
-        <ModalContent>
-          {selectedItemIndex !== null && (
-            <>
-              <CustomFont color='#00000' font='1.5rem'>나의 요청 사항</CustomFont>
-              <MyAnswerContainer>
-                <CustomFont color='#00000' font='1rem'>대상: {filteredData[selectedItemIndex].to}</CustomFont>
-                <CustomFont color='#00000' font='1rem'>분량: {filteredData[selectedItemIndex].amount}</CustomFont>
-                <CustomFont color='#00000' font='1rem'>사유: {filteredData[selectedItemIndex].reason}</CustomFont>
-                ..... 스크롤바 테스트를 위해 아무거나 추가...
-                <CustomFont color='#00000' font='1rem'>대상: {filteredData[selectedItemIndex].to}</CustomFont>
-                <CustomFont color='#00000' font='1rem'>분량: {filteredData[selectedItemIndex].amount}</CustomFont>
-                <CustomFont color='#00000' font='1rem'>사유: {filteredData[selectedItemIndex].reason}</CustomFont>
-                <CustomFont color='#00000' font='1rem'>대상: {filteredData[selectedItemIndex].to}</CustomFont>
-                <CustomFont color='#00000' font='1rem'>분량: {filteredData[selectedItemIndex].amount}</CustomFont>
-                <CustomFont color='#00000' font='1rem'>사유: {filteredData[selectedItemIndex].reason}</CustomFont>
-              </MyAnswerContainer>
-              <div style={{ marginBottom: '50px' }}></div>
-
-              <CustomFont color='#00000' font='1.5rem'>AI가 생성한 문서</CustomFont>
-              <MyAnswerContainer>
-                <CustomFont color="#000000" font='1rem'>문서 여기</CustomFont>
-                <CustomFont color="#000000" font='1rem'>문서 여기</CustomFont>
-                <CustomFont color="#000000" font='1rem'>문서 여기</CustomFont>
-                <CustomFont color="#000000" font='1rem'>문서 여기</CustomFont>
-                <CustomFont color="#000000" font='1rem'>문서 여기</CustomFont>
-                <CustomFont color="#000000" font='1rem'>문서 여기</CustomFont>
-              </MyAnswerContainer>
-
-
-            </>
-          )}
-        </ModalContent>
-      </ModalOverlay>
+      {selectedDocument && (
+        <ModalOverlay show={modalVisible} onClick={closeModal}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <CustomFont color='#000000' font='1.5rem'>문서 상세 정보</CustomFont>
+            <MyAnswerContainer>
+              <CustomFont color='#000000' font='1rem'>제목: {selectedDocument.name}</CustomFont>
+              <CustomFont color='#000000' font='1rem'>대상(target): {selectedDocument.target}</CustomFont>
+              <CustomFont color='#000000' font='1rem'>분량(amount): {selectedDocument.amount}</CustomFont>
+              <CustomFont color='#000000' font='1rem'>내용(text): {selectedDocument.text}</CustomFont>
+            </MyAnswerContainer>
+          </ModalContent>
+        </ModalOverlay>
+      )}
     </ContainerCenter>
   );
 }
