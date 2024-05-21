@@ -93,7 +93,7 @@ export default function Component() {
   const isPasswordsMatch = password === passwordConfirm;
   const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\W]).{6,9}$/;
   const isPasswordValid = passwordRegex.test(password);
-  const isFormFilled = userId && isValid && password && passwordConfirm && isPasswordsMatch && isPasswordValid && isCheck;
+  const isFormFilled = userId && isValid && password && passwordConfirm && isPasswordsMatch && isPasswordValid && isCheck && email;
 
   const navigate = useNavigate();
 
@@ -190,9 +190,10 @@ export default function Component() {
             <CustomColumn width='30%' justifyContent='center' alignItems='flex-start' gap='1rem'>
               <CustomRow width='30%' justifyContent='flex-start' alignItems='center' gap='0.5rem'>
                 <CustomFont color='black' font='1rem' fontWeight='bold'>이메일</CustomFont>
-                <CustomFont color='grey' font='1rem' fontWeight='bold'>(선택)</CustomFont>
+                <CustomFont color='red' font='1rem' fontWeight='bold'>*</CustomFont>
               </CustomRow>
               <InputForm placeholder='이메일 주소를 입력하세요.' value={email} onChange={e => setEmail(e.target.value)} />
+              {!email && <ErrorText>필수 필드입니다.</ErrorText>}
             </CustomColumn>
 
             {/* 개인정보 동의 */}

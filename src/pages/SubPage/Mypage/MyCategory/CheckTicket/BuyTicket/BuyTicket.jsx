@@ -115,9 +115,17 @@ export default function Component() {
         setIsBuying(false);
     }
 
+    const BuyTrue = () => {
+        setIsBuying(true);
+    }
+
     const RealBuyTrue = () => {
         setIsBuying(false);
         setIsRealBuy(true);
+    }
+
+    const RealBuyFalse = () => {
+        setIsRealBuy(false);
     }
 
     const finalBuy = () => {
@@ -222,16 +230,30 @@ export default function Component() {
                             </CustomRow>
                         </TicketDiv>
 
-                        <CustomRow width='80%' justifyContent='flex-end' alignItems='center' gap='0.5rem'>
-                            <RealBuyButton onClick={RealBuyTrue}>
+                        <CustomRow width='80%' justifyContent='flex-end' alignItems='center'>
+                            <RealBuyButton onClick={BuyTrue}>
                                 <CustomFont color='#8CC63F' font='1rem' fontWeight='bold'> 결제하기</CustomFont>
-                            </RealBuyButton>
-                            <RealBuyButton onClick={BuyFalse}>
-                                <CustomFont color='#8CC63F' font='1rem' fontWeight='bold'>취소</CustomFont>
                             </RealBuyButton>
                         </CustomRow>
 
                     </CustomColumn>
+
+                    {
+                        isBuying && (
+                            <BuyModal>
+                                <CustomColumn width='100%' justifyContent='center' alignItems='center'>
+
+                                    <CustomFont font='1rem' color='black'>결제 수단을 선택해주세요.</CustomFont>
+
+                                    <StyledImg src={'icon_card_ex.png'} width='150px' height='70px' />
+                                    <CustomRow width='80%' alignItems='center' justifyContent='space-between'>
+                                        <RealBuyButton onClick={RealBuyTrue}>확인</RealBuyButton>
+                                        <RealBuyButton onClick={BuyFalse}>취소</RealBuyButton>
+                                    </CustomRow>
+                                </CustomColumn>
+                            </BuyModal>
+                        )
+                    }
 
                     {
                         isRealBuy && (
