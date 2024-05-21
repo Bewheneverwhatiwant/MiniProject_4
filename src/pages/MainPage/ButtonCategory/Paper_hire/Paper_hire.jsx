@@ -8,6 +8,7 @@ import React, { useState, useEffect } from 'react';
 import OpenAI from "openai";
 import { useAuth } from '../../../SubPage/AuthContext';
 import axios from 'axios';
+import SoldOutFreeTicket from '../SoldOutFreeTicket';
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -40,24 +41,6 @@ const InputForm = styled.input`
 
   width: 100%;
   height: 2rem;
-  padding: 0.3rem;
-
-  &::placeholder {
-    color: #D9D9D9;
-  }
-
-  &:active {
-    outline: none;
-  }
-`;
-
-const TextareaForm = styled.textarea`
-  display: flex;
-  border: 1.5px solid #8CC63F;
-  background-color: transparent;
-  border-radius: 15px;
-  width: 100%;
-  height: 4rem;
   padding: 0.3rem;
 
   &::placeholder {
@@ -174,16 +157,6 @@ const ModalButton = styled.button`
   background-color: ${props => props.primary ? '#8CC63F' : '#D9D9D9'};
   color: white;
 `;
-
-const TicketAlertModal = ({ onConfirm, onCancel }) => (
-  <ModalOverlay>
-    <ModalContent>
-      <p>티켓이 부족합니다! 티켓 구매 화면으로 이동하시겠습니까?</p>
-      <ModalButton primary onClick={onConfirm}>확인</ModalButton>
-      <ModalButton onClick={onCancel}>취소</ModalButton>
-    </ModalContent>
-  </ModalOverlay>
-);
 
 export default function Component() {
   const [volume, setVolume] = useState('');
@@ -323,8 +296,9 @@ export default function Component() {
         params: { user_name: isLoggedIn }
       });
 
+      // '오늘의 무료 티켓을 전부 썼어요' 모달이 실행될 부분!
       if (todayFreeAskResponse.data < 1) {
-        alert('티켓이 부족합니다!');
+        setShowTicketAlert(true); // 상태를 true로 설정하여 모달이 보이도록 함
         return;
       }
 
@@ -333,15 +307,6 @@ export default function Component() {
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error.message);
     }
-  };
-
-  const handleTicketAlertConfirm = () => {
-    setShowTicketAlert(false);
-    navigate('/buypage');
-  };
-
-  const handleTicketAlertCancel = () => {
-    setShowTicketAlert(false);
   };
 
   const handleCancel = () => {
@@ -437,10 +402,7 @@ export default function Component() {
           )}
 
           {showTicketAlert && (
-            <TicketAlertModal
-              onConfirm={handleTicketAlertConfirm}
-              onCancel={handleTicketAlertCancel}
-            />
+            <SoldOutFreeTicket onClose={() => setShowTicketAlert(false)} />
           )}
 
           {isLoading &&

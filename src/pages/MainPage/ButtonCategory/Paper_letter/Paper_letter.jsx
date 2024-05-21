@@ -8,6 +8,7 @@ import React, { useState, useEffect } from 'react';
 import OpenAI from "openai";
 import { useAuth } from '../../../SubPage/AuthContext';
 import axios from 'axios';
+import SoldOutFreeTicket from '../SoldOutFreeTicket';
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -175,16 +176,6 @@ const ModalButton = styled.button`
   color: white;
 `;
 
-const TicketAlertModal = ({ onConfirm, onCancel }) => (
-  <ModalOverlay>
-    <ModalContent>
-      <p>티켓이 부족합니다! 티켓 구매 화면으로 이동하시겠습니까?</p>
-      <ModalButton primary onClick={onConfirm}>확인</ModalButton>
-      <ModalButton onClick={onCancel}>취소</ModalButton>
-    </ModalContent>
-  </ModalOverlay>
-);
-
 export default function Component() {
   const [volume, setVolume] = useState('');
   const [reason, setReason] = useState('');
@@ -322,7 +313,7 @@ export default function Component() {
       });
 
       if (todayFreeAskResponse.data < 1) {
-        alert('티켓이 부족합니다!');
+        setShowTicketAlert(true);
         return;
       }
 
@@ -421,10 +412,7 @@ export default function Component() {
           )}
 
           {showTicketAlert && (
-            <TicketAlertModal
-              onConfirm={handleTicketAlertConfirm}
-              onCancel={handleTicketAlertCancel}
-            />
+            <SoldOutFreeTicket onClose={() => setShowTicketAlert(false)} />
           )}
 
           {isLoading &&

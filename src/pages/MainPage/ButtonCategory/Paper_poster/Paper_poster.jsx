@@ -8,6 +8,7 @@ import React, { useState, useEffect } from 'react';
 import OpenAI from "openai";
 import { useAuth } from '../../../SubPage/AuthContext';
 import axios from 'axios';
+import SoldOutFreeTicket from '../SoldOutFreeTicket';
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -317,7 +318,7 @@ export default function Component() {
       });
 
       if (todayFreeAskResponse.data < 1) {
-        alert('티켓이 부족합니다!');
+        setShowTicketAlert(true);
         return;
       }
 
@@ -395,10 +396,7 @@ export default function Component() {
           )}
 
           {showTicketAlert && (
-            <TicketAlertModal
-              onConfirm={handleTicketAlertConfirm}
-              onCancel={handleTicketAlertCancel}
-            />
+            <SoldOutFreeTicket onClose={() => setShowTicketAlert(false)} />
           )}
 
           {isLoading &&

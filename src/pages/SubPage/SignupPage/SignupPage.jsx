@@ -124,7 +124,7 @@ export default function Component() {
           username: userId,
           password: password,
           email: email,
-          free_tickets: 0,
+          free_tickets: 3,
           paid_tickets: 0,
           nick_name: userId,
         });
