@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import CustomColumn from '../../../Components/Container/CustomColumn';
@@ -6,6 +6,7 @@ import CustomRow from '../../../Components/Container/CustomRow';
 import StyledImg from '../../../Components/Container/StyledImg';
 import CustomFont from '../../../Components/Container/CustomFont';
 import axios from 'axios';
+import SignUpModal from './SignUpModal';
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -95,6 +96,9 @@ export default function Component() {
   const isPasswordValid = passwordRegex.test(password);
   const isFormFilled = userId && isValid && password && passwordConfirm && isPasswordsMatch && isPasswordValid && isCheck && email;
 
+  const [showTicketAlert, setShowTicketAlert] = useState(false);
+  const [username, setUsername] = useState('');
+
   const navigate = useNavigate();
 
   const handleIdCheck = async () => {
@@ -129,14 +133,24 @@ export default function Component() {
           nick_name: userId,
         });
         console.log(response);
-        alert('회원가입에 성공했습니다. 로그인 화면으로 이동합니다.');
-        navigate('/loginpage');
+        setUsername(userId);
+        setShowTicketAlert(true);
+        // navigate('/loginpage');
       } catch (error) {
         console.error(error);
         alert('회원가입에 실패했습니다.');
       }
     }
   };
+
+  useEffect(() => {
+    if (showTicketAlert) {
+      const timer = setTimeout(() => {
+        navigate('/loginpage');
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showTicketAlert, navigate]);
 
   return (
     <ContainerCenter>
@@ -206,6 +220,10 @@ export default function Component() {
             <SignupButton isActive={isFormFilled} onClick={handleSignup}>
               <CustomFont font='1rem' color='white' fontWeight='bold'>회원가입 하기</CustomFont>
             </SignupButton>
+
+            {showTicketAlert && (
+              <SignUpModal username={username} />
+            )}
           </CustomColumn>
         </CustomColumn>
       </PageContainer>
