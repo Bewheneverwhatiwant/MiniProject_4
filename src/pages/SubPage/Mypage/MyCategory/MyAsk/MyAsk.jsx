@@ -5,13 +5,14 @@ import CustomRow from '../../../../../Components/Container/CustomRow';
 import CustomFont from '../../../../../Components/Container/CustomFont';
 import axios from 'axios';
 import { useAuth } from '../../../AuthContext';
+import CustomCenter from '../../../../../Components/Container/CustomCenter';
 
 const ContainerCenter = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  width: 50%;
+  width: 100%;
   min-height: 100vh;
 `;
 
@@ -79,7 +80,7 @@ const MyAnswerContainer = styled.div`
   border-radius: 10px;
   padding: 15px;
   width: 100%;
-  height: 30%;
+  max-height: 20%;
   line-height: 1.5;
   margin-top: 10px;
   overflow-y: auto; // 스크롤 활성화
@@ -139,8 +140,9 @@ export default function MyAsk() {
   return (
     <ContainerCenter>
       <PageContainer>
-        <CustomRow width='100%' justifyContent='space-between' alignItems='center' gap='0.1rem'>
-          <CustomColumn width='50%' justifyContent='center' alignItems='center' gap='1rem'>
+        <CustomRow width='100%' justifyContent='center' alignItems='center' gap='0.1rem'>
+
+          <CustomColumn width='30%' justifyContent='center' alignItems='center' gap='1rem'>
             <CategoryButton onClick={() => setSelectedCategory('sorry')}>
               <CustomFont color={selectedCategory === 'sorry' ? '#FF9292' : 'black'} fontWeight='bold' font='1.5rem'>
                 사과문
@@ -175,19 +177,31 @@ export default function MyAsk() {
 
           <DivideLine />
 
-          <CustomColumn width='50%' height='100vh' justifyContent='center' alignItems='flex-start'>
-            {documents.map((doc, index) => (
-              <MyAnswerContainer key={index} onClick={() => openModal(doc)}>
-                <CustomFont color='#00000' font='1rem'>제목: {doc.name}</CustomFont>
-                <CustomFont color='#00000' font='1rem'>대상: {doc.target}</CustomFont>
-                <CustomFont color='#00000' font='1rem'>분량: {doc.amount}</CustomFont>
-                <CustomFont color='#00000' font='1rem'>내용: {doc.text}</CustomFont>
-              </MyAnswerContainer>
-            ))}
+          {/* title민 보이도록 수정하기 */}
+          <CustomColumn width='50%' height='100vh' justifyContent='flex-start' alignItems='flex-start'>
+            {documents.length > 0 ? (
+              documents.map((doc, index) => (
+                <MyAnswerContainer key={index} onClick={() => openModal(doc)}>
+                  <CustomFont color='#00000' font='1rem'>제목: {doc.name}</CustomFont>
+                  <CustomFont color='#00000' font='1rem'>대상: {doc.target}</CustomFont>
+                  <CustomFont color='#00000' font='1rem'>분량: {doc.amount}</CustomFont>
+                  <CustomFont color='#00000' font='1rem'>내용: {doc.text}</CustomFont>
+                </MyAnswerContainer>
+              ))
+            ) : (
+              <CustomFont color='#00000' font='1.5rem'>
+                <CustomCenter width='100%' height='100vh'>
+                  <CustomFont font='2rem' color='#D9D9D9' fontWeight='bold'>
+                    아직 이 카테고리의 문서를 생성하지 않았어요.
+                  </CustomFont>
+                </CustomCenter>
+              </CustomFont>
+            )}
           </CustomColumn>
         </CustomRow>
       </PageContainer>
 
+      {/* title, content도 상세 정보 아래에 추가하기 */}
       {selectedDocument && (
         <ModalOverlay show={modalVisible} onClick={closeModal}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
