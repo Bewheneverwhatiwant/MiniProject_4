@@ -4,6 +4,8 @@ import CustomColumn from '../Container/CustomColumn';
 import { useAuth } from '../../pages/SubPage/AuthContext';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import CustomFont from '../Container/CustomFont';
+import CustomRow from '../Container/CustomRow';
 
 const FooterContainer = styled.footer`
   display: flex;
@@ -50,16 +52,16 @@ const ModalContainer = styled.div`
   position: fixed;
   top: 50%;
   left: 50%;
-  width: 40%;
-  height: 30%;
+  width: 50%;
+  height: 50%;
   transform: translate(-50%, -50%);
   background-color: #fff;
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 40px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   z-index: 1001;
   background-image: url('Modal_img_3.png');
-  background-size: cover;
+  background-size: 100% 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -151,11 +153,28 @@ export default function Component() {
                 <ModalOverlay>
                     <ModalContainer>
                         <ModalContent>
-                            <p>{userData.username}님, 정말 탈퇴하시겠습니까?</p>
-                            <div>
-                                <ModalButton primary onClick={handleDeleteAccount}>탈퇴하기</ModalButton>
-                                <ModalButton onClick={closeModal}>취소</ModalButton>
-                            </div>
+                            <CustomColumn width='100%' alignItems='center' justifyContent='center' gap='3rem'>
+                                <CustomRow width='100%' alignItems='center' justifyContent='flex-end'>
+                                    <CustomFont color='white' fontWeight='bold' font='1.5rem'>{userData.username}님, 꼭 다시 만나요...!</CustomFont>
+                                </CustomRow>
+
+                                <CustomRow width='100%' alignItems='center' justifyContent='flex-end'>
+
+                                    <CustomColumn width='100%' alignItems='center' justifyContent='flex-end'>
+
+                                        <CustomColumn width='100%' alignItems='center' justifyContent='flex-end' gap='0.2rem'>
+                                            <CustomFont font='1rem' color='#8CC63F'>Boo가 {userData.username}님을 기다릴게요.</CustomFont>
+                                            <CustomFont font='1rem' color='#8CC63F'>정말 탈퇴하시겠습니까?</CustomFont>
+                                        </CustomColumn>
+
+                                        <CustomRow width='100%' justifyContent='space-around'>
+                                            <ModalButton primary onClick={handleDeleteAccount}>탈퇴하기</ModalButton>
+                                            <ModalButton onClick={closeModal}>취소</ModalButton>
+                                        </CustomRow>
+
+                                    </CustomColumn>
+                                </CustomRow>
+                            </CustomColumn>
                         </ModalContent>
                     </ModalContainer>
                 </ModalOverlay>
