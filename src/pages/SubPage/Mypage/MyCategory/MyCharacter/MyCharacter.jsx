@@ -45,7 +45,19 @@ export default function Component() {
   return (
     <ContainerCenter>
       <PageContainer>
-        <CustomFont color='black' fontWeight='bold' font='1.5rem'>추후 개발 예정</CustomFont>
+        <CustomFont color='black' fontWeight='bold' font='1.5rem'>나중에 만나요</CustomFont>
+
+        <CustomRow width='80%' alignItems='flex-end' justifyContent='flex-start' gap='100px'>
+
+          <CustomColumn width='60%'>
+          <CustomFont color='black'>abc</CustomFont>
+          <CustomFont color='black'>abc</CustomFont>
+          <CustomFont color='black'>abc</CustomFont>
+          </CustomColumn>
+
+          <StyledImg src={'ex_img.png'} width='100px' height='100px' borderRadius='20%' />
+        </CustomRow>
+
       </PageContainer>
     </ContainerCenter>
   );
