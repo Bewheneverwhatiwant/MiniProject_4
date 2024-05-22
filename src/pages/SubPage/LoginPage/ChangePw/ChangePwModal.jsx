@@ -1,12 +1,13 @@
-import styled, { keyframes } from 'styled-components';
-import CustomColumn from '../../../../../Components/Container/CustomColumn';
-import CustomFont from '../../../../../Components/Container/CustomFont';
-import CustomRow from '../../../../../Components/Container/CustomRow';
-import StyledImg from '../../../../../Components/Container/StyledImg';
+import styled from 'styled-components';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import ChangePwdModal_New from './ChangePwdModal_New';
+
+import CustomColumn from '../../../../Components/Container/CustomColumn';
+import CustomFont from '../../../../Components/Container/CustomFont';
+import CustomRow from '../../../../Components/Container/CustomRow';
+import StyledImg from '../../../../Components/Container/StyledImg';
+import ChangePwModal_new from './ChangePwModal_new';
 
 // 로그인 한 상태에서도 비번을 바꿀 수 있고, 로그인 전 상태에서도 비번을 (까먹어서 새로) 바꾸고 싶을 수 있으므로 이 파일 유지
 
@@ -156,7 +157,7 @@ export default function SignUpModal() {
 
                         {
                             click &&
-                            <ChangePwdModal_New />
+                            <ChangePwModal_new />
                         }
                     </CustomRow>
                 </ModalContent>

@@ -1,8 +1,9 @@
 import styled, { keyframes } from 'styled-components';
-import CustomRow from '../../../Components/Container/CustomRow';
-import CustomColumn from '../../../Components/Container/CustomColumn';
-import React from 'react';
-import CustomFont from '../../../Components/Container/CustomFont';
+import React, { useEffect } from 'react';
+
+import CustomColumn from '../../../../Components/Container/CustomColumn';
+import CustomRow from '../../../../Components/Container/CustomRow';
+import CustomFont from '../../../../Components/Container/CustomFont';
 
 const BuyModal = styled.div`
   position: fixed;
@@ -18,7 +19,7 @@ const BuyModal = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1001; /* Modal이 항상 위에 오도록 설정 */
+  z-index: 1001;
   background-image: url('Modal_img_2.png');
   background-size: 100% 100%;
 `;
@@ -33,7 +34,7 @@ const ModalOverlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; /* ModalOverlay가 BuyModal의 바로 아래에 오도록 설정 */
+  z-index: 1000;
 `;
 
 const ModalContent = styled.div`
@@ -75,7 +76,7 @@ const expandAndFadeOut = keyframes`
 
 const OverlayContainer = styled.div`
   position: relative;
-  width: 250px; /* 기준이 되는 크기 */
+  width: 250px;
   height: 250px;
   display: flex;
   align-items: center;
@@ -100,25 +101,33 @@ const ExpandingImg = styled.img`
   animation: ${expandAndFadeOut} 1.5s forwards;
 `;
 
-export default function SignUpModal({ username }) {
-    return (
-        <ModalOverlay>
-            <BuyModal onClick={(e) => e.stopPropagation()}>
-                <ModalContent>
-                    <CustomColumn width='100%' alignItems='center' justifyContents='center' gap='2rem'>
-                        <CustomColumn gap='0.5rem'>
-                            <CustomFont color='black' font='1.5rem' fontWeight='bold'>{username}님 환영합니다!</CustomFont>
-                            <CustomFont color='#BAD234' font='1rem' fontWeight='bold'>로그인 화면으로 이동할게요.</CustomFont>
-                        </CustomColumn>
-                        <CustomRow width='100%' alignItems='center' justifyContents='center' gap='8rem'>
-                            <OverlayContainer>
-                                <BouncingImg src={'icon_Boo_Loved.png'} />
-                                <ExpandingImg src={'icon_greenHeart.png'} />
-                            </OverlayContainer>
-                        </CustomRow>
-                    </CustomColumn>
-                </ModalContent>
-            </BuyModal>
-        </ModalOverlay>
-    );
+export default function SignUpModal_happy({ username, onClose }) {
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onClose();
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  return (
+    <ModalOverlay>
+      <BuyModal onClick={(e) => e.stopPropagation()}>
+        <ModalContent>
+          <CustomColumn width='100%' alignItems='center' justifyContents='center' gap='2rem'>
+            <CustomColumn gap='0.5rem'>
+              <CustomFont color='black' font='1.5rem' fontWeight='bold'>{username}님 환영합니다!</CustomFont>
+              <CustomFont color='#BAD234' font='1rem' fontWeight='bold'>로그인 화면으로 이동할게요.</CustomFont>
+            </CustomColumn>
+            <CustomRow width='100%' alignItems='center' justifyContents='center' gap='8rem'>
+              <OverlayContainer>
+                <BouncingImg src={'icon_Boo_Loved.png'} />
+                <ExpandingImg src={'icon_greenHeart.png'} />
+              </OverlayContainer>
+            </CustomRow>
+          </CustomColumn>
+        </ModalContent>
+      </BuyModal>
+    </ModalOverlay>
+  );
 };

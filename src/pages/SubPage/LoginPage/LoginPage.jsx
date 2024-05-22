@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import axios from 'axios';
+
 import CustomColumn from '../../../Components/Container/CustomColumn';
 import CustomRow from '../../../Components/Container/CustomRow';
 import StyledImg from '../../../Components/Container/StyledImg';
 import CustomFont from '../../../Components/Container/CustomFont';
 import { useAuth } from '../AuthContext';
-import axios from 'axios';
-import ChangeRwdModal from '../Mypage/MyCategory/Modify/ChangePwdModal';
-import FindIdModal from '../LoginPage/FindIdModal';
+
+import FindIdModal from './FindIdModal';
+import ChangePwModal from './ChangePw/ChangePwModal';
+import SignUpModal from './SignUp/SignUpModal';
+import SignUpModal_happy from './SignUp/SignUpModal_happy';
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -29,6 +33,8 @@ const PageContainer = styled(ContainerCenter)`
   gap: 20px;
   position: relative;
   background-color: white;
+  background-image: url('MainImg.png');
+  background-size: 100% 100%;
 `;
 
 const InputForm = styled.input`
@@ -58,7 +64,7 @@ padding: 1rem;
 color: white;
 border: none;
 border-radius: 20px;
-background-color: ${props => props.isActive ? '#8CC63F' : '#D9D9D9'};
+background-color: ${props => props.isActive ? '#585858' : '#D9D9D9'};
 cursor: ${props => props.isActive ? 'pointer' : 'not-allowed'};
 pointer-events: ${props => props.isActive ? 'auto' : 'none'};
 `;
@@ -75,17 +81,26 @@ cursor: pointer;
 text-decoration: underline;
 `;
 
+// 피그마대로 수정 진행 중
+
 export default function Component() {
 
+  // 입력 필드 유효성 검사를 위한 상태
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const isFormFilled = userId && password;
-  const [changepw, setChangepw] = useState('');
-  const [findid, setFindid] = useState('');
+
+  // 모달 제어를 위한 상태
+  const [changepw, setChangepw] = useState(false); // 비번 변경 모달
+  const [findid, setFindid] = useState(false); // 아이디 찾기 모달
+  const [signup, setSignup] = useState(false); // 회원가입 모달
+  const [showTicketAlert, setShowTicketAlert] = useState(false);
+  const [username, setUsername] = useState('');
 
   const navigate = useNavigate();
   const { login } = useAuth();
 
+  // 로그인 API 연동
   const handleLogin = async () => {
     if (isFormFilled) {
       try {
@@ -98,7 +113,7 @@ export default function Component() {
         console.log(response);
         alert('로그인에 성공하였습니다!');
         login(userId); // 로그인 상태 업데이트
-        navigate('/');
+        navigate('/mainpage');
       } catch (error) {
         console.error(error);
         alert('로그인에 실패하였습니다.');
@@ -106,20 +121,34 @@ export default function Component() {
     }
   }
 
-  const MoveSignup = () => {
-    navigate('/signuppage');
-  }
-
+  // 비번 변경 모달 띄우기
   const ChangePW = () => {
     setChangepw(true);
   }
 
+  // 아이디 찾기 모달 띄우기
   const Findid = () => {
     setFindid(true);
   }
 
+  // 아이디 찾기 모달 닫기
   const handleClose = () => {
     setFindid(false);
+  };
+
+  // 회원가입 모달 띄우기
+  const SignUp = () => {
+    setSignup(true);
+  }
+
+  const closeModals = () => {
+    setSignup(false);
+    setShowTicketAlert(false);
+  }
+
+  const handleShowTicketAlert = (username) => {
+    setUsername(username);
+    setShowTicketAlert(true);
   };
 
   return (
@@ -132,6 +161,11 @@ export default function Component() {
             <StyledImg src={'icon_boo_big.png'} />
             <StyledImg src={'icon_boo_middle.png'} />
           </CustomRow>
+
+          <CustomColumn width='100%' alignItems='center' justifyContent='center' gap='0.6rem'>
+            <CustomFont color='black' font='1.2rem' fontWeight='bold'>문서 작성이 어려운 당신을 위한</CustomFont>
+            <CustomFont color='black' font='3rem' fontWeight='bold'>내 문서를 부탁해</CustomFont>
+          </CustomColumn>
 
           <CustomColumn width='100%' justifyContent='center' alignItems='center' gap='2rem'>
             <CustomColumn width='30%' justifyContent='center' alignItems='flex-start' gap='1rem'>
@@ -151,18 +185,15 @@ export default function Component() {
             <CustomRow width='50%' justifyContent='center' alignItems='space-around' gap='5rem'>
               <MiniButton onClick={Findid}>아이디 찾기</MiniButton>
               <MiniButton onClick={ChangePW}>비밀번호 변경하기</MiniButton>
-              <MiniButton onClick={MoveSignup}>회원가입</MiniButton>
+              <MiniButton onClick={SignUp}>회원가입</MiniButton>
             </CustomRow>
           </CustomColumn>
         </CustomColumn>
 
-        {
-          changepw && <ChangeRwdModal />
-        }
-
-        {
-          findid && <FindIdModal onClose={handleClose} />
-        }
+        {changepw && <ChangePwModal />}
+        {findid && <FindIdModal onClose={handleClose} />}
+        {signup && <SignUpModal onClose={() => setSignup(false)} onShowTicketAlert={handleShowTicketAlert} />}
+        {showTicketAlert && <SignUpModal_happy username={username} onClose={closeModals} />}
       </PageContainer>
     </ContainerCenter>
   );

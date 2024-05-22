@@ -19,6 +19,9 @@ import Paper_poster_reply from "./pages/MainPage/ButtonCategory/Paper_poster/Pap
 import Paper_sorry_reply from "./pages/MainPage/ButtonCategory/Paper_sorry/Paper_sorry_reply";
 import BuyTicket from "./pages/SubPage/Mypage/MyCategory/CheckTicket/BuyTicket/BuyTicket";
 
+// signuppage 경로 삭제해야함(Modal로 변경)
+// 로그인화면 -> 회원가입 클릭 시 모달 -> 가입 및 로그인 완료 후 메인페이지
+
 export default createBrowserRouter([
     {
         path: "/",
@@ -26,11 +29,11 @@ export default createBrowserRouter([
         children: [
             {
                 path: "",
-                element: <MainPage />
+                element: <LoginPage />
             },
             {
-                path: "/loginpage",
-                element: <LoginPage />
+                path: "/mainpage",
+                element: <MainPage />
             },
             {
                 path: "/signuppage",

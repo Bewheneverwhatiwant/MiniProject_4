@@ -6,7 +6,6 @@ import CustomRow from '../../../Components/Container/CustomRow';
 import StyledImg from '../../../Components/Container/StyledImg';
 import CustomFont from '../../../Components/Container/CustomFont';
 import axios from 'axios';
-import SignUpModal from './SignUpModal';
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -221,9 +220,9 @@ export default function Component() {
               <CustomFont font='1rem' color='white' fontWeight='bold'>회원가입 하기</CustomFont>
             </SignupButton>
 
-            {showTicketAlert && (
+            {/* {showTicketAlert && (
               <SignUpModal username={username} />
-            )}
+            )} */}
           </CustomColumn>
         </CustomColumn>
       </PageContainer>
