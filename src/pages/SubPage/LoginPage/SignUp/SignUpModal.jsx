@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import axios from 'axios';
 
 import CustomColumn from '../../../../Components/Container/CustomColumn';
@@ -67,15 +67,26 @@ const ImageWrapper = styled.div`
   position: relative;
   width: 60px;
   height: 60px;
-  margin-bottom: -32px; /* 이미지와 버튼이 겹치도록 음수 margin 추가 */
-  z-index: 10;
+  margin-bottom: -32px;
+`;
+
+const bounceAnimation = keyframes`
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 `;
 
 const OverlappingImage = styled(StyledImg)`
   position: absolute;
-  top: -20px; /* 이미지와 버튼이 겹치도록 음수 top 값 설정 */
+  top: -20px;
   left: 50%;
   transform: translateX(-50%);
+  ${props => props.isValid && css`
+    animation: ${bounceAnimation} 0.5s ease-in-out infinite;
+  `}
 `;
 
 export default function Component({ onClose, onShowTicketAlert }) {
@@ -168,9 +179,9 @@ export default function Component({ onClose, onShowTicketAlert }) {
                             {!userId && <ErrorText>필수 필드입니다.</ErrorText>}
                         </CustomColumn>
 
-                        <CustomColumn width='30%' alignItems='center' justifyContent='center' gap='0px'>
+                        <CustomColumn width='30%' alignItems='center' justifyContent='center' gap='1px'>
                             <ImageWrapper>
-                                <OverlappingImage src={'icon_boo_small.png'} width='60px' height='60px' />
+                                <OverlappingImage src={'icon_boo_small.png'} width='60px' height='60px' isValid={isValid} />
                             </ImageWrapper>
                             <IsValidButton isValid={isValid} onClick={handleIdCheck}>
                                 {isValid ? '사용 가능' : '중복검사'}
