@@ -7,6 +7,8 @@ import StyledImg from '../../../Components/Container/StyledImg';
 import CustomFont from '../../../Components/Container/CustomFont';
 import { useAuth } from '../AuthContext';
 import axios from 'axios';
+import ChangeRwdModal from '../Mypage/MyCategory/Modify/ChangePwdModal';
+import FindIdModal from '../LoginPage/FindIdModal';
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -78,6 +80,8 @@ export default function Component() {
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const isFormFilled = userId && password;
+  const [changepw, setChangepw] = useState('');
+  const [findid, setFindid] = useState('');
 
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -106,6 +110,18 @@ export default function Component() {
     navigate('/signuppage');
   }
 
+  const ChangePW = () => {
+    setChangepw(true);
+  }
+
+  const Findid = () => {
+    setFindid(true);
+  }
+
+  const handleClose = () => {
+    setFindid(false);
+  };
+
   return (
     <ContainerCenter>
       <PageContainer>
@@ -133,12 +149,20 @@ export default function Component() {
             </LoginButton>
 
             <CustomRow width='50%' justifyContent='center' alignItems='space-around' gap='5rem'>
-              <MiniButton>아이디 찾기</MiniButton>
-              <MiniButton>비밀번호 찾기</MiniButton>
+              <MiniButton onClick={Findid}>아이디 찾기</MiniButton>
+              <MiniButton onClick={ChangePW}>비밀번호 변경하기</MiniButton>
               <MiniButton onClick={MoveSignup}>회원가입</MiniButton>
             </CustomRow>
           </CustomColumn>
         </CustomColumn>
+
+        {
+          changepw && <ChangeRwdModal />
+        }
+
+        {
+          findid && <FindIdModal onClose={handleClose} />
+        }
       </PageContainer>
     </ContainerCenter>
   );
