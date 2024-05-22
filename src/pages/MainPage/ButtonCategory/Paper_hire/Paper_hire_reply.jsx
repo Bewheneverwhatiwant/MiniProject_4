@@ -195,7 +195,6 @@ export default function Component() {
     const navigate = useNavigate();
     const [title, setTitle] = useState('');
     const [showModal, setShowModal] = useState(false);
-    const [showComingsoon, setShowcomingsoon] = useState(false);
 
     useEffect(() => {
         const storedContent = localStorage.getItem('content');
@@ -212,6 +211,8 @@ export default function Component() {
     const BackToGen = () => {
         navigate('/paper_hire');
     }
+
+    const [showComingsoon, setShowcomingsoon] = useState(false);
 
     const Soon = () => {
         setShowcomingsoon(true);

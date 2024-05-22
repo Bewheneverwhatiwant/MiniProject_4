@@ -148,6 +148,49 @@ const AnimatedButton = styled.button`
   }
 `;
 
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Modal보다 낮은 레이어에 설정 */
+`;
+
+const Modal = styled.div`
+  position: relative;
+  width: 40%;
+  height: 50vh;
+  background-color: white;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001; /* Modal이 항상 위에 오도록 설정 */
+  background-image: url('Modal_ComingSoon.png');
+  background-size: 100% 100%;
+`;
+
+const ModalX = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  border-radius: 50px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+`;
+
 export default function Component() {
 
     const [content, setContent] = useState('');
@@ -169,6 +212,16 @@ export default function Component() {
 
     const BackToGen = () => {
         navigate('/paper_hire');
+    }
+
+    const [showComingsoon, setShowcomingsoon] = useState(false);
+
+    const Soon = () => {
+        setShowcomingsoon(true);
+    }
+
+    const SoonX = () => {
+        setShowcomingsoon(false);
     }
 
     const handleApiSave = () => {
@@ -253,9 +306,19 @@ export default function Component() {
                                 <CustomFont color="white" fontWeight='bold'>저장하기</CustomFont>
                             </Buttoms>
                         </CustomRow>
-                        <Buttoms width='620px'> <CustomFont color="white" fontWeight='bold'>카카오톡으로 공유하기</CustomFont></Buttoms>
+                        <Buttoms width='620px' onClick={Soon}> <CustomFont color="white" fontWeight='bold'>카카오톡으로 공유하기</CustomFont></Buttoms>
                     </CustomColumn>
                 )}
+
+                {
+                    showComingsoon && (
+                        <Overlay onClick={SoonX}>
+                            <Modal>
+                                <ModalX onClick={SoonX}>X</ModalX>
+                            </Modal>
+                        </Overlay>
+                    )
+                }
 
                 {showModal && (
                     <LoadingMessage>
