@@ -22,8 +22,8 @@ const Button = styled.button`
   color: black;
   align-items: center;
   justify-content: center;
-  border: 2px solid white;
-  border-radius: 30px;
+  border: 6px solid white;
+  border-radius: 70px;
   width: 20rem;
   height: 7rem;
   padding: 20px;
@@ -106,14 +106,38 @@ export default function Component() {
             <ButtonsContainer>
                 <CustomColumn width='100%' alignItems='center' justifyContents='center' gap='2rem'>
                     <CustomRow width='100%' alignItems='center' justifyContents='center' gap='2rem'>
-                        <Button backColor='#FFEBEB' onClick={() => checkLoginAndNavigate('/paper_sorry')}>사과문</Button>
-                        <Button backColor='#ECFFE0' onClick={() => checkLoginAndNavigate('/paper_notice')}>보고서</Button>
-                        <Button backColor='#FFF6E0' onClick={() => checkLoginAndNavigate('/paper_letter')}>편지</Button>
+                        <Button backColor='#F8F5E7' onClick={() => checkLoginAndNavigate('/paper_sorry')}>
+                            <CustomFont color='black' fontWeight='bold' font='1.6rem'>
+                                사과문
+                            </CustomFont>
+                        </Button>
+                        <Button backColor='#DBEBF2' onClick={() => checkLoginAndNavigate('/paper_notice')}>
+                            <CustomFont color='black' fontWeight='bold' font='1.6rem'>
+                                보고서/시말서
+                            </CustomFont>
+                        </Button>
+                        <Button backColor='#E5F1DC' onClick={() => checkLoginAndNavigate('/paper_letter')}>
+                            <CustomFont color='black' fontWeight='bold' font='1.6rem'>
+                                편지
+                            </CustomFont>
+                        </Button>
                     </CustomRow>
                     <CustomRow width='100%' alignItems='center' justifyContents='center' gap='2rem'>
-                        <Button backColor='#DFF2FF' onClick={() => checkLoginAndNavigate('/paper_poster')}>광고/포스터</Button>
-                        <Button backColor='#F4E5FF' onClick={() => checkLoginAndNavigate('/paper_job')}>이력서</Button>
-                        <Button backColor='#EBEBEB' onClick={() => checkLoginAndNavigate('/paper_hire')}>모집/채용공고</Button>
+                        <Button backColor='#DBEBF2' onClick={() => checkLoginAndNavigate('/paper_poster')}>
+                            <CustomFont color='black' fontWeight='bold' font='1.6rem'>
+                                광고/포스터
+                            </CustomFont>
+                        </Button>
+                        <Button backColor='#E5F1DC' onClick={() => checkLoginAndNavigate('/paper_job')}>
+                            <CustomFont color='black' fontWeight='bold' font='1.6rem'>
+                                이력서
+                            </CustomFont>
+                        </Button>
+                        <Button backColor='#F8F5E7' onClick={() => checkLoginAndNavigate('/paper_hire')}>
+                            <CustomFont color='black' fontWeight='bold' font='1.6rem'>
+                                모집/채용공고
+                            </CustomFont>
+                        </Button>
                     </CustomRow>
                 </CustomColumn>
             </ButtonsContainer>

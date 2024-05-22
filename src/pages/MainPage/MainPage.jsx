@@ -49,6 +49,7 @@ const Boo_says = styled.div`
   justify-content: center;
 `;
 
+// 일단 디자인 개편 완료했으나, 로그인 완료 후 header 상태까지 보고 수정 더 하기(backgroung img 길이 관련)
 
 export default function Component() {
   const [showBoo, setShowBoo] = useState(false);
@@ -102,13 +103,11 @@ export default function Component() {
             </CustomColumn>
           </CustomColumn>
 
-          <CustomColumn width='100%' alignItems='center' justifyContent='center' fontWeight='bold'>
-            <CustomFont fontWeight='bold' color='black' font='1rem'>문서 생성이 어려운 당신을 위한</CustomFont>
 
-            <CustomColumn justifyContent='center' alignItems='flex-start' gap='0.3rem'>
-              <CustomFont color='#C1EEA5' font='0.6rem' fontWeight='bold'>⚝ Boo 위에 마우스를 올려보세요.</CustomFont>
-              <CustomFont fontWeight='bold' color='#78AB34' font='3rem'>저는 AI 문서 생성 캐릭터 Boo예요!</CustomFont>
-            </CustomColumn>
+
+          <CustomColumn justifyContent='center' alignItems='flex-start' gap='0.3rem'>
+            <CustomFont color='#C1EEA5' font='0.6rem' fontWeight='bold'>⚝ Boo 위에 마우스를 올려보세요.</CustomFont>
+            <CustomFont fontWeight='bold' color='#78AB34' font='3rem'>저는 AI 문서 생성 캐릭터 Boo예요!</CustomFont>
           </CustomColumn>
 
           <ImgCarousel />

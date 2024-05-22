@@ -14,15 +14,9 @@ const FooterContainer = styled.footer`
   justify-content: center;
   width: 100%;
   height: 10vh;
-  background-color: #575757;
+  background: #5D5D5D;
   color: white;
   gap: 10px;
-`;
-
-const Detail = styled.a`
-  font-size: 10px;
-  font-family: 'RIDIBatang';
-  color: white;
 `;
 
 const Out = styled.button`
@@ -145,8 +139,8 @@ export default function Component() {
 
     return (
         <FooterContainer>
-            <CustomColumn width='100%' alignItems='center' gap='0.6rem'>
-                <Detail>내 문서를 부탁해</Detail>
+            <CustomColumn width='80%' alignItems='flex-start' gap='0.6rem'>
+                <CustomFont color='white' font='1rem' fontWeight='bold'>내 문서를 부탁해</CustomFont>
                 <Out onClick={checkLogin}>서비스 탈퇴</Out>
             </CustomColumn>
             {showModal && (
