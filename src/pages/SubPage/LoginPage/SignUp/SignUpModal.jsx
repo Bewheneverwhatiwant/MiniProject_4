@@ -54,7 +54,7 @@ const SignupButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  padding: 5px;
   color: white;
   border: none;
   border-radius: 20px;
@@ -133,7 +133,7 @@ export default function Component({ onClose, onShowTicketAlert }) {
     }, [showTicketAlert]);
 
     return (
-        <CustomModal width='30%' height='90vh' padding='20px' onClose={onClose}>
+        <CustomModal width='30%' height='90vh' padding='20px' onClose={onClose} maxHeight='100vh'>
             <CustomColumn width='100%' justifyContent='center' alignItems='center' gap='4rem'>
                 <CustomRow width='80%' justifyContent='flex-start' alignItems='center' gap='1rem'>
                     <CustomFont color='#8CC63F' font='2rem' fontWeight='bold'>내 문서를 부탁해</CustomFont>

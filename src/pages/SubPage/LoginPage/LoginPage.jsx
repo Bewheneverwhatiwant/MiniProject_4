@@ -124,7 +124,12 @@ export default function Component() {
   // 비번 변경 모달 띄우기
   const ChangePW = () => {
     setChangepw(true);
-  }
+  };
+
+  // 비번 변경 모달 닫기
+  const closeChangePW = () => {
+    setChangepw(false);
+  };
 
   // 아이디 찾기 모달 띄우기
   const Findid = () => {
@@ -190,7 +195,7 @@ export default function Component() {
           </CustomColumn>
         </CustomColumn>
 
-        {changepw && <ChangePwModal />}
+        {changepw && <ChangePwModal onClose={closeChangePW} />}
         {findid && <FindIdModal onClose={handleClose} />}
         {signup && <SignUpModal onClose={() => setSignup(false)} onShowTicketAlert={handleShowTicketAlert} />}
         {showTicketAlert && <SignUpModal_happy username={username} onClose={closeModals} />}
