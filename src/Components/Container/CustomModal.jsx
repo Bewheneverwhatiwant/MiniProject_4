@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useLayoutEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import CustomRow from './CustomRow';
 import CustomFont from './CustomFont';
@@ -20,7 +20,7 @@ const ModalContainer = styled.div`
   display: flex;
   flex-direction: ${props => props.flexDirection || 'column'};
   width: ${props => props.width || 'auto'};
-  max-height: ${props => props.maxHeight || '90vh'}; /* max-height 설정 */
+  max-height: ${props => props.maxHeight || '90vh'};
   gap: ${props => props.gap || '30px'};
   align-items: ${props => props.alignItems || 'flex-start'};
   justify-content: ${props => props.justifyContent || 'flex-start'};
@@ -66,10 +66,9 @@ const ModalHeader = styled.div`
 
 const ChildDiv = styled.div`
   width: 100%;
-  overflow-y: auto; /* 콘텐츠가 max-height를 넘어설 때만 스크롤바가 생김 */
-  max-height: ${props => props.maxHeight || '90vh'}; /* max-height 설정 */
+  overflow-y: auto;
+  max-height: ${props => props.maxHeight || '90vh'};
 
-  /* 스크롤바 스타일링 */
   &::-webkit-scrollbar {
     width: 10px;
   }
@@ -87,42 +86,40 @@ const ChildDiv = styled.div`
 
 const FeatherImage = styled.img`
   position: absolute;
-  width: 100px; /* 적절한 크기로 설정 */
-  height: 100px; /* 적절한 크기로 설정 */
-  z-index: 1001; /* 모달보다 높은 z-index */
+  width: 100px;
+  height: 100px;
+  z-index: 1001;
 `;
 
 const CustomModal = ({ children, flexDirection, width, maxHeight, gap, alignItems, justifyContent, padding, onClose }) => {
+    const modalRef = useRef(null);
+    const [featherPosition, setFeatherPosition] = useState({ right: 0, bottom: 0 });
 
     useEffect(() => {
-        // 모달이 열릴 때 body의 overflow를 hidden으로 설정
         document.body.style.overflow = 'hidden';
 
-        // 컴포넌트가 unmount될 때 body의 overflow를 auto로 설정
         return () => {
             document.body.style.overflow = 'auto';
         };
     }, []);
 
-    const modalRef = useRef(null);
-    const [featherPosition, setFeatherPosition] = useState({ right: 0, bottom: 0 });
-
-    useLayoutEffect(() => {
-        const modalElement = modalRef.current;
-        if (modalElement) {
-            const handleResize = () => {
-                const { right, bottom } = modalElement.getBoundingClientRect();
+    useEffect(() => {
+        const handleResize = () => {
+            if (modalRef.current) {
+                const { right, bottom } = modalRef.current.getBoundingClientRect();
                 setFeatherPosition({
                     right: window.innerWidth - right - 50,
-                    bottom: window.innerHeight - bottom - 110
+                    bottom: window.innerHeight - bottom + 100
                 });
-            };
-            handleResize();
-            window.addEventListener('resize', handleResize);
-            return () => {
-                window.removeEventListener('resize', handleResize);
-            };
-        }
+            }
+        };
+
+        handleResize();
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
     }, [modalRef.current]);
 
     return (
