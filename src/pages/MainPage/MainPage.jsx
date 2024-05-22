@@ -28,6 +28,8 @@ const PageContainer = styled(ContainerCenter)`
   gap: 20px;
   position: relative;
   background-color: white;
+  background-image: url('MainImg.png');
+  background-size: 100% 100%;
 `;
 
 const Boo_says = styled.div`
@@ -100,12 +102,20 @@ export default function Component() {
             </CustomColumn>
           </CustomColumn>
 
-          <CustomColumn justifyContent='center' alignItems='flex-start' gap='0.3rem'>
-            <CustomFont color='#C1EEA5' font='0.6rem' fontWeight='bold'>⚝ Boo 위에 마우스를 올려보세요.</CustomFont>
-            <CustomFont fontWeight='bold' color='black' font='2rem'>각종 문서, AI가 생성해드릴게요!</CustomFont>
+          <CustomColumn width='100%' alignItems='center' justifyContent='center' fontWeight='bold'>
+            <CustomFont fontWeight='bold' color='black' font='1rem'>문서 생성이 어려운 당신을 위한</CustomFont>
+
+            <CustomColumn justifyContent='center' alignItems='flex-start' gap='0.3rem'>
+              <CustomFont color='#C1EEA5' font='0.6rem' fontWeight='bold'>⚝ Boo 위에 마우스를 올려보세요.</CustomFont>
+              <CustomFont fontWeight='bold' color='#78AB34' font='3rem'>저는 AI 문서 생성 캐릭터 Boo예요!</CustomFont>
+            </CustomColumn>
           </CustomColumn>
 
           <ImgCarousel />
+
+          <CustomRow width='100%' alignItems='center' justifyContent='center'>
+            <CustomFont color='black' font='2rem' fontWeight='bold'>각종 문서, AI가 생성해드릴게요!</CustomFont>
+          </CustomRow>
 
           <Buttons />
 

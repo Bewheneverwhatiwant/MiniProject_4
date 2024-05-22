@@ -22,8 +22,8 @@ const Button = styled.button`
   color: black;
   align-items: center;
   justify-content: center;
-  border: none;
-  border-radius: 20px;
+  border: 2px solid white;
+  border-radius: 30px;
   width: 20rem;
   height: 7rem;
   padding: 20px;
