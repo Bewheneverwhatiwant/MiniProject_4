@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useLayoutEffect } from 'react';
 import styled from 'styled-components';
 import CustomRow from './CustomRow';
 import CustomFont from './CustomFont';
@@ -65,25 +65,25 @@ const ModalHeader = styled.div`
 `;
 
 const ChildDiv = styled.div`
-width: 100%;
-overflow-y: auto; /* 콘텐츠가 max-height를 넘어설 때만 스크롤바가 생김 */
-max-height: ${props => props.maxHeight || '90vh'}; /* max-height 설정 */
+  width: 100%;
+  overflow-y: auto; /* 콘텐츠가 max-height를 넘어설 때만 스크롤바가 생김 */
+  max-height: ${props => props.maxHeight || '90vh'}; /* max-height 설정 */
 
-/* 스크롤바 스타일링 */
-&::-webkit-scrollbar {
-  width: 10px;
-}
+  /* 스크롤바 스타일링 */
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
 
-&::-webkit-scrollbar-thumb {
-  background-color: #8CC63F;
-  border-radius: 10px;
-}
+  &::-webkit-scrollbar-thumb {
+    background-color: #8CC63F;
+    border-radius: 10px;
+  }
 
-&::-webkit-scrollbar-track {
-  background-color: #f0f0f0;
-  border-radius: 10px;
-}
-`
+  &::-webkit-scrollbar-track {
+    background-color: #f0f0f0;
+    border-radius: 10px;
+  }
+`;
 
 const FeatherImage = styled.img`
   position: absolute;
@@ -107,14 +107,14 @@ const CustomModal = ({ children, flexDirection, width, maxHeight, gap, alignItem
     const modalRef = useRef(null);
     const [featherPosition, setFeatherPosition] = useState({ right: 0, bottom: 0 });
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const modalElement = modalRef.current;
         if (modalElement) {
             const handleResize = () => {
                 const { right, bottom } = modalElement.getBoundingClientRect();
                 setFeatherPosition({
                     right: window.innerWidth - right - 50,
-                    bottom: window.innerHeight - bottom - 100
+                    bottom: window.innerHeight - bottom - 110
                 });
             };
             handleResize();
@@ -124,7 +124,6 @@ const CustomModal = ({ children, flexDirection, width, maxHeight, gap, alignItem
             };
         }
     }, [modalRef.current]);
-
 
     return (
         <>
