@@ -35,12 +35,14 @@ cursor: pointer;
 
 const LogoButton = styled.button`
 cursor: pointer;
-border: 1.5px solid #979797;
-background-color: transparent;
 display: flex;
 align-items: center;
 justify-content: center;
-padding: 5px;
+background-image: url('icon_boo_small.png');
+background-size: 100% 100%;
+border: none;
+width: 50px;
+height: 50px;
 `
 
 export default function Header() {
@@ -50,15 +52,7 @@ export default function Header() {
     const navigate = useNavigate();
 
     const Back = () => {
-        navigate('/');
-    }
-
-    const Signup = () => {
-        navigate('/signuppage');
-    }
-
-    const Login = () => {
-        navigate('/loginpage');
+        navigate('/mainpage');
     }
 
     const Mypage = () => {
@@ -75,24 +69,27 @@ export default function Header() {
     return (
 
         <HeaderContainer>
-            <CustomRow width='97%' justifyContent='flex-end'>
-                <CustomRow width='20%' justifyContent='center'>
+            <CustomRow width='97%' justifyContent='center'>
+                <CustomRow width='100%' justifyContent='space-between'>
                     {!isLoggedIn ? (
                         <>
 
                         </>
                     ) : (
                         <>
-                            <HeaderButton onClick={Mypage}>
-                                <CustomFont color='#979797' font='1rem' fontWeight='bold'>
-                                    My
-                                </CustomFont>
-                            </HeaderButton>
-                            <HeaderButton onClick={handleLogout}>
-                                <CustomFont color='#979797' font='1rem' fontWeight='bold'>
-                                    Logout
-                                </CustomFont>
-                            </HeaderButton>
+                            <LogoButton onClick={Back} />
+                            <CustomRow>
+                                <HeaderButton onClick={Mypage}>
+                                    <CustomFont color='#979797' font='1rem' fontWeight='bold'>
+                                        My
+                                    </CustomFont>
+                                </HeaderButton>
+                                <HeaderButton onClick={handleLogout}>
+                                    <CustomFont color='#979797' font='1rem' fontWeight='bold'>
+                                        Logout
+                                    </CustomFont>
+                                </HeaderButton>
+                            </CustomRow>
                         </>
                     )}
                 </CustomRow>

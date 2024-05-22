@@ -82,7 +82,7 @@ export default function Component() {
   return (
     <ContainerCenter>
       <PageContainer>
-        <CustomColumn width='100%' justifyContent='center' alignItems='center' gap='5rem'>
+        <CustomColumn width='100%' justifyContent='center' alignItems='center' gap='6rem'>
           <CustomColumn width='100%' justifyContent='center' alignItems='center' gap='1rem'>
 
 
@@ -110,14 +110,14 @@ export default function Component() {
             <CustomFont fontWeight='bold' color='#78AB34' font='3rem'>저는 AI 문서 생성 캐릭터 Boo예요!</CustomFont>
           </CustomColumn>
 
-          {/* 배너가 너무 고화질이라 화면 레더링 속도가 너무 느려 테스트에 방해됨. 나중에 저화질로 바꾸든가 하고, 일단은 주석 처리 */}
-          {/* <ImgCarousel />  */}
+          <ImgCarousel />
 
           <CustomRow width='100%' alignItems='center' justifyContent='center'>
             <CustomFont color='black' font='2rem' fontWeight='bold'>각종 문서, AI가 생성해드릴게요!</CustomFont>
           </CustomRow>
 
           <Buttons />
+          <CustomColumn height='150px'></CustomColumn>
 
         </CustomColumn>
       </PageContainer>

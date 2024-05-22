@@ -28,6 +28,7 @@ const StyledImage = styled.img`
   max-width: 100%;
   max-height: 300px;
   object-fit: contain; // 이미지 비율 유지
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 `;
 
 const DotContainer = styled.div`

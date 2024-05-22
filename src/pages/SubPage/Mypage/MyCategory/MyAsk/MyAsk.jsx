@@ -133,7 +133,7 @@ justify-contents: center;
 export default function MyAsk() {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('sorry');
-  const [documents, setDocuments] = useState([]);
+  const [documents, setDocuments] = useState([]); // input과 output 필드를 저장
   const [selectedDocument, setSelectedDocument] = useState(null);
   const { isLoggedIn } = useAuth(); // 로그인 상태에서 사용자명을 가져옴
 
@@ -143,16 +143,33 @@ export default function MyAsk() {
     }
   }, [selectedCategory, isLoggedIn]);
 
+  // input과 output 필드 정보를 동시에 가져오는 API
   const fetchDocuments = async (category) => {
     const serverIp = process.env.REACT_APP_SERVER_IP;
     try {
-      const response = await axios.get(`${serverIp}/category_documents`, {
+      const inputResponse = await axios.get(`${serverIp}/category_doc_input`, {
         params: {
           user_name: isLoggedIn,
           type: category
         }
       });
-      setDocuments(response.data);
+
+      const outputResponse = await axios.get(`${serverIp}/category_doc_output`, {
+        params: {
+          user_name: isLoggedIn,
+          type: category
+        }
+      });
+
+      const inputDocuments = inputResponse.data;
+      const outputDocuments = outputResponse.data;
+
+      const combinedDocuments = inputDocuments.map(inputDoc => {
+        const outputDoc = outputDocuments.find(outputDoc => outputDoc.id === inputDoc.id);
+        return { ...inputDoc, ...outputDoc };
+      });
+
+      setDocuments(combinedDocuments);
     } catch (error) {
       console.error('Error fetching documents:', error);
     }
@@ -180,7 +197,7 @@ export default function MyAsk() {
             </CategoryButton>
             <CategoryButton onClick={() => setSelectedCategory('notice')}>
               <CustomFont color={selectedCategory === 'notice' ? '#FF9292' : 'black'} fontWeight='bold' font='1.5rem'>
-                보고서
+                보고서/시말서
               </CustomFont>
             </CategoryButton>
             <CategoryButton onClick={() => setSelectedCategory('letter')}>
@@ -216,7 +233,7 @@ export default function MyAsk() {
                 documents.map((doc, index) => (
                   <CustomRow key={index} width='100%' justifyContent='space-between' alignItems='center'>
                     <TitleAnswer onClick={() => openModal(doc)}>
-                      <CustomFont color='white' font='1.6rem' fontWeight='bold'>{doc.name}</CustomFont>
+                      <CustomFont color='white' font='1.6rem' fontWeight='bold'>{doc.content}</CustomFont>
                     </TitleAnswer>
 
                     <Xbutton>
@@ -244,10 +261,12 @@ export default function MyAsk() {
           <ModalContent onClick={(e) => e.stopPropagation()}>
             <CustomFont color='#000000' font='1.5rem'>문서 상세 정보</CustomFont>
             <MyAnswerContainer>
-              <CustomFont color='#000000' font='1rem'>제목: {selectedDocument.name}</CustomFont>
+              <CustomFont color='#000000' font='1rem'>제목: {selectedDocument.content}</CustomFont>
               <CustomFont color='#000000' font='1rem'>대상: {selectedDocument.target}</CustomFont>
               <CustomFont color='#000000' font='1rem'>분량: {selectedDocument.amount}</CustomFont>
-              <CustomFont color='#000000' font='1rem'>내용: {selectedDocument.content}</CustomFont>
+              <CustomFont color='#000000' font='1rem'>내용: {selectedDocument.name}</CustomFont>
+              {/* <CustomFont color='#000000' font='1rem'>출력 제목: {selectedDocument.title}</CustomFont>
+              <CustomFont color='#000000' font='1rem'>출력 내용: {selectedDocument.content}</CustomFont> */}
             </MyAnswerContainer>
           </ModalContent>
         </ModalOverlay>
