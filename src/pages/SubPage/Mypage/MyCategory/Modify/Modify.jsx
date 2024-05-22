@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../../AuthContext';
+import ChangePwdModal from './ChangePwdModal';
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -91,6 +92,11 @@ const userImg = 'ex_myprofile.png';
 export default function Component() {
   const [isLoggedOut, setIsLoggedOut] = useState(false);
   const [userData, setUserData] = useState({ username: '', password: '' });
+  const [showModal, setShowModal] = useState(false);
+
+  const Modal = () => {
+    setShowModal(true);
+  }
 
   const { isLoggedIn, logout } = useAuth(); // useAuth를 이용하여 로그인 상태 가져오기
 
@@ -123,13 +129,13 @@ export default function Component() {
     navigate('/');
   }
 
-  const handleChangePassword = () => {
-    const newPassword = prompt(`변경할 비밀번호를 입력하세요. 현재 비밀번호는 ${userData.password}입니다.`);
-    if (newPassword !== null) {
-      alert('변경이 완료되었습니다. 다시 로그인해주세요.');
-      navigate('/');
-    }
-  };
+  // const handleChangePassword = () => {
+  //   const newPassword = prompt(`변경할 비밀번호를 입력하세요. 현재 비밀번호는 ${userData.password}입니다.`);
+  //   if (newPassword !== null) {
+  //     alert('변경이 완료되었습니다. 다시 로그인해주세요.');
+  //     navigate('/');
+  //   }
+  // };
 
   return (
     <ContainerCenter>
@@ -165,11 +171,15 @@ export default function Component() {
 
             <CustomRow width='80%' justifyContent='space-between' alignItems='center'>
               <CustomFont color='#8CC63F' fontWeight='bold' font='1.2rem'>비밀번호</CustomFont>
-              <Button onClick={handleChangePassword}>
+              <Button onClick={Modal}>
                 <CustomFont color='white' fontWeight='bold' font='1.2rem'>비밀번호 변경</CustomFont>
               </Button>
             </CustomRow>
           </InfoContainer>
+
+          {
+            showModal && <ChangePwdModal />
+          }
 
         </CustomColumn>
       </PageContainer>
