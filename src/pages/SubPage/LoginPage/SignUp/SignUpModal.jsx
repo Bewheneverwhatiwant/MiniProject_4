@@ -1,4 +1,3 @@
-// SignUpModal.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -35,7 +34,7 @@ const ErrorText = styled.div`
 `;
 
 const IsValidButton = styled.button`
-  width: 30%;
+  width: 100%;
   height: 10%;
   display: flex;
   align-items: center;
@@ -44,9 +43,8 @@ const IsValidButton = styled.button`
   color: white;
   border: none;
   border-radius: 15px;
-  background-color: ${props => props.isActive ? '#8CC63F' : '#D9D9D9'};
-  cursor: ${props => props.isActive ? 'pointer' : 'not-allowed'};
-  pointer-events: ${props => props.isActive ? 'auto' : 'none'};
+  background-color: ${props => props.isValid ? '#8CC63F' : '#855427'};
+  cursor: pointer;
 `;
 
 const SignupButton = styled.button`
@@ -64,6 +62,21 @@ const SignupButton = styled.button`
 `;
 
 const Checkbox = styled.input.attrs({ type: 'checkbox' })``;
+
+const ImageWrapper = styled.div`
+  position: relative;
+  width: 60px;
+  height: 60px;
+  margin-bottom: -32px; /* 이미지와 버튼이 겹치도록 음수 margin 추가 */
+  z-index: 10;
+`;
+
+const OverlappingImage = styled(StyledImg)`
+  position: absolute;
+  top: -20px; /* 이미지와 버튼이 겹치도록 음수 top 값 설정 */
+  left: 50%;
+  transform: translateX(-50%);
+`;
 
 export default function Component({ onClose, onShowTicketAlert }) {
     const [userId, setUserId] = useState('');
@@ -89,12 +102,11 @@ export default function Component({ onClose, onShowTicketAlert }) {
                     user_name: userId,
                 }
             });
-            alert('사용 가능한 아이디입니다.');
             setIsValid(true);
         } catch (error) {
+            setIsValid(false);
             if (error.response && error.response.status === 409) {
                 alert('이미 사용 중인 아이디입니다.');
-                setIsValid(false);
             } else {
                 console.error('아이디 중복 검사 실패', error);
                 alert('아이디 중복 검사에 실패했습니다.');
@@ -139,18 +151,34 @@ export default function Component({ onClose, onShowTicketAlert }) {
                     <CustomFont color='#8CC63F' font='2rem' fontWeight='bold'>내 문서를 부탁해</CustomFont>
                     <StyledImg src={'icon_feather.png'} width='30px' height='30px' />
                 </CustomRow>
+
                 <CustomColumn width='100%' justifyContent='center' alignItems='center' gap='2rem'>
-                    <CustomColumn width='80%' justifyContent='center' alignItems='flex-start' gap='1rem'>
-                        <CustomRow width='40%' justifyContent='flex-start' alignItems='center' gap='1rem'>
-                            <CustomFont color='black' font='1rem' fontWeight='bold'>아이디</CustomFont>
-                            <CustomFont color='red' font='1rem' fontWeight='bold'>*</CustomFont>
-                        </CustomRow>
-                        <CustomRow width='100%' justifyContent='center' alignItems='flex-start' gap='1rem'>
-                            <InputForm placeholder='사용하실 아이디를 입력하세요.' value={userId} onChange={e => setUserId(e.target.value)} />
-                            <IsValidButton isActive={userId.length > 0} onClick={handleIdCheck}>중복검사</IsValidButton>
-                        </CustomRow>
-                        {!userId && <ErrorText>필수 필드입니다.</ErrorText>}
-                    </CustomColumn>
+
+                    <CustomRow width='80%'>
+
+                        <CustomColumn width='70%' justifyContent='center' alignItems='flex-start' gap='1rem'>
+                            <CustomRow width='40%' justifyContent='flex-start' alignItems='center' gap='1rem'>
+                                <CustomFont color='black' font='1rem' fontWeight='bold'>아이디</CustomFont>
+                                <CustomFont color='red' font='1rem' fontWeight='bold'>*</CustomFont>
+                            </CustomRow>
+
+                            <CustomRow width='100%' justifyContent='center' alignItems='flex-start' gap='1rem'>
+                                <InputForm placeholder='사용하실 아이디를 입력하세요.' value={userId} onChange={e => setUserId(e.target.value)} />
+                            </CustomRow>
+                            {!userId && <ErrorText>필수 필드입니다.</ErrorText>}
+                        </CustomColumn>
+
+                        <CustomColumn width='30%' alignItems='center' justifyContent='center' gap='0px'>
+                            <ImageWrapper>
+                                <OverlappingImage src={'icon_boo_small.png'} width='60px' height='60px' />
+                            </ImageWrapper>
+                            <IsValidButton isValid={isValid} onClick={handleIdCheck}>
+                                {isValid ? '사용 가능' : '중복검사'}
+                            </IsValidButton>
+                        </CustomColumn>
+
+                    </CustomRow>
+
                     <CustomColumn width='80%' justifyContent='center' alignItems='flex-start' gap='1rem'>
                         <CustomRow width='40%' justifyContent='flex-start' alignItems='center' gap='1rem'>
                             <CustomFont color='black' font='1rem' fontWeight='bold'>비밀번호</CustomFont>
