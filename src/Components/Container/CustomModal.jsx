@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import CustomRow from './CustomRow';
 import CustomFont from './CustomFont';
@@ -85,6 +85,13 @@ max-height: ${props => props.maxHeight || '90vh'}; /* max-height 설정 */
 }
 `
 
+const FeatherImage = styled.img`
+  position: absolute;
+  width: 100px; /* 적절한 크기로 설정 */
+  height: 100px; /* 적절한 크기로 설정 */
+  z-index: 1001; /* 모달보다 높은 z-index */
+`;
+
 const CustomModal = ({ children, flexDirection, width, maxHeight, gap, alignItems, justifyContent, padding, onClose }) => {
 
     useEffect(() => {
@@ -97,36 +104,68 @@ const CustomModal = ({ children, flexDirection, width, maxHeight, gap, alignItem
         };
     }, []);
 
+    const modalRef = useRef(null);
+    const [featherPosition, setFeatherPosition] = useState({ right: 0, bottom: 0 });
+
+    useEffect(() => {
+        const modalElement = modalRef.current;
+        if (modalElement) {
+            const handleResize = () => {
+                const { right, bottom } = modalElement.getBoundingClientRect();
+                setFeatherPosition({
+                    right: window.innerWidth - right - 50,
+                    bottom: window.innerHeight - bottom - 100
+                });
+            };
+            handleResize();
+            window.addEventListener('resize', handleResize);
+            return () => {
+                window.removeEventListener('resize', handleResize);
+            };
+        }
+    }, [modalRef.current]);
+
+
     return (
-        <ModalOverlay>
-            <ModalContainer
-                flexDirection={flexDirection}
-                width={width}
-                maxHeight={maxHeight} /* maxHeight prop 사용 */
-                gap={gap}
-                alignItems={alignItems}
-                justifyContent={justifyContent}
-                padding={padding}
-            >
-                <ModalHeader>
-                    <CustomRow width='90%' alignItems='center' justifyContent='space-between'>
-                        <CustomRow width='30%' alignItems='center' justifyContent='space-around'>
-                            <Circle color='#EC6A5E' />
-                            <Circle color='#F4BF4F' />
-                            <Circle color='#61C554' />
+        <>
+            <ModalOverlay>
+                <ModalContainer
+                    ref={modalRef}
+                    flexDirection={flexDirection}
+                    width={width}
+                    maxHeight={maxHeight}
+                    gap={gap}
+                    alignItems={alignItems}
+                    justifyContent={justifyContent}
+                    padding={padding}
+                >
+                    <ModalHeader>
+                        <CustomRow width='90%' alignItems='center' justifyContent='space-between'>
+                            <CustomRow width='30%' alignItems='center' justifyContent='space-around'>
+                                <Circle color='#EC6A5E' />
+                                <Circle color='#F4BF4F' />
+                                <Circle color='#61C554' />
+                            </CustomRow>
+                            <CloseButton onClick={onClose}>
+                                <CustomFont color='white' font='1rem' fontWeight='bold'>
+                                    X
+                                </CustomFont>
+                            </CloseButton>
                         </CustomRow>
-                        <CloseButton onClick={onClose}>
-                            <CustomFont color='white' font='1rem' fontWeight='bold'>
-                                X
-                            </CustomFont>
-                        </CloseButton>
-                    </CustomRow>
-                </ModalHeader>
-                <ChildDiv maxHeight={maxHeight}>
-                    {children}
-                </ChildDiv>
-            </ModalContainer>
-        </ModalOverlay>
+                    </ModalHeader>
+                    <ChildDiv maxHeight={maxHeight}>
+                        {children}
+                    </ChildDiv>
+                </ModalContainer>
+            </ModalOverlay>
+            <FeatherImage
+                src={'icon_feather.png'}
+                style={{
+                    right: `${featherPosition.right}px`,
+                    bottom: `${featherPosition.bottom}px`
+                }}
+            />
+        </>
     );
 };
 
