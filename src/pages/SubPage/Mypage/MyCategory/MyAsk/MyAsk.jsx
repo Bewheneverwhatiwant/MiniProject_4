@@ -165,8 +165,12 @@ export default function MyAsk() {
       const inputDocuments = inputResponse.data;
       const outputDocuments = outputResponse.data;
 
-      const combinedDocuments = inputDocuments.map(inputDoc => {
-        const outputDoc = outputDocuments.find(outputDoc => outputDoc.id === inputDoc.id);
+      console.log('Input Documents:', inputDocuments);
+      console.log('Output Documents:', outputDocuments);
+
+      // inputDocuments와 outputDocuments를 순서대로 결합
+      const combinedDocuments = inputDocuments.map((inputDoc, index) => {
+        const outputDoc = outputDocuments[index];
         return { ...inputDoc, ...outputDoc };
       });
 
@@ -175,7 +179,6 @@ export default function MyAsk() {
       console.error('Error fetching documents:', error);
     }
   };
-
   const openModal = (document) => {
     setSelectedDocument(document);
     setModalVisible(true);
