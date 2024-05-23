@@ -180,13 +180,48 @@ const ModalX = styled.button`
   cursor: pointer;
 `;
 
+const Modal_save = styled.div`
+  position: fixed; /* fixed로 변경하여 화면 중앙에 배치 */
+  top: 50%; /* 화면의 세로 중앙 */
+  left: 50%; /* 화면의 가로 중앙 */
+  transform: translate(-50%, -50%); /* 중앙 정렬 */
+  width: 40%;
+  height: 50vh;
+  background-color: white;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001; /* Modal이 항상 위에 오도록 설정 */
+  background-image: url('Modal_SaveSuccess.png');
+  background-size: 100% 100%;
+`;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* ModalOverlay가 BuyModal의 바로 아래에 오도록 설정 */
+`;
+
+
 export default function Component() {
 
     const [content, setContent] = useState('');
     const navigate = useNavigate();
     const [title, setTitle] = useState('');
     const [showModal, setShowModal] = useState(false);
+    const [saveModal, setSaveModal] = useState(false);
 
+    // 저장 오류 해결!
     const { isLoggedIn, logout } = useAuth(); // useAuth를 이용하여 로그인 상태 가져오기
     const [userData, setUserData] = useState({ username: '' });
 
@@ -271,11 +306,32 @@ export default function Component() {
         const existingContents = JSON.parse(localStorage.getItem('savedContents')) || [];
         existingContents.push({ title, content });
         localStorage.setItem('savedContents', JSON.stringify(existingContents));
-
-        alert('저장되었습니다.');
+        setSaveModal(true); // 여기다가 추가해야 하는 거였음
+        //alert('저장되었습니다.');
         setShowModal(false);
-        navigate('/myask');
+        //navigate('/myask');
     };
+
+    useEffect(() => {
+        let timer;
+        if (saveModal) {
+            timer = setTimeout(() => {
+                navigate('/myask');
+            }, 2500); // 2.5초 후(아직 saveModal이 true일 때)에 navigate 실행
+        }
+        return () => clearTimeout(timer); // 타이머 클리어
+    }, [saveModal]);
+
+    useEffect(() => {
+        if (saveModal) {
+            console.log('saveModal is true');
+            const timer = setTimeout(() => {
+                console.log('3초 후 saveModal을 false로 설정');
+                setSaveModal(false);
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [saveModal]);
 
     const showModalSaveContent = () => {
         setShowModal(true);
@@ -347,6 +403,15 @@ export default function Component() {
                         </CustomColumn>
                     </CustomModal>
                 )}
+
+                {
+                    saveModal && (
+                        <>
+                            <ModalOverlay />
+                            <Modal_save />
+                        </>
+                    )
+                }
 
             </PageContainer>
         </ContainerCenter>
