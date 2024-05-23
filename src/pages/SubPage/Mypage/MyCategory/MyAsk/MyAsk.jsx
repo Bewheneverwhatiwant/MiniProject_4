@@ -58,20 +58,6 @@ const ModalOverlay = styled.div`
   z-index: 9999;
 `;
 
-const ModalContent = styled.div`
-  width: 55%;
-  height: 50vh;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: white;
-  padding: 50px; 
-  padding-right: 80px;
-  border-radius: 10px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-`;
-
 const TitleAnswer = styled.div`
 display: flex;
 align-items: center;
@@ -131,12 +117,55 @@ align-items: center;
 justify-contents: center;
 `;
 
+const BuyModal = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 60%;
+  height: 50vh;
+  transform: translate(-50%, -50%);
+  background-color: #ECFFE0;
+  padding: 20px;
+  border-radius: 50px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+  background-image: url('Modal_Delete.png');
+  background-size: 100% 100%;
+
+`;
+
+const ConfirmButton = styled.button`
+  background-color: #FF9292;
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px;
+  color: white;
+  cursor: pointer;
+`;
+
+const CancelButton = styled.button`
+  background-color: #D9D9D9;
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px;
+  color: white;
+  cursor: pointer;
+`;
+
 export default function MyAsk() {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('sorry');
   const [documents, setDocuments] = useState([]); // input과 output 필드를 저장
   const [selectedDocument, setSelectedDocument] = useState(null);
   const { isLoggedIn } = useAuth(); // 로그인 상태에서 사용자명을 가져옴
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [docToDelete, setDocToDelete] = useState(null);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -204,6 +233,7 @@ export default function MyAsk() {
         console.log('DELETE 응답:', response);
 
         alert('삭제되었습니다!');
+        setShowDeleteModal(false);
         setDocuments(documents.filter(doc => doc.name !== docName));
       } catch (error) {
         console.error('Error deleting document:', error);
@@ -264,12 +294,21 @@ export default function MyAsk() {
                       <CustomFont color='white' font='1.6rem' fontWeight='bold'>{doc.content}</CustomFont>
                     </TitleAnswer>
 
-                    <Xbutton onClick={() => {
-                      console.log('문서 객체:', doc);  // 문서 객체의 구조를 확인하기 위해 추가
-                      handleDelete(doc.name, isLoggedIn);
-                    }}>
+                    <Xbutton onClick={() => setShowDeleteModal(true)}>
                       <CustomFont color='white' fontWeight='bold' font='1.6rem'>X</CustomFont>
                     </Xbutton>
+
+                    {showDeleteModal && (
+                      <>
+                        <ModalOverlay />
+                        <BuyModal>
+                          <CustomRow>
+                            <ConfirmButton onClick={() => handleDelete(docToDelete, 'username')}>확인</ConfirmButton> {/* 'username'을 실제 유저 이름으로 변경 */}
+                            <CancelButton onClick={() => setShowDeleteModal(false)}>취소</CancelButton>
+                          </CustomRow>
+                        </BuyModal>
+                      </>
+                    )}
                   </CustomRow>
                 ))
               ) : (
@@ -288,19 +327,21 @@ export default function MyAsk() {
 
       {/* title, content도 상세 정보 아래에 추가하기 */}
       {selectedDocument && (
-        <CustomModal width='55%' padding='20px' onClose={closeModal_2} maxHeight='100vh'>
-          <CustomColumn width='100' alignItems='center' justifyContent='center'>
-            <CustomFont color='#000000' font='1.5rem'>문서 상세 정보</CustomFont>
-            <MyAnswerContainer>
-              <CustomFont color='#000000' font='1rem'>제목: {selectedDocument.content}</CustomFont>
-              <CustomFont color='#000000' font='1rem'>대상: {selectedDocument.target}</CustomFont>
-              <CustomFont color='#000000' font='1rem'>분량: {selectedDocument.amount}</CustomFont>
-              <CustomFont color='#000000' font='1rem'>내용: {selectedDocument.name}</CustomFont>
-              {/* <CustomFont color='#000000' font='1rem'>출력 제목: {selectedDocument.title}</CustomFont>
+        <ModalOverlay>
+          <CustomModal width='55%' padding='20px' onClose={closeModal_2} maxHeight='100vh'>
+            <CustomColumn width='100' alignItems='center' justifyContent='center'>
+              <CustomFont color='#000000' font='1.5rem'>문서 상세 정보</CustomFont>
+              <MyAnswerContainer>
+                <CustomFont color='#000000' font='1rem'>제목: {selectedDocument.content}</CustomFont>
+                <CustomFont color='#000000' font='1rem'>대상: {selectedDocument.target}</CustomFont>
+                <CustomFont color='#000000' font='1rem'>분량: {selectedDocument.amount}</CustomFont>
+                <CustomFont color='#000000' font='1rem'>내용: {selectedDocument.name}</CustomFont>
+                {/* <CustomFont color='#000000' font='1rem'>출력 제목: {selectedDocument.title}</CustomFont>
               <CustomFont color='#000000' font='1rem'>출력 내용: {selectedDocument.content}</CustomFont> */}
-            </MyAnswerContainer>
-          </CustomColumn>
-        </CustomModal>
+              </MyAnswerContainer>
+            </CustomColumn>
+          </CustomModal>
+        </ModalOverlay>
       )}
     </ContainerCenter>
   );

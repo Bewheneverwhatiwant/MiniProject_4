@@ -81,7 +81,37 @@ cursor: pointer;
 text-decoration: underline;
 `;
 
-// 피그마대로 수정 진행 중
+const BuyModal = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 50%;
+  height: 60vh;
+  transform: translate(-50%, -50%);
+  background-color: #ECFFE0;
+  padding: 20px;
+  border-radius: 50px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001; /* Modal이 항상 위에 오도록 설정 */
+  background-image: url('Modal_LoginSuccess.png');
+  background-size: 100% 100%;
+`;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* ModalOverlay가 BuyModal의 바로 아래에 오도록 설정 */
+`;
 
 export default function Component() {
 
@@ -96,6 +126,7 @@ export default function Component() {
   const [signup, setSignup] = useState(false); // 회원가입 모달
   const [showTicketAlert, setShowTicketAlert] = useState(false);
   const [username, setUsername] = useState('');
+  const [loginSuccess, setLoginSuccess] = useState(false); // 로그인 성공 모달 상태
 
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -111,9 +142,12 @@ export default function Component() {
           }
         });
         console.log(response);
-        alert('로그인에 성공하였습니다!');
         login(userId); // 로그인 상태 업데이트
-        navigate('/mainpage');
+        setLoginSuccess(true); // 로그인 성공 모달 표시
+        setTimeout(() => {
+          setLoginSuccess(false); // 3초 후 모달 닫기
+          navigate('/mainpage'); // /mainpage로 이동
+        }, 3000);
       } catch (error) {
         console.error(error);
         alert('로그인에 실패하였습니다.');
@@ -199,7 +233,12 @@ export default function Component() {
         {findid && <FindIdModal onClose={handleClose} />}
         {signup && <SignUpModal onClose={() => setSignup(false)} onShowTicketAlert={handleShowTicketAlert} />}
         {showTicketAlert && <SignUpModal_happy username={username} onClose={closeModals} />}
-
+        {loginSuccess && (
+          <>
+            <ModalOverlay />
+            <BuyModal />
+          </>
+        )}
         <CustomColumn height='200px'></CustomColumn>
       </PageContainer>
     </ContainerCenter>

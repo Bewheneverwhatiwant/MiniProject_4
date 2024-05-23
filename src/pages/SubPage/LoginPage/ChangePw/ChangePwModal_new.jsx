@@ -51,11 +51,44 @@ const Error = styled.div`
   font-size: 0.8rem;
 `;
 
+const BuyModal = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 50%;
+  height: 60vh;
+  transform: translate(-50%, -50%);
+  background-color: #ECFFE0;
+  padding: 20px;
+  border-radius: 50px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+  background-image: url('Modal_PwChanged.png');
+  background-size: 100% 100%;
+`;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
 export default function ChangePwModal_new({ email, userId, onClose }) {
     const navigate = useNavigate();
     const [password, setPassword] = useState('');
     const [doublepassword, setDoublepassword] = useState('');
     const [error, setError] = useState('');
+    const [pwChangeSuccess, setPwChangeSuccess] = useState(false); // 비밀번호 변경 성공 모달 상태
 
     const isFormFilled = password && doublepassword;
 
@@ -82,9 +115,12 @@ export default function ChangePwModal_new({ email, userId, onClose }) {
                 }
             });
             console.log('비밀번호 변경 응답:', response.data);
-            alert('비밀번호 변경이 완료되었습니다! 다시 로그인해주세요.');
-            onClose(); // ChangePwModal_new와 SignUpModal 모두 닫기
-            navigate('/');
+            setPwChangeSuccess(true); // 비밀번호 변경 성공 모달 표시
+            setTimeout(() => {
+                setPwChangeSuccess(false); // 3초 후 모달 닫기
+                onClose(); // ChangePwModal_new와 SignUpModal 모두 닫기
+                navigate('/');
+            }, 3000);
         } catch (error) {
             console.error('비밀번호 변경 오류:', error);
             setError('비밀번호 변경에 실패했습니다.');
@@ -117,6 +153,13 @@ export default function ChangePwModal_new({ email, userId, onClose }) {
                 <CustomRow width='100%' justifyContents='flex-end' alignItems='center'>
                     <Button onClick={handleChangePassword}>확인</Button>
                 </CustomRow>
+
+                {pwChangeSuccess && (
+                    <>
+                        <ModalOverlay />
+                        <BuyModal />
+                    </>
+                )}
             </CustomColumn>
         </PwdDiv>
     );
