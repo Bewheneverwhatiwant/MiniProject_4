@@ -6,6 +6,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import CustomFont from '../Container/CustomFont';
 import CustomRow from '../Container/CustomRow';
+import CustomModal from '../Container/CustomModal';
+import StyledImg from '../Container/StyledImg';
 
 const FooterContainer = styled.footer`
   display: flex;
@@ -83,10 +85,53 @@ const ModalButton = styled.button`
   font-family: 'RIDIBatang';
 `;
 
+const BuyModal = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 60%;
+  height: 50vh;
+  transform: translate(-50%, -50%);
+  background-color: #ECFFE0;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001; /* Modal이 항상 위에 오도록 설정 */
+  background-image: url('Modal_img_1.png');
+  background-size: cover;
+`;
+
+const ModalOverlay_login = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* ModalOverlay가 BuyModal의 바로 아래에 오도록 설정 */
+`;
+
+const ModalContent_login = styled.div`
+  background: transparent;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+`;
+
 export default function Component() {
     const navigate = useNavigate();
     const [userData, setUserData] = useState({ username: '' });
     const [showModal, setShowModal] = useState(false);
+    const [showLoginModal, setShowLoginModal] = useState(false);
 
     const { isLoggedIn, logout } = useAuth(); // useAuth를 이용하여 로그인 상태 가져오기
 
@@ -113,7 +158,8 @@ export default function Component() {
         if (isLoggedIn) {
             setShowModal(true);
         } else {
-            alert('로그인 후 모든 기능을 사용하실 수 있습니다!');
+            // alert('로그인 후 모든 기능을 사용하실 수 있습니다!');
+            setShowLoginModal(true);
         }
     };
 
@@ -136,6 +182,10 @@ export default function Component() {
     const closeModal = () => {
         setShowModal(false);
     };
+
+    const closeModalLogin = () => {
+        setShowLoginModal(false);
+    }
 
     return (
         <FooterContainer>
@@ -172,6 +222,17 @@ export default function Component() {
                         </ModalContent>
                     </ModalContainer>
                 </ModalOverlay>
+            )}
+
+            {showLoginModal && (
+                <CustomModal width='30%' height='90vh' padding='20px' onClose={closeModalLogin} maxHeight='100vh'>
+                    <CustomColumn width='100%' alignItems='center' justifyContents='center' gap='0.5rem'>
+                        <CustomFont color='black' font='1.5rem' fontWeight='bold'>로그인 후 모든 기능을 사용하실 수 있습니다!</CustomFont>
+                        <StyledImg src={'icon_Boo_blush.png'} width='200px' height='200px' />
+                        <CustomRow width='100%' alignItems='center' justifyContents='space-between' gap='8rem'>
+                        </CustomRow>
+                    </CustomColumn>
+                </CustomModal>
             )}
         </FooterContainer>
     );

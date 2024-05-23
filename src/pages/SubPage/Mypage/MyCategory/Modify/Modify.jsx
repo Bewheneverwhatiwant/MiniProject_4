@@ -98,6 +98,10 @@ export default function Component() {
     setShowModal(true);
   }
 
+  const closeModal = () => {
+    setShowModal(false);
+  }
+
   const { isLoggedIn, logout } = useAuth(); // useAuth를 이용하여 로그인 상태 가져오기
 
   const navigate = useNavigate();
@@ -178,7 +182,7 @@ export default function Component() {
           </InfoContainer>
 
           {
-            showModal && <ChangePwdModal />
+            showModal && <ChangePwdModal onClose={closeModal} />
           }
 
         </CustomColumn>

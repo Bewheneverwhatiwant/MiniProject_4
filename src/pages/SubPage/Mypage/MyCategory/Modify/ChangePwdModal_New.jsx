@@ -1,12 +1,12 @@
-import styled, { keyframes } from 'styled-components';
-import CustomColumn from '../../../../../Components/Container/CustomColumn';
-import CustomFont from '../../../../../Components/Container/CustomFont';
-import CustomRow from '../../../../../Components/Container/CustomRow';
-import StyledImg from '../../../../../Components/Container/StyledImg';
+import styled from 'styled-components';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useAuth } from '../../../AuthContext';
+
+import CustomColumn from '../../../../../Components/Container/CustomColumn';
+import CustomRow from '../../../../../Components/Container/CustomRow';
+import CustomFont from '../../../../../Components/Container/CustomFont';
+import StyledImg from '../../../../../Components/Container/StyledImg';
 
 const InputForm = styled.input`
   display: flex;
@@ -59,12 +59,10 @@ export default function SignUpModal() {
     const [password, setPassword] = useState('');
     const [doublepassword, setDoublepassword] = useState('');
     const isFormFilled = password && doublepassword;
-    const { isLoggedIn, logout } = useAuth(); // 로그인 정보 불러오기
 
     const Changed = () => {
         if (isFormFilled) {
             alert('비밀번호 변경이 완료되었습니다! 다시 로그인해주세요.');
-            logout();
             navigate('/');
         }
     }
