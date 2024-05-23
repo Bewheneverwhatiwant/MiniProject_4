@@ -6,6 +6,7 @@ import CustomFont from '../../../Components/Container/CustomFont';
 import CustomRow from '../../../Components/Container/CustomRow';
 import StyledImg from '../../../Components/Container/StyledImg';
 import CustomModal from '../../../Components/Container/CustomModal';
+import axios from 'axios';
 
 const InputForm = styled.input`
   display: flex;
@@ -54,21 +55,39 @@ const Error = styled.div`
 
 export default function FindIdModal({ onClose }) {
     const navigate = useNavigate();
-    const [id, setId] = useState('');
+    const [email, setEmail] = useState('');
+    const [userId, setUserId] = useState('');
     const [click, setClick] = useState(false);
-
-    const CheckFilled = () => {
-        if (id) {
-            setClick(true);
-        }
-    }
+    const [error, setError] = useState('');
 
     const handleIdChange = (e) => {
-        setId(e.target.value);
+        setEmail(e.target.value);
+    };
+
+    const handleFindId = async () => {
+        if (!email) {
+            setError('필수 필드입니다.');
+            return;
+        }
+
+        try {
+            const serverIp = process.env.REACT_APP_SERVER_IP;
+            const response = await axios.get(`${serverIp}/find_id`, {
+                params: {
+                    user_email: email
+                }
+            });
+            console.log('API 응답 데이터:', response.data); // 응답 데이터 구조 확인을 위한 로그
+            setUserId(response.data); // 응답 데이터에서 아이디 추출
+            setClick(true);
+        } catch (error) {
+            console.error('Error finding ID:', error);
+            setError('아이디 찾기에 실패했습니다.');
+        }
     };
 
     const copyToClipboard = () => {
-        navigator.clipboard.writeText('lny021102').then(() => {
+        navigator.clipboard.writeText(userId).then(() => {
             alert('아이디가 클립보드에 복사되었습니다.');
         }).catch((err) => {
             alert('클립보드 복사에 실패했습니다.');
@@ -88,11 +107,11 @@ export default function FindIdModal({ onClose }) {
                                 <CustomRow>
                                     <CustomFont font='1rem' color='black'>이메일</CustomFont><CustomFont color='red' font='1rem'>*</CustomFont>
                                 </CustomRow>
-                                <InputForm placeholder='회원가입 시 등록하신 이메일을 입력하세요.' value={id} onChange={handleIdChange} />
-                                {!id && <Error>필수 필드입니다.</Error>}
+                                <InputForm placeholder='회원가입 시 등록하신 이메일을 입력하세요.' value={email} onChange={handleIdChange} />
+                                {error && <Error>{error}</Error>}
                             </CustomColumn>
                             <CustomRow width='100%' justifyContent='flex-end' alignItems='center'>
-                                <Button onClick={CheckFilled}>확인</Button>
+                                <Button onClick={handleFindId}>확인</Button>
                             </CustomRow>
                         </CustomColumn>
                     </PwdDiv>
@@ -105,7 +124,7 @@ export default function FindIdModal({ onClose }) {
                                 <CustomRow>
                                     <CustomRow>
                                         <CustomFont color='black' font='1rem'>회원님의 아이디는</CustomFont>
-                                        <CustomFont color='#8CC63F' font='1rem' fontWeight='bold'>lny021102</CustomFont>
+                                        <CustomFont color='#8CC63F' font='1rem' fontWeight='bold'>{userId}</CustomFont>
                                         <CustomFont color='black' font='1rem'>입니다.</CustomFont>
                                     </CustomRow>
                                     <Button onClick={copyToClipboard}>아이디 복사</Button>
