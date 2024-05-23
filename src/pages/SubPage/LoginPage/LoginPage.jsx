@@ -169,7 +169,7 @@ export default function Component() {
 
           <CustomColumn width='100%' alignItems='center' justifyContent='center' gap='0.6rem'>
             <CustomFont color='black' font='1.2rem' fontWeight='bold'>문서 작성이 어려운 당신을 위한</CustomFont>
-            <CustomFont color='black' font='3rem' fontWeight='bold'>내 문서를 부탁해</CustomFont>
+            <CustomFont color='black' font='3rem' fontWeight='bold' className="bmjua-text">내 문서를 부탁해</CustomFont>
           </CustomColumn>
 
           <CustomColumn width='100%' justifyContent='center' alignItems='center' gap='2rem'>
