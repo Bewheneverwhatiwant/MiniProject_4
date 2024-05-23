@@ -1,14 +1,13 @@
 import styled from 'styled-components';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import CustomColumn from '../../../../../Components/Container/CustomColumn';
 import CustomFont from '../../../../../Components/Container/CustomFont';
 import CustomRow from '../../../../../Components/Container/CustomRow';
 import StyledImg from '../../../../../Components/Container/StyledImg';
 
-import ChangePwdModal_New from './ChangePwdModal_New';
 import CustomModal from '../../../../../Components/Container/CustomModal';
+import ChangePwdModal_New from './ChangePwdModal_New';
 
 const InputForm = styled.input`
   display: flex;
@@ -104,7 +103,7 @@ export default function SignUpModal({ onClose }) {
                         </CustomColumn>
                     </PwdDiv>
                 )}
-                {click && <ChangePwdModal_New />}
+                {click && <ChangePwdModal_New email={email} userId={id} onClose={onClose} />}
             </CustomRow>
         </CustomModal>
     );
