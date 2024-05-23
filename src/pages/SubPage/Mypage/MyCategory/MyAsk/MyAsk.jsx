@@ -6,6 +6,7 @@ import CustomFont from '../../../../../Components/Container/CustomFont';
 import axios from 'axios';
 import { useAuth } from '../../../AuthContext';
 import CustomCenter from '../../../../../Components/Container/CustomCenter';
+import CustomModal from '../../../../../Components/Container/CustomModal';
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -91,7 +92,7 @@ const MyAnswerContainer = styled.div`
   border: none;
   border-radius: 10px;
   padding: 15px;
-  width: 100%;
+  width: 80%;
   height: 80%;
   line-height: 1.5;
   margin-top: 10px;
@@ -184,6 +185,10 @@ export default function MyAsk() {
     setModalVisible(false);
   };
 
+  const closeModal_2 = () => {
+    setSelectedDocument(null);
+  }
+
   return (
     <ContainerCenter>
       <PageContainer>
@@ -257,8 +262,8 @@ export default function MyAsk() {
 
       {/* title, content도 상세 정보 아래에 추가하기 */}
       {selectedDocument && (
-        <ModalOverlay show={modalVisible} onClick={closeModal}>
-          <ModalContent onClick={(e) => e.stopPropagation()}>
+        <CustomModal width='55%' padding='20px' onClose={closeModal_2} maxHeight='100vh'>
+          <CustomColumn width='100' alignItems='center' justifyContent='center'>
             <CustomFont color='#000000' font='1.5rem'>문서 상세 정보</CustomFont>
             <MyAnswerContainer>
               <CustomFont color='#000000' font='1rem'>제목: {selectedDocument.content}</CustomFont>
@@ -268,8 +273,8 @@ export default function MyAsk() {
               {/* <CustomFont color='#000000' font='1rem'>출력 제목: {selectedDocument.title}</CustomFont>
               <CustomFont color='#000000' font='1rem'>출력 내용: {selectedDocument.content}</CustomFont> */}
             </MyAnswerContainer>
-          </ModalContent>
-        </ModalOverlay>
+          </CustomColumn>
+        </CustomModal>
       )}
     </ContainerCenter>
   );

@@ -67,6 +67,7 @@ const ModalHeader = styled.div`
 const ChildDiv = styled.div`
   width: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
   max-height: ${props => props.maxHeight || '90vh'};
 
   &::-webkit-scrollbar {
@@ -154,13 +155,13 @@ const CustomModal = ({ children, flexDirection, width, maxHeight, gap, alignItem
                     </ChildDiv>
                 </ModalContainer>
             </ModalOverlay>
-            <FeatherImage
+            {/* <FeatherImage
                 src={'icon_feather.png'}
                 style={{
                     right: `${featherPosition.right}px`,
                     bottom: `${featherPosition.bottom}px`
                 }}
-            />
+            /> */}
         </>
     );
 };

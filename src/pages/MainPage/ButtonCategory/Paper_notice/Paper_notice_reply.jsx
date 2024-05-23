@@ -7,6 +7,7 @@ import CustomRow from "../../../../Components/Container/CustomRow";
 import StyledImg from "../../../../Components/Container/StyledImg";
 import CustomCenter from '../../../../Components/Container/CustomCenter';
 import axios from 'axios';
+import CustomModal from "../../../../Components/Container/CustomModal";
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -191,7 +192,7 @@ const ModalX = styled.button`
   cursor: pointer;
 `;
 
-export default function Component() {
+export default function Component({ onClose }) {
 
     const [content, setContent] = useState('');
     const navigate = useNavigate();
@@ -270,6 +271,10 @@ export default function Component() {
         setTitle(e.target.value);
     }
 
+    const closeModal = () => {
+        setShowModal(false);
+    }
+
     return (
         <ContainerCenter>
             <PageContainer>
@@ -321,7 +326,7 @@ export default function Component() {
                 }
 
                 {showModal && (
-                    <LoadingMessage>
+                    <CustomModal width='30%' height='90vh' padding='20px' onClose={closeModal} maxHeight='100vh'>
                         <CustomColumn width='100%' justifyContent='center' alignItems='center' gap='2rem'>
                             <CustomFont color='black' font='1rem'>문서를 저장할 제목을 입력해주세요.</CustomFont>
                             <InputForm value={title} onChange={handleTitleChange} />
@@ -330,7 +335,7 @@ export default function Component() {
                                 <CancelButton onClick={() => setShowModal(false)}>취소</CancelButton>
                             </CustomRow>
                         </CustomColumn>
-                    </LoadingMessage>
+                    </CustomModal>
                 )}
 
             </PageContainer>

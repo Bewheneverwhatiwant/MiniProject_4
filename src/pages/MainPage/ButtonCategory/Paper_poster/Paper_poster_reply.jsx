@@ -7,6 +7,7 @@ import CustomRow from "../../../../Components/Container/CustomRow";
 import StyledImg from "../../../../Components/Container/StyledImg";
 import CustomCenter from '../../../../Components/Container/CustomCenter';
 import axios from 'axios';
+import CustomModal from "../../../../Components/Container/CustomModal";
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -55,19 +56,6 @@ display: flex;
 justify-content: center;
 align-items: center;
 border: none;
-`;
-
-const LoadingMessage = styled.div`
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    width: 50vh;
-    height: 20vh;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 `;
 
 const ConfirmButton = styled.button`
@@ -224,6 +212,10 @@ export default function Component() {
         setShowcomingsoon(false);
     }
 
+    const closeModal = () => {
+        setShowModal(false);
+    }
+
     const handleApiSave = () => {
         const serverIp = process.env.REACT_APP_SERVER_IP;
         const docId = localStorage.getItem('doc_id'); // 서버에서 doc_id 받아오는 걸로 바꾸기
@@ -321,7 +313,7 @@ export default function Component() {
                 }
 
                 {showModal && (
-                    <LoadingMessage>
+                    <CustomModal width='30%' height='90vh' padding='20px' onClose={closeModal} maxHeight='100vh'>
                         <CustomColumn width='100%' justifyContent='center' alignItems='center' gap='2rem'>
                             <CustomFont color='black' font='1rem'>문서를 저장할 제목을 입력해주세요.</CustomFont>
                             <InputForm value={title} onChange={handleTitleChange} />
@@ -330,7 +322,7 @@ export default function Component() {
                                 <CancelButton onClick={() => setShowModal(false)}>취소</CancelButton>
                             </CustomRow>
                         </CustomColumn>
-                    </LoadingMessage>
+                    </CustomModal>
                 )}
 
             </PageContainer>
