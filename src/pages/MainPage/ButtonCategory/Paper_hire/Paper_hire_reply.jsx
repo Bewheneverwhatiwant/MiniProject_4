@@ -8,6 +8,7 @@ import StyledImg from "../../../../Components/Container/StyledImg";
 import CustomCenter from '../../../../Components/Container/CustomCenter';
 import axios from 'axios';
 import { useAuth } from "../../../SubPage/AuthContext";
+import CustomModal from "../../../../Components/Container/CustomModal";
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -190,7 +191,7 @@ const ModalX = styled.button`
   cursor: pointer;
 `;
 
-export default function Component() {
+export default function Component({ onClose }) {
 
     const [content, setContent] = useState('');
     const navigate = useNavigate();
@@ -261,6 +262,10 @@ export default function Component() {
 
     const showModalSaveContent = () => {
         setShowModal(true);
+    }
+
+    const CloseModal = () => {
+        setShowModal(false);
     }
 
     const handleTitleChange = (e) => {
@@ -346,14 +351,16 @@ export default function Component() {
                 }
 
                 {showModal && (
-                    <CustomColumn width='100%' justifyContent='center' alignItems='center' gap='2rem'>
-                        <CustomFont color='black' font='1rem'>문서를 저장할 제목을 입력해주세요.</CustomFont>
-                        <InputForm value={title} onChange={handleTitleChange} />
-                        <CustomRow width='100%' alignItems='center' justifyContent='center' gap='1rem'>
-                            <ConfirmButton onClick={handleApiSave} disabled={!title.trim()}>확인</ConfirmButton>
-                            <CancelButton onClick={() => setShowModal(false)}>취소</CancelButton>
-                        </CustomRow>
-                    </CustomColumn>
+                    <CustomModal width='30%' maxHeight='100vh' padding='20px' onClose={CloseModal}>
+                        <CustomColumn width='100%' alignItems='center' justifyContent='center'>
+                            <CustomFont color='black' font='1rem'>문서를 저장할 제목을 입력해주세요.</CustomFont>
+                            <InputForm value={title} onChange={handleTitleChange} />
+                            <CustomRow width='100%' alignItems='center' justifyContent='center' gap='1rem'>
+                                <ConfirmButton onClick={handleApiSave} disabled={!title.trim()}>확인</ConfirmButton>
+                                <CancelButton onClick={() => setShowModal(false)}>취소</CancelButton>
+                            </CustomRow>
+                        </CustomColumn>
+                    </CustomModal>
                 )}
 
             </PageContainer>

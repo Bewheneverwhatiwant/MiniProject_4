@@ -221,22 +221,35 @@ export default function MyAsk() {
     setSelectedDocument(null);
   }
 
-  // 문서 삭제 API
-  const handleDelete = async (docName, username) => {
+  // 문서 삭제 API -> user_name 필드가 string으로 고쳐지면 다시 시도해보기
+  const handleDelete = async (docName, userId) => {
     if (window.confirm('정말 삭제하시겠습니까?')) {
       try {
         const serverIp = process.env.REACT_APP_SERVER_IP;
-        const url = `${serverIp}/delete_document?doc_name=${docName}&username=${username}`;
+        const url = `${serverIp}/delete_document`;
         console.log('DELETE 요청 URL:', url);
+        console.log('삭제할 문서 이름:', docName);
+        console.log('사용자 ID:', userId);
 
-        const response = await axios.delete(url);
+        // URL 인코딩 추가
+        const response = await axios.delete(url, {
+          params: {
+            doc_name: docName,
+            user_id: userId
+          }
+        });
+
         console.log('DELETE 응답:', response);
 
-        alert('삭제되었습니다!');
-        setShowDeleteModal(false);
-        setDocuments(documents.filter(doc => doc.name !== docName));
+        if (response.status === 200) {
+          alert('삭제되었습니다!');
+          setShowDeleteModal(false);
+          setDocuments(documents.filter(doc => doc.content !== docName));
+        } else {
+          alert('문서 삭제에 실패했습니다.');
+        }
       } catch (error) {
-        console.error('Error deleting document:', error);
+        console.error('문서 삭제 중 오류 발생:', error);
         alert('문서 삭제에 실패했습니다.');
       }
     }
@@ -294,16 +307,21 @@ export default function MyAsk() {
                       <CustomFont color='white' font='1.6rem' fontWeight='bold'>{doc.content}</CustomFont>
                     </TitleAnswer>
 
-                    <Xbutton onClick={() => setShowDeleteModal(true)}>
-                      <CustomFont color='white' fontWeight='bold' font='1.6rem'>X</CustomFont>
+                    <Xbutton onClick={() => {
+                      console.log('삭제할 문서 설정:', doc.content); // 삭제할 문서 설정 로그 출력
+                      setDocToDelete(doc.content);
+                      setShowDeleteModal(true);
+                    }}>
+                      x
                     </Xbutton>
+
 
                     {showDeleteModal && (
                       <>
                         <ModalOverlay />
                         <BuyModal>
                           <CustomRow>
-                            <ConfirmButton onClick={() => handleDelete(docToDelete, 'username')}>확인</ConfirmButton> {/* 'username'을 실제 유저 이름으로 변경 */}
+                            <ConfirmButton onClick={() => handleDelete(docToDelete, isLoggedIn)}>확인</ConfirmButton> {/* 'username'을 실제 유저 이름으로 변경 */}
                             <CancelButton onClick={() => setShowDeleteModal(false)}>취소</CancelButton>
                           </CustomRow>
                         </BuyModal>
