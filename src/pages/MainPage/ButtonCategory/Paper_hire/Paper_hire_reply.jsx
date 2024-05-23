@@ -191,11 +191,29 @@ const ModalX = styled.button`
   cursor: pointer;
 `;
 
+const moveUpDown = keyframes`
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(20px);
+  }
+`;
+
+const StyledImg_Doc = styled.img`
+  position: absolute;
+  bottom: 140px;
+  right: 90px;
+  animation: ${moveUpDown} 1s infinite;
+  width: 100px;
+  height: 100px;
+`;
+
 const Modal_save = styled.div`
-  position: fixed; /* fixed로 변경하여 화면 중앙에 배치 */
-  top: 50%; /* 화면의 세로 중앙 */
-  left: 50%; /* 화면의 가로 중앙 */
-  transform: translate(-50%, -50%); /* 중앙 정렬 */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 40%;
   height: 50vh;
   background-color: white;
@@ -420,7 +438,9 @@ export default function Component({ onClose }) {
                     saveModal && (
                         <>
                             <ModalOverlay />
-                            <Modal_save />
+                            <Modal_save>
+                                <StyledImg_Doc src={'icon_Doc.png'} />
+                            </Modal_save>
                         </>
                     )
                 }
