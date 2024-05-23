@@ -71,7 +71,6 @@ const ModalContent = styled.div`
   justify-content: center;
   text-align: center;
   color: black;
-  font-family: 'RIDIBatang';
 `;
 
 const ModalButton = styled.button`
@@ -82,7 +81,16 @@ const ModalButton = styled.button`
   padding: 10px 20px;
   margin: 10px;
   cursor: pointer;
-  font-family: 'RIDIBatang';
+`;
+
+const Ok = styled.button`
+  background-color: #FFC7C7;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  margin: 10px;
+  cursor: pointer;
 `;
 
 const BuyModal = styled.div`
@@ -102,29 +110,6 @@ const BuyModal = styled.div`
   z-index: 1001; /* Modal이 항상 위에 오도록 설정 */
   background-image: url('Modal_img_1.png');
   background-size: cover;
-`;
-
-const ModalOverlay_login = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000; /* ModalOverlay가 BuyModal의 바로 아래에 오도록 설정 */
-`;
-
-const ModalContent_login = styled.div`
-  background: transparent;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
 `;
 
 export default function Component() {
@@ -225,14 +210,22 @@ export default function Component() {
             )}
 
             {showLoginModal && (
-                <CustomModal width='30%' height='90vh' padding='20px' onClose={closeModalLogin} maxHeight='100vh'>
-                    <CustomColumn width='100%' alignItems='center' justifyContents='center' gap='0.5rem'>
-                        <CustomFont color='black' font='1.5rem' fontWeight='bold'>로그인 후 모든 기능을 사용하실 수 있습니다!</CustomFont>
-                        <StyledImg src={'icon_Boo_blush.png'} width='200px' height='200px' />
-                        <CustomRow width='100%' alignItems='center' justifyContents='space-between' gap='8rem'>
-                        </CustomRow>
-                    </CustomColumn>
-                </CustomModal>
+                <ModalOverlay>
+                    <BuyModal>
+                        <CustomColumn width='100%' alignItems='center' justifyContent='center' gap='1rem'>
+                            <CustomFont color='black' font='1.5rem' fontWeight='bold'>
+                                로그인 후 모든 기능을 사용하실 수 있습니다!
+                            </CustomFont>
+                            <StyledImg src={'icon_Boo_blush.png'} width='200px' height='200px' />
+                            <Ok primary onClick={closeModalLogin}>
+                                <CustomFont color='white' font='1rem'>
+                                    확인
+                                </CustomFont>
+                            </Ok>
+                        </CustomColumn>
+
+                    </BuyModal>
+                </ModalOverlay>
             )}
         </FooterContainer>
     );
