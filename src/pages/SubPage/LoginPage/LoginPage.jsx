@@ -199,6 +199,8 @@ export default function Component() {
         {findid && <FindIdModal onClose={handleClose} />}
         {signup && <SignUpModal onClose={() => setSignup(false)} onShowTicketAlert={handleShowTicketAlert} />}
         {showTicketAlert && <SignUpModal_happy username={username} onClose={closeModals} />}
+
+        <CustomColumn height='200px'></CustomColumn>
       </PageContainer>
     </ContainerCenter>
   );
