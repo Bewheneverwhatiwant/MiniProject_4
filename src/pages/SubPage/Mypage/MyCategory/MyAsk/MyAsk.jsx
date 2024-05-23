@@ -144,7 +144,7 @@ export default function MyAsk() {
     }
   }, [selectedCategory, isLoggedIn]);
 
-  // input과 output 필드 정보를 동시에 가져오는 API
+  // input과 output 필드 정보를 동시에 가져오는 API -> 오류 해결!
   const fetchDocuments = async (category) => {
     const serverIp = process.env.REACT_APP_SERVER_IP;
     try {

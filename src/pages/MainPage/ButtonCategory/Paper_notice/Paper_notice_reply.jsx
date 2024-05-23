@@ -200,6 +200,7 @@ export default function Component({ onClose }) {
     const [title, setTitle] = useState('');
     const [showModal, setShowModal] = useState(false);
 
+    // 저장 오류 해결!
     const { isLoggedIn, logout } = useAuth(); // useAuth를 이용하여 로그인 상태 가져오기
     const [userData, setUserData] = useState({ username: '' });
 

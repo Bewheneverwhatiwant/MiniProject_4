@@ -8,6 +8,7 @@ import StyledImg from "../../../../Components/Container/StyledImg";
 import CustomCenter from '../../../../Components/Container/CustomCenter';
 import axios from 'axios';
 import CustomModal from "../../../../Components/Container/CustomModal";
+import { useAuth } from "../../../SubPage/AuthContext";
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -199,6 +200,28 @@ export default function Component() {
     const [title, setTitle] = useState('');
     const [showModal, setShowModal] = useState(false);
 
+    // 저장 오류 해결!
+    const { isLoggedIn, logout } = useAuth(); // useAuth를 이용하여 로그인 상태 가져오기
+    const [userData, setUserData] = useState({ username: '' });
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/user_total_info`);
+                const user = response.data.find(user => user.username === isLoggedIn);
+                if (user) {
+                    setUserData({ username: isLoggedIn });
+                }
+            } catch (error) {
+                console.error('Failed to fetch user data', error);
+            }
+        };
+
+        if (isLoggedIn) {
+            fetchUserData();
+        }
+    }, [isLoggedIn]);
+
     useEffect(() => {
         const storedContent = localStorage.getItem('content');
         if (storedContent) {
@@ -238,10 +261,11 @@ export default function Component() {
             return;
         }
 
-        console.log('요창된 데이터는', { doc_id: docId, document_name: title, content: content });
+        console.log('요창된 데이터는', { doc_id: docId, document_name: title, content: content, user_name: userData.username });
 
         axios.post(`${serverIp}/save_doc_output`, null, {
             params: {
+                user_name: userData.username,
                 doc_id: docId,
                 document_name: title,
                 content: encodeURIComponent(content) // 여기서 encode 처리 안해주면 400 bad req 오류남
