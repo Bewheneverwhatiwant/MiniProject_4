@@ -47,17 +47,6 @@ const DivideLine = styled.div`
   background-color: #979797;
 `;
 
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: ${props => (props.show ? 'block' : 'none')};
-  z-index: 9999;
-`;
-
 const TitleAnswer = styled.div`
 display: flex;
 align-items: center;
@@ -121,8 +110,8 @@ const BuyModal = styled.div`
   position: fixed;
   top: 50%;
   left: 50%;
-  width: 60%;
-  height: 50vh;
+  width: 50%;
+  height: 60vh;
   transform: translate(-50%, -50%);
   background-color: #ECFFE0;
   padding: 20px;
@@ -131,10 +120,22 @@ const BuyModal = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1001;
+  z-index: 1001; /* Modal이 항상 위에 오도록 설정 */
   background-image: url('Modal_Delete.png');
   background-size: 100% 100%;
+`;
 
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* ModalOverlay가 BuyModal의 바로 아래에 오도록 설정 */
 `;
 
 const ConfirmButton = styled.button`
@@ -247,10 +248,12 @@ export default function MyAsk() {
           setDocuments(documents.filter(doc => doc.content !== docName));
         } else {
           alert('문서 삭제에 실패했습니다.');
+          setShowDeleteModal(false);
         }
       } catch (error) {
         console.error('문서 삭제 중 오류 발생:', error);
         alert('문서 삭제에 실패했습니다.');
+        setShowDeleteModal(false);
       }
     }
   };
@@ -317,11 +320,12 @@ export default function MyAsk() {
 
 
                     {showDeleteModal && (
+
                       <>
-                        <ModalOverlay />
+                        <ModalOverlay show={showDeleteModal} />
                         <BuyModal>
                           <CustomRow>
-                            <ConfirmButton onClick={() => handleDelete(docToDelete, isLoggedIn)}>확인</ConfirmButton> {/* 'username'을 실제 유저 이름으로 변경 */}
+                            <ConfirmButton onClick={() => handleDelete(docToDelete, isLoggedIn)}>확인</ConfirmButton>
                             <CancelButton onClick={() => setShowDeleteModal(false)}>취소</CancelButton>
                           </CustomRow>
                         </BuyModal>

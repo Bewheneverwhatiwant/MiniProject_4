@@ -157,7 +157,8 @@ const ModalOverlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`;
+
+  `;
 
 const ModalContent = styled.div`
   background: white;
@@ -231,7 +232,7 @@ export default function Component() {
         const content = res.choices[0].message.content;
         console.log(content);
         localStorage.setItem('content', content);
-        navigate('/papernoticereply');
+        navigate('/paperposterreply');
       })
       .catch((err) => {
         console.error("Error calling OpenAI API:", err);
@@ -400,16 +401,19 @@ export default function Component() {
           )}
 
           {isLoading &&
-            <LoadingMessage>
-              <CustomColumn width='100%' gap='2rem' alignItems='center' justifyContent='center'>
-                <CustomColumn width='100%' gap='0.5rem' alignItems='center' justifyContent='center'>
-                  <CustomFont color='#8CC63F' fontWeignt='bold'>Boo가 문서를 생성 중입니다.</CustomFont>
-                  <CustomFont color='#8CC63F' fontWeignt='bold'>잠시만 기다려주세요...</CustomFont>
-                  <CustomFont color='#8CC63F' fontWeignt='bold'><br />약 1분정도 소요될 수 있습니다...</CustomFont>
+            <>
+              <ModalOverlay />
+              <LoadingMessage>
+                <CustomColumn width='100%' gap='2rem' alignItems='center' justifyContent='center'>
+                  <CustomColumn width='100%' gap='0.5rem' alignItems='center' justifyContent='center'>
+                    <CustomFont color='#8CC63F' fontWeignt='bold'>Boo가 문서를 생성 중입니다.</CustomFont>
+                    <CustomFont color='#8CC63F' fontWeignt='bold'>잠시만 기다려주세요...</CustomFont>
+                    <CustomFont color='#8CC63F' fontWeignt='bold'><br />약 1분정도 소요될 수 있습니다...</CustomFont>
+                  </CustomColumn>
+                  <LoaderWithImage />
                 </CustomColumn>
-                <LoaderWithImage />
-              </CustomColumn>
-            </LoadingMessage>
+              </LoadingMessage>
+            </>
           }
         </CustomColumn>
       </PageContainer>
