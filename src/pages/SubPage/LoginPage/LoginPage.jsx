@@ -100,6 +100,25 @@ const BuyModal = styled.div`
   background-size: 100% 100%;
 `;
 
+const Modal_LoginFail = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 50%;
+  height: 60vh;
+  transform: translate(-50%, -50%);
+  background-color: #ECFFE0;
+  padding: 20px;
+  border-radius: 50px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001; /* Modal이 항상 위에 오도록 설정 */
+  background-image: url('Modal_LoginFail.png');
+  background-size: 100% 100%;
+`;
+
 const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -125,11 +144,31 @@ const moveUpDown = keyframes`
   }
 `;
 
-// StyledImg 컴포넌트에 애니메이션 추가
 const StyledImg_boo = styled.img`
   width: ${props => props.width};
   height: ${props => props.height};
   animation: ${moveUpDown} 1s ease-in-out infinite; // 2초마다 위 아래로 움직이는 애니메이션
+`;
+
+const moveAndRotate = keyframes`
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+  }
+  100% {
+    transform: translateY(0) rotate(360deg);
+  }
+`;
+
+const StyledImg_Ooops = styled.img`
+  position: fixed;
+  bottom: 120px;
+  left: 200px;
+  width: ${props => props.width};
+  height: ${props => props.height};
+  animation: ${moveAndRotate} 1s linear infinite;
 `;
 
 export default function Component() {
@@ -146,6 +185,7 @@ export default function Component() {
   const [showTicketAlert, setShowTicketAlert] = useState(false);
   const [username, setUsername] = useState('');
   const [loginSuccess, setLoginSuccess] = useState(false); // 로그인 성공 모달 상태
+  const [loginfail, setLoginfail] = useState(false);// 로그인 실패 모달 상태
 
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -169,7 +209,10 @@ export default function Component() {
         }, 3000);
       } catch (error) {
         console.error(error);
-        alert('로그인에 실패하였습니다.');
+        setLoginfail(true);
+        setTimeout(() => {
+          setLoginfail(false);
+        }, 3000);
       }
     }
   }
@@ -262,6 +305,17 @@ export default function Component() {
             </BuyModal>
           </>
         )}
+
+        {
+          loginfail && (
+            <>
+              <ModalOverlay />
+              <Modal_LoginFail>
+                <StyledImg_Ooops src={'icon_Ooops.png'} width='100px' height='100px' />
+              </Modal_LoginFail>
+            </>
+          )
+        }
         <CustomColumn height='200px'></CustomColumn>
       </PageContainer>
     </ContainerCenter>
