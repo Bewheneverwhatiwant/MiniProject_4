@@ -89,10 +89,43 @@ const LogOutImg = styled.div`
 
 const userImg = 'ex_myprofile.png';
 
+const LogoutModal = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 60%;
+  height: 50vh;
+  transform: translate(-50%, -50%);
+  background-color: #ECFFE0;
+  padding: 20px;
+  border-radius: 50px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+  background-image: url('Modal_LogOut.png');
+  background-size: 100% 100%;
+`;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
 export default function Component() {
   const [isLoggedOut, setIsLoggedOut] = useState(false);
   const [userData, setUserData] = useState({ username: '', password: '' });
   const [showModal, setShowModal] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const Modal = () => {
     setShowModal(true);
@@ -129,17 +162,13 @@ export default function Component() {
   }, [isLoggedIn]);
 
   const handleLogout = () => {
-    logout();
-    navigate('/');
-  }
-
-  // const handleChangePassword = () => {
-  //   const newPassword = prompt(`변경할 비밀번호를 입력하세요. 현재 비밀번호는 ${userData.password}입니다.`);
-  //   if (newPassword !== null) {
-  //     alert('변경이 완료되었습니다. 다시 로그인해주세요.');
-  //     navigate('/');
-  //   }
-  // };
+    setShowLogoutModal(true);
+    setTimeout(() => {
+      logout();
+      setShowLogoutModal(false);
+      navigate('/');
+    }, 3000); // 3초 후 로그아웃 및 모달 닫기
+  };
 
   return (
     <ContainerCenter>
@@ -153,10 +182,11 @@ export default function Component() {
               <StyledImg src={userImg} width='150px' height='150px' borderRadius='20px' />
             )}
             <CustomColumn width='100%' justifyContent='flex-start' alignItems='flex-start' gap='1rem'>
-
-              {isLoggedOut ?
-                (<CustomFont font='2rem' color='979797' fontWeight='bold'>'로그인해주세요'</CustomFont>) :
-                (<CustomFont font='2rem' color='979797' fontWeight='bold'>{userData.username}님 환영합니다.</CustomFont>)}
+              {isLoggedOut ? (
+                <CustomFont font='2rem' color='979797' fontWeight='bold'>로그인해주세요</CustomFont>
+              ) : (
+                <CustomFont font='2rem' color='979797' fontWeight='bold'>{userData.username}님 환영합니다.</CustomFont>
+              )}
               <LogoutButton onClick={handleLogout}>
                 <CustomFont color='#979797' font='1rem' fontWeight='bold'>로그아웃</CustomFont>
               </LogoutButton>
@@ -181,12 +211,17 @@ export default function Component() {
             </CustomRow>
           </InfoContainer>
 
-          {
-            showModal && <ChangePwdModal onClose={closeModal} />
-          }
+          {showModal && <ChangePwdModal onClose={closeModal} />}
 
         </CustomColumn>
       </PageContainer>
+
+      {showLogoutModal && (
+        <>
+          <ModalOverlay />
+          <LogoutModal />
+        </>
+      )}
     </ContainerCenter>
   );
-};
+}
