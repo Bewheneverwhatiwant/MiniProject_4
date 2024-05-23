@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import axios from 'axios';
 
 import CustomColumn from '../../../Components/Container/CustomColumn';
@@ -96,7 +96,7 @@ const BuyModal = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 1001; /* Modal이 항상 위에 오도록 설정 */
-  background-image: url('Modal_LoginSuccess.png');
+  background-image: url('Modal_LoginSuccess_back.png');
   background-size: 100% 100%;
 `;
 
@@ -111,6 +111,25 @@ const ModalOverlay = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 1000; /* ModalOverlay가 BuyModal의 바로 아래에 오도록 설정 */
+`;
+
+const moveUpDown = keyframes`
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+`;
+
+// StyledImg 컴포넌트에 애니메이션 추가
+const StyledImg_boo = styled.img`
+  width: ${props => props.width};
+  height: ${props => props.height};
+  animation: ${moveUpDown} 1s ease-in-out infinite; // 2초마다 위 아래로 움직이는 애니메이션
 `;
 
 export default function Component() {
@@ -236,7 +255,11 @@ export default function Component() {
         {loginSuccess && (
           <>
             <ModalOverlay />
-            <BuyModal />
+            <BuyModal>
+              <CustomColumn width='100%' height='100%' alignItems='center' justifyContent='flex-end'>
+                <StyledImg_boo src={'icon_boo_happyAndBlushed.png'} width='300px' height='300px' />
+              </CustomColumn>
+            </BuyModal>
           </>
         )}
         <CustomColumn height='200px'></CustomColumn>
