@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import React, { useState } from 'react';
+import styled, { keyframes } from 'styled-components';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import CustomColumn from '../../../../Components/Container/CustomColumn';
@@ -25,30 +25,31 @@ const InputForm = styled.input`
 `;
 
 const PwdDiv = styled.div`
-background-color: #ECFFE0;
-display: flex;
-align-items: center;
-justify-content: center;
-border-radius: 20px;
-padding: 10px;
-width: 50%;
+  background-color: #ECFFE0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  padding: 10px;
+  width: 50%;
 `;
 
 const Button = styled.button`
-background-color: #FFC7C7;
-display: flex;
-align-items: center;
-justify-content: center;
-padding: 10px;
-border: none;
-border-radius: 10px;
-color: white;
-width: 20%;
+  background-color: #FFC7C7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  width: 20%;
 `;
 
 const Error = styled.div`
   color: red;
   font-size: 0.8rem;
+  margin-top: 0.5rem;
 `;
 
 const BuyModal = styled.div`
@@ -66,7 +67,7 @@ const BuyModal = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 1001;
-  background-image: url('Modal_PwChanged.png');
+  background-image: url('Modal_PwChanged_back.png');
   background-size: 100% 100%;
 `;
 
@@ -83,12 +84,61 @@ const ModalOverlay = styled.div`
   z-index: 1000;
 `;
 
-export default function ChangePwModal_new({ email, userId, onClose }) {
+const moveAndRotate = keyframes`
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+  }
+  100% {
+    transform: translateY(0) rotate(360deg);
+  }
+`;
+
+const StyledImg_sparkle = styled.img`
+  position: fixed;
+  top: 70px;
+  left: 40px;
+  width: ${props => props.width};
+  height: ${props => props.height};
+  animation: ${moveAndRotate} 1s linear infinite;
+`;
+
+const StyledImg_sparkle2 = styled.img`
+  position: fixed;
+  top: 120px;
+  left: 100px;
+  width: ${props => props.width};
+  height: ${props => props.height};
+  animation: ${moveAndRotate} 1s linear infinite;
+`;
+
+export default function ChangePwModal_new({ email, userId, onClose, oldPassword }) {
     const navigate = useNavigate();
     const [password, setPassword] = useState('');
     const [doublepassword, setDoublepassword] = useState('');
     const [error, setError] = useState('');
-    const [pwChangeSuccess, setPwChangeSuccess] = useState(false); // 비밀번호 변경 성공 모달 상태
+    const [pwChangeSuccess, setPwChangeSuccess] = useState(false);
+
+    useEffect(() => {
+        if (password && !validatePassword(password)) {
+            setError('비밀번호는 6자 이상 9자 이하, 특수문자와 숫자를 포함해야 합니다.');
+            return;
+        }
+
+        if (password === oldPassword) {
+            setError('이전과 동일한 비밀번호는 사용하실 수 없습니다.');
+            return;
+        }
+
+        if (password && doublepassword && password !== doublepassword) {
+            setError('비밀번호가 일치하지 않습니다.');
+            return;
+        }
+
+        setError('');
+    }, [password, doublepassword, oldPassword]);
 
     const isFormFilled = password && doublepassword;
 
@@ -100,9 +150,19 @@ export default function ChangePwModal_new({ email, userId, onClose }) {
         setDoublepassword(e.target.value);
     };
 
+    const validatePassword = (password) => {
+        const isLengthValid = password.length >= 6 && password.length <= 9;
+        const hasSpecialCharAndNumber = /[!@#$%^&*(),.?":{}|<>]/.test(password) && /\d/.test(password);
+        return isLengthValid && hasSpecialCharAndNumber;
+    };
+
     const handleChangePassword = async () => {
-        if (!isFormFilled || password !== doublepassword) {
-            setError('비밀번호가 일치하지 않거나 필수 필드가 비어 있습니다.');
+        if (error) {
+            return;
+        }
+
+        if (!isFormFilled) {
+            setError('모든 필드를 입력해 주세요.');
             return;
         }
 
@@ -115,15 +175,15 @@ export default function ChangePwModal_new({ email, userId, onClose }) {
                 }
             });
             console.log('비밀번호 변경 응답:', response.data);
-            setPwChangeSuccess(true); // 비밀번호 변경 성공 모달 표시
+            setPwChangeSuccess(true);
             setTimeout(() => {
-                setPwChangeSuccess(false); // 3초 후 모달 닫기
-                onClose(); // ChangePwModal_new와 SignUpModal 모두 닫기
+                setPwChangeSuccess(false);
+                onClose();
                 navigate('/');
             }, 3000);
         } catch (error) {
             console.error('비밀번호 변경 오류:', error);
-            setError('비밀번호 변경에 실패했습니다.');
+            setError('이전에 사용하신 비밀번호로는 변경하실 수 없습니다..');
         }
     };
 
@@ -137,7 +197,7 @@ export default function ChangePwModal_new({ email, userId, onClose }) {
                         <CustomFont font='1rem' color='black'>새 비밀번호</CustomFont><CustomFont color='red' font='1rem'>*</CustomFont>
                     </CustomRow>
                     <InputForm type='password' placeholder='새로 사용하실 비밀번호를 입력하세요.' value={password} onChange={handlePasswordChange} />
-                    {!password && <Error>필수 필드입니다.</Error>}
+                    {password && <Error>{error}</Error>}
                 </CustomColumn>
 
                 <CustomColumn width='80%'>
@@ -145,10 +205,8 @@ export default function ChangePwModal_new({ email, userId, onClose }) {
                         <CustomFont font='1rem' color='black'>새 비밀번호 확인</CustomFont><CustomFont color='red' font='1rem'>*</CustomFont>
                     </CustomRow>
                     <InputForm type='password' placeholder='비밀번호를 한번 더 입력하세요.' value={doublepassword} onChange={handleDoublepasswordChange} />
-                    {!doublepassword && <Error>필수 필드입니다.</Error>}
+                    {doublepassword && <Error>{error}</Error>}
                 </CustomColumn>
-
-                {error && <Error>{error}</Error>}
 
                 <CustomRow width='100%' justifyContents='flex-end' alignItems='center'>
                     <Button onClick={handleChangePassword}>확인</Button>
@@ -157,7 +215,10 @@ export default function ChangePwModal_new({ email, userId, onClose }) {
                 {pwChangeSuccess && (
                     <>
                         <ModalOverlay />
-                        <BuyModal />
+                        <BuyModal>
+                            <StyledImg_sparkle src={'icon_sparkle.png'} width='100px' height='100px' />
+                            <StyledImg_sparkle2 src={'icon_sparkle.png'} width='100px' height='100px' />
+                        </BuyModal>
                     </>
                 )}
             </CustomColumn>

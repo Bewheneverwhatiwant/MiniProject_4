@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import StyledImg from '../Container/StyledImg';
 import CustomRow from '../Container/CustomRow';
@@ -60,7 +60,7 @@ const LogoutModal = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 1001;
-  background-image: url('Modal_LogOut.png');
+  background-image: url('Modal_LogOut_success_back.png');
   background-size: 100% 100%;
 `;
 
@@ -75,6 +75,36 @@ const ModalOverlay = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 1000;
+`;
+
+const moveAndRotate = keyframes`
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+  }
+  100% {
+    transform: translateY(0) rotate(360deg);
+  }
+`;
+
+const StyledImg_sparkle = styled.img`
+  position: fixed;
+  top: 70px;
+  left: 40px;
+  width: ${props => props.width};
+  height: ${props => props.height};
+  animation: ${moveAndRotate} 1s linear infinite; // 1초마다 회전 및 위아래로 움직이는 애니메이션
+`;
+
+const StyledImg_sparkle2 = styled.img`
+  position: fixed;
+  top: 120px;
+  left: 100px;
+  width: ${props => props.width};
+  height: ${props => props.height};
+  animation: ${moveAndRotate} 1s linear infinite; // 1초마다 회전 및 위아래로 움직이는 애니메이션
 `;
 
 export default function Header() {
@@ -129,7 +159,10 @@ export default function Header() {
             {showLogoutModal && (
                 <>
                     <ModalOverlay />
-                    <LogoutModal />
+                    <LogoutModal>
+                        <StyledImg_sparkle src={'icon_sparkle.png'} />
+                        <StyledImg_sparkle2 src={'icon_sparkle.png'} />
+                    </LogoutModal>
                 </>
             )}
         </HeaderContainer>
