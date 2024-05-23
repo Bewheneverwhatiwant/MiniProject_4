@@ -192,6 +192,26 @@ export default function MyAsk() {
     setSelectedDocument(null);
   }
 
+  // 문서 삭제 API
+  const handleDelete = async (docName, username) => {
+    if (window.confirm('정말 삭제하시겠습니까?')) {
+      try {
+        const serverIp = process.env.REACT_APP_SERVER_IP;
+        const url = `${serverIp}/delete_document?doc_name=${docName}&username=${username}`;
+        console.log('DELETE 요청 URL:', url);
+
+        const response = await axios.delete(url);
+        console.log('DELETE 응답:', response);
+
+        alert('삭제되었습니다!');
+        setDocuments(documents.filter(doc => doc.name !== docName));
+      } catch (error) {
+        console.error('Error deleting document:', error);
+        alert('문서 삭제에 실패했습니다.');
+      }
+    }
+  };
+
   return (
     <ContainerCenter>
       <PageContainer>
@@ -244,7 +264,10 @@ export default function MyAsk() {
                       <CustomFont color='white' font='1.6rem' fontWeight='bold'>{doc.content}</CustomFont>
                     </TitleAnswer>
 
-                    <Xbutton>
+                    <Xbutton onClick={() => {
+                      console.log('문서 객체:', doc);  // 문서 객체의 구조를 확인하기 위해 추가
+                      handleDelete(doc.name, isLoggedIn);
+                    }}>
                       <CustomFont color='white' fontWeight='bold' font='1.6rem'>X</CustomFont>
                     </Xbutton>
                   </CustomRow>

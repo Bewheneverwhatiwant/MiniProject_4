@@ -28,7 +28,7 @@ const PageContainer = styled(ContainerCenter)`
   gap: 20px;
   position: relative;
   background-color: white;
-  background-image: url('MainImg.png');
+  background-image: url('MainImg_2.png');
   background-size: 100% 100%;
 `;
 
