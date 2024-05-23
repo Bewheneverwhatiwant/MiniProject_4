@@ -1,12 +1,10 @@
 import styled from 'styled-components';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
 import CustomColumn from '../../../../Components/Container/CustomColumn';
 import CustomFont from '../../../../Components/Container/CustomFont';
 import CustomRow from '../../../../Components/Container/CustomRow';
-import StyledImg from '../../../../Components/Container/StyledImg';
 
 const InputForm = styled.input`
   display: flex;
@@ -53,19 +51,13 @@ const Error = styled.div`
   font-size: 0.8rem;
 `;
 
-export default function SignUpModal() {
-
+export default function ChangePwModal_new({ email, userId, onClose }) {
     const navigate = useNavigate();
     const [password, setPassword] = useState('');
     const [doublepassword, setDoublepassword] = useState('');
-    const isFormFilled = password && doublepassword;
+    const [error, setError] = useState('');
 
-    const Changed = () => {
-        if (isFormFilled) {
-            alert('비밀번호 변경이 완료되었습니다! 다시 로그인해주세요.');
-            navigate('/');
-        }
-    }
+    const isFormFilled = password && doublepassword;
 
     const handlePasswordChange = (e) => {
         setPassword(e.target.value);
@@ -75,11 +67,34 @@ export default function SignUpModal() {
         setDoublepassword(e.target.value);
     };
 
+    const handleChangePassword = async () => {
+        if (!isFormFilled || password !== doublepassword) {
+            setError('비밀번호가 일치하지 않거나 필수 필드가 비어 있습니다.');
+            return;
+        }
+
+        try {
+            const serverIp = process.env.REACT_APP_SERVER_IP;
+            const response = await axios.post(`${serverIp}/change_password`, null, {
+                params: {
+                    new_password: password,
+                    user_name: userId
+                }
+            });
+            console.log('비밀번호 변경 응답:', response.data);
+            alert('비밀번호 변경이 완료되었습니다! 다시 로그인해주세요.');
+            onClose(); // ChangePwModal_new와 SignUpModal 모두 닫기
+            navigate('/');
+        } catch (error) {
+            console.error('비밀번호 변경 오류:', error);
+            setError('비밀번호 변경에 실패했습니다.');
+        }
+    };
+
     return (
         <PwdDiv>
             <CustomColumn width='100%' alignItems='center' justifyContents='center'>
                 <CustomFont color='black' font='1rem' fontWeight='bold'>비밀번호 변경하기</CustomFont>
-
 
                 <CustomColumn width='80%'>
                     <CustomRow>
@@ -97,8 +112,10 @@ export default function SignUpModal() {
                     {!doublepassword && <Error>필수 필드입니다.</Error>}
                 </CustomColumn>
 
+                {error && <Error>{error}</Error>}
+
                 <CustomRow width='100%' justifyContents='flex-end' alignItems='center'>
-                    <Button onClick={Changed}>확인</Button>
+                    <Button onClick={handleChangePassword}>확인</Button>
                 </CustomRow>
             </CustomColumn>
         </PwdDiv>

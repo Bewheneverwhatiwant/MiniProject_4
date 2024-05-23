@@ -102,7 +102,7 @@ export default function SignUpModal({ onClose }) {
                         </CustomColumn>
                     </PwdDiv>
                 )}
-                {click && <ChangePwModal_new />}
+                {click && <ChangePwModal_new email={email} userId={id} onClose={onClose} />}
             </CustomRow>
         </CustomModal>
     );
