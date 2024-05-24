@@ -236,7 +236,7 @@ export default function MyAsk() {
         const response = await axios.delete(url, {
           params: {
             doc_name: docName,
-            user_id: userId
+            user_name: userId
           }
         });
 
