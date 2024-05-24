@@ -126,6 +126,66 @@ export default function Component() {
   const [userData, setUserData] = useState({ username: '', password: '' });
   const [showModal, setShowModal] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(userImg);
+
+  // 프로필 이미지 업로드 API
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("user_name", userData.username);
+
+      try {
+        const response = await axios.post(
+          `${process.env.REACT_APP_SERVER_IP}/upload_profile`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        if (response.status === 200) {
+          console.log("프로필 이미지가 성공적으로 업로드되었습니다.");
+          setSelectedImage(URL.createObjectURL(file));
+        } else {
+          console.error("프로필 이미지 업로드 실패", response);
+        }
+      } catch (error) {
+        console.error("프로필 이미지 업로드 중 오류 발생", error);
+      }
+    }
+  };
+
+  const handleImageClick = () => {
+    document.getElementById("fileInput").click();
+  };
+
+  // 프로필 이미지 반환 API
+  useEffect(() => {
+    const fetchProfileImage = async () => {
+      if (userData.username) {
+        try {
+          const response = await axios.get(
+            `${process.env.REACT_APP_SERVER_IP}/get_profile`,
+            {
+              params: { user_name: userData.username },
+              responseType: 'blob'
+            }
+          );
+          if (response.status === 200) {
+            const imageUrl = URL.createObjectURL(response.data);
+            setSelectedImage(imageUrl);
+          }
+        } catch (error) {
+          console.error("프로필 이미지 불러오기 실패", error);
+        }
+      }
+    };
+
+    fetchProfileImage();
+  }, [userData.username]);
 
   const Modal = () => {
     setShowModal(true);
@@ -179,7 +239,24 @@ export default function Component() {
             {isLoggedOut ? (
               <LogOutImg>로그인해주세요</LogOutImg>
             ) : (
-              <StyledImg src={userImg} width='150px' height='150px' borderRadius='20px' />
+              // <StyledImg src={userImg} width='150px' height='150px' borderRadius='20px' />
+              <>
+                <StyledImg
+                  src={selectedImage}
+                  width="150px"
+                  height="150px"
+                  borderRadius="20px"
+                  onClick={handleImageClick}
+                  style={{ cursor: "pointer" }}
+                />
+                <input
+                  id="fileInput"
+                  type="file"
+                  style={{ display: "none" }}
+                  accept="image/*"
+                  onChange={handleFileChange}
+                />
+              </>
             )}
             <CustomColumn width='100%' justifyContent='flex-start' alignItems='flex-start' gap='1rem'>
               {isLoggedOut ? (
