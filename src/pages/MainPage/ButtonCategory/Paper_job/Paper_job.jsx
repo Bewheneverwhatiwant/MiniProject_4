@@ -52,24 +52,6 @@ const InputForm = styled.input`
   }
 `;
 
-const TextareaForm = styled.textarea`
-  display: flex;
-  border: 1.5px solid #8CC63F;
-  background-color: transparent;
-  border-radius: 15px;
-  width: 100%;
-  height: 4rem;
-  padding: 0.3rem;
-
-  &::placeholder {
-    color: #D9D9D9;
-  }
-
-  &:active {
-    outline: none;
-  }
-`;
-
 const SendButton = styled.button`
   width: 60%;
   display: flex;
@@ -94,10 +76,11 @@ const Boo_says = styled.div`
   padding: 1rem;
   font-size: 1rem;
   font-weight: bold;
-
+  line-height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
 `;
 
 const ErrorMessage = styled.div`
@@ -358,7 +341,7 @@ export default function Component() {
 
           <CustomRow width='100%' gap='1rem' justifyContent='center' alignItems='center' >
             <StyledImg src={'icon_boo_glass.png'} />
-            <Boo_says>이력서, 나에게 맡겨!</Boo_says>
+            <Boo_says>이력서, 나에게 맡겨!<br />정보가 구체적일 수록 좋아요!</Boo_says>
           </CustomRow>
 
           <CustomColumn width='60%' justifyContent='center' alignItems='center'>
