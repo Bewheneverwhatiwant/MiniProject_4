@@ -45,6 +45,8 @@ flex-direction: column;
 align-items: center;
 justify-content: center;
 color: white;
+background-image: url('ReplyDiv_hire.png');
+background-size: 100% 100%;
 `;
 
 const Buttoms = styled.button`

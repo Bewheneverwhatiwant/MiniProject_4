@@ -45,6 +45,8 @@ flex-direction: column;
 align-items: center;
 justify-content: center;
 color: black;
+background-image: url('ReplyDiv_notice.png');
+background-size: 100% 100%;
 `;
 
 const Buttoms = styled.button`
@@ -57,19 +59,6 @@ display: flex;
 justify-content: center;
 align-items: center;
 border: none;
-`;
-
-const LoadingMessage = styled.div`
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    width: 50vh;
-    height: 20vh;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 `;
 
 const ConfirmButton = styled.button`
@@ -378,7 +367,7 @@ export default function Component({ onClose }) {
 
                 <CustomCenter>
                     <CustomFont color='#8CC63F' font='2rem' fontWeight='bold'>
-                        Boo가 생성한 보고서가 도착했습니다!
+                        Boo가 생성한 보고서/시말서가 도착했습니다!
                     </CustomFont>
                 </CustomCenter>
 

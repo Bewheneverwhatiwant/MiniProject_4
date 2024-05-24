@@ -45,6 +45,8 @@ flex-direction: column;
 align-items: center;
 justify-content: center;
 color: black;
+background-image: url('ReplyDiv_poster.png');
+background-size: 100% 100%;
 `;
 
 const Buttoms = styled.button`

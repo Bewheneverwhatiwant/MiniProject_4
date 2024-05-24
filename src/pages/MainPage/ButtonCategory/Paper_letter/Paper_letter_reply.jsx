@@ -45,6 +45,8 @@ flex-direction: column;
 align-items: center;
 justify-content: center;
 color: black;
+background-image: url('ReplyDiv_letter.png');
+background-size: 100% 100%;
 `;
 
 const Buttoms = styled.button`
@@ -57,19 +59,6 @@ display: flex;
 justify-content: center;
 align-items: center;
 border: none;
-`;
-
-const LoadingMessage = styled.div`
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    width: 50vh;
-    height: 20vh;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 `;
 
 const ConfirmButton = styled.button`
