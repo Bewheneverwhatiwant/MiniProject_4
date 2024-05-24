@@ -87,7 +87,33 @@ const LogOutImg = styled.div`
   border-radius: 20px;
 `;
 
-const userImg = 'ex_myprofile.png';
+const ProfileContainer = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 150px;
+  height: 150px;
+`;
+
+const DeleteButton = styled.button`
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
+`;
+
+const defaultImg = 'icon_boo_big.png';
 
 const LogoutModal = styled.div`
   position: fixed;
@@ -126,9 +152,10 @@ export default function Component() {
   const [userData, setUserData] = useState({ username: '', password: '' });
   const [showModal, setShowModal] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(userImg);
+  const [selectedImage, setSelectedImage] = useState(defaultImg);
+  const [hasProfileImage, setHasProfileImage] = useState(false); // 프로필 이미지 존재 여부
 
-  // 프로필 이미지 업로드 API
+  // 프로필 이미지 업로드 및 업데이트 API
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -137,29 +164,62 @@ export default function Component() {
       formData.append("user_name", userData.username);
 
       try {
-        const response = await axios.post(
-          `${process.env.REACT_APP_SERVER_IP}/upload_profile`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-        if (response.status === 200) {
-          console.log("프로필 이미지가 성공적으로 업로드되었습니다.");
-          setSelectedImage(URL.createObjectURL(file));
+        let response;
+        if (hasProfileImage) {
+          response = await axios.put(
+            `${process.env.REACT_APP_SERVER_IP}/update_profile`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
         } else {
-          console.error("프로필 이미지 업로드 실패", response);
+          response = await axios.post(
+            `${process.env.REACT_APP_SERVER_IP}/upload_profile`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+        }
+
+        if (response.status === 200) {
+          console.log("프로필 이미지가 성공적으로 업로드/업데이트되었습니다.");
+          setSelectedImage(URL.createObjectURL(file));
+          setHasProfileImage(true);
+        } else {
+          console.error("프로필 이미지 업로드/업데이트 실패", response);
         }
       } catch (error) {
-        console.error("프로필 이미지 업로드 중 오류 발생", error);
+        console.error("프로필 이미지 업로드/업데이트 중 오류 발생", error);
       }
     }
   };
 
   const handleImageClick = () => {
     document.getElementById("fileInput").click();
+  };
+
+  // 프로필 이미지 삭제 API
+  const handleDeleteImage = async () => {
+    try {
+      const response = await axios.delete(`${process.env.REACT_APP_SERVER_IP}/delete_profile`, {
+        params: { user_name: userData.username }
+      });
+      if (response.status === 200) {
+        console.log("프로필 이미지가 성공적으로 삭제되었습니다.");
+        setSelectedImage(defaultImg);
+        setHasProfileImage(false);
+      } else {
+        console.error("프로필 이미지 삭제 실패", response);
+      }
+    } catch (error) {
+      console.error("프로필 이미지 삭제 중 오류 발생", error);
+    }
   };
 
   // 프로필 이미지 반환 API
@@ -177,9 +237,13 @@ export default function Component() {
           if (response.status === 200) {
             const imageUrl = URL.createObjectURL(response.data);
             setSelectedImage(imageUrl);
+            setHasProfileImage(true);
+          } else if (response.status === 404) {
+            setHasProfileImage(false);
           }
         } catch (error) {
           console.error("프로필 이미지 불러오기 실패", error);
+          setHasProfileImage(false);
         }
       }
     };
@@ -239,8 +303,7 @@ export default function Component() {
             {isLoggedOut ? (
               <LogOutImg>로그인해주세요</LogOutImg>
             ) : (
-              // <StyledImg src={userImg} width='150px' height='150px' borderRadius='20px' />
-              <>
+              <ProfileContainer>
                 <StyledImg
                   src={selectedImage}
                   width="150px"
@@ -256,7 +319,8 @@ export default function Component() {
                   accept="image/*"
                   onChange={handleFileChange}
                 />
-              </>
+                <DeleteButton onClick={handleDeleteImage}>X</DeleteButton>
+              </ProfileContainer>
             )}
             <CustomColumn width='100%' justifyContent='flex-start' alignItems='flex-start' gap='1rem'>
               {isLoggedOut ? (
