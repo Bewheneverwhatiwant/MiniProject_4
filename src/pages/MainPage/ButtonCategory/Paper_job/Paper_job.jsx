@@ -303,6 +303,16 @@ export default function Component() {
         return;
       }
 
+      // 문서 생성 횟수를 업데이트하는 API 호출
+      const updateCountResponse = await axios.put(`${serverIp}/update_count`, null, {
+        params: { user_name: isLoggedIn }
+      });
+
+      if (updateCountResponse.status === 200) {
+        const count = updateCountResponse.data.match(/문서 생성 횟수\s*:\s*(\d+)\s*회/)[1];
+        console.log(`당신의 문서 생성 횟수는: ${count}회입니다`);
+      }
+
       handleAiReplyClick();
 
     } catch (error) {

@@ -126,6 +126,22 @@ export default function SoldOutFreeTicket({ onClose, onTicketUsed, category }) {
     }, [isLoggedIn]);
 
     const useTicket = async () => {
+
+        const updateDocumentCount = async () => {
+            try {
+                const response = await axios.put(`${process.env.REACT_APP_SERVER_IP}/update_count`, null, {
+                    params: { user_name: userData.username }
+                });
+
+                if (response.status === 200) {
+                    const count = response.data.match(/문서 생성 횟수\s*:\s*(\d+)\s*회/)[1];
+                    console.log(`당신의 문서 생성 횟수는: ${count}회입니다`);
+                }
+            } catch (error) {
+                console.error('Error updating document count:', error.response ? error.response.data : error.message);
+            }
+        };
+
         if (userData.free_tickets >= 1) {
             // 무료 티켓 사용
             try {
@@ -153,6 +169,7 @@ export default function SoldOutFreeTicket({ onClose, onTicketUsed, category }) {
                         });
 
                         console.log('Updated paid tickets:', response.data);
+                        await updateDocumentCount(); // 문서 생성 업데이트 API 호출
                         alert('완료되었습니다. 다시 생성을 진행하세요.');
                         onTicketUsed(category);
 
