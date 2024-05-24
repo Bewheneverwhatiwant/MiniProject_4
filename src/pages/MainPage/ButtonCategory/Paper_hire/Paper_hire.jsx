@@ -254,7 +254,7 @@ export default function Component() {
       .catch(error => {
         console.error('Error:', error.response ? error.response.data : error.message);
       });
-    axios.post(`${serverIp}/update_user_daily_tickets`, null, {
+    axios.put(`${serverIp}/update_user_daily_tickets`, null, {
       params: {
         user_name: isLoggedIn, // AuthContext에서 가져온 사용자명
         usedDailyTicketCount: 1
@@ -311,6 +311,21 @@ export default function Component() {
 
   const handleCancel = () => {
     setShowModal(false);
+  };
+
+  // --
+  // const handleTicketAlertConfirm = () => {
+  //   setShowTicketAlert(false);
+  //   navigate('/buypage');
+  // };
+
+  // const handleTicketAlertCancel = () => {
+  //   setShowTicketAlert(false);
+  // };
+
+  const handleTicketUsed = (category) => {
+    setShowTicketAlert(false);
+    handleAiReplyClick(category);
   };
 
   const isFormValid = who && where && how && why && when && recipient && volume && !volumeError;
@@ -402,7 +417,8 @@ export default function Component() {
           )}
 
           {showTicketAlert && (
-            <SoldOutFreeTicket onClose={() => setShowTicketAlert(false)} />
+            // <SoldOutFreeTicket onClose={() => setShowTicketAlert(false)} />
+            <SoldOutFreeTicket onClose={() => setShowTicketAlert(false)} onTicketUsed={handleTicketUsed} category="poster" />
           )}
 
           {isLoading &&

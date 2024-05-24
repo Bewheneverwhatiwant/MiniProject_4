@@ -115,113 +115,113 @@ const StyledImg_sparkle2 = styled.img`
 `;
 
 export default function ChangePwModal_new({ email, userId, onClose, oldPassword }) {
-    const navigate = useNavigate();
-    const [password, setPassword] = useState('');
-    const [doublepassword, setDoublepassword] = useState('');
-    const [error, setError] = useState('');
-    const [pwChangeSuccess, setPwChangeSuccess] = useState(false);
+  const navigate = useNavigate();
+  const [password, setPassword] = useState('');
+  const [doublepassword, setDoublepassword] = useState('');
+  const [error, setError] = useState('');
+  const [pwChangeSuccess, setPwChangeSuccess] = useState(false);
 
-    useEffect(() => {
-        if (password && !validatePassword(password)) {
-            setError('비밀번호는 6자 이상 9자 이하, 특수문자와 숫자를 포함해야 합니다.');
-            return;
+  useEffect(() => {
+    if (password && !validatePassword(password)) {
+      setError('비밀번호는 6자 이상 9자 이하, 특수문자와 숫자를 포함해야 합니다.');
+      return;
+    }
+
+    if (password === oldPassword) {
+      setError('이전과 동일한 비밀번호는 사용하실 수 없습니다.');
+      return;
+    }
+
+    if (password && doublepassword && password !== doublepassword) {
+      setError('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+
+    setError('');
+  }, [password, doublepassword, oldPassword]);
+
+  const isFormFilled = password && doublepassword;
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const handleDoublepasswordChange = (e) => {
+    setDoublepassword(e.target.value);
+  };
+
+  const validatePassword = (password) => {
+    const isLengthValid = password.length >= 6 && password.length <= 9;
+    const hasSpecialCharAndNumber = /[!@#$%^&*(),.?":{}|<>]/.test(password) && /\d/.test(password);
+    return isLengthValid && hasSpecialCharAndNumber;
+  };
+
+  const handleChangePassword = async () => {
+    if (error) {
+      return;
+    }
+
+    if (!isFormFilled) {
+      setError('모든 필드를 입력해 주세요.');
+      return;
+    }
+
+    try {
+      const serverIp = process.env.REACT_APP_SERVER_IP;
+      const response = await axios.put(`${serverIp}/change_password`, null, {
+        params: {
+          new_password: password,
+          user_name: userId
         }
+      });
+      console.log('비밀번호 변경 응답:', response.data);
+      setPwChangeSuccess(true);
+      setTimeout(() => {
+        setPwChangeSuccess(false);
+        onClose();
+        navigate('/');
+      }, 3000);
+    } catch (error) {
+      console.error('비밀번호 변경 오류:', error);
+      setError('이전에 사용하신 비밀번호로는 변경하실 수 없습니다..');
+    }
+  };
 
-        if (password === oldPassword) {
-            setError('이전과 동일한 비밀번호는 사용하실 수 없습니다.');
-            return;
-        }
+  return (
+    <PwdDiv>
+      <CustomColumn width='100%' alignItems='center' justifyContents='center'>
+        <CustomFont color='black' font='1rem' fontWeight='bold'>비밀번호 변경하기</CustomFont>
 
-        if (password && doublepassword && password !== doublepassword) {
-            setError('비밀번호가 일치하지 않습니다.');
-            return;
-        }
+        <CustomColumn width='80%'>
+          <CustomRow>
+            <CustomFont font='1rem' color='black'>새 비밀번호</CustomFont><CustomFont color='red' font='1rem'>*</CustomFont>
+          </CustomRow>
+          <InputForm type='password' placeholder='새로 사용하실 비밀번호를 입력하세요.' value={password} onChange={handlePasswordChange} />
+          {password && <Error>{error}</Error>}
+        </CustomColumn>
 
-        setError('');
-    }, [password, doublepassword, oldPassword]);
+        <CustomColumn width='80%'>
+          <CustomRow>
+            <CustomFont font='1rem' color='black'>새 비밀번호 확인</CustomFont><CustomFont color='red' font='1rem'>*</CustomFont>
+          </CustomRow>
+          <InputForm type='password' placeholder='비밀번호를 한번 더 입력하세요.' value={doublepassword} onChange={handleDoublepasswordChange} />
+          {doublepassword && <Error>{error}</Error>}
+        </CustomColumn>
 
-    const isFormFilled = password && doublepassword;
+        <CustomRow width='100%' justifyContents='flex-end' alignItems='center'>
+          <Button onClick={handleChangePassword}>확인</Button>
+        </CustomRow>
 
-    const handlePasswordChange = (e) => {
-        setPassword(e.target.value);
-    };
-
-    const handleDoublepasswordChange = (e) => {
-        setDoublepassword(e.target.value);
-    };
-
-    const validatePassword = (password) => {
-        const isLengthValid = password.length >= 6 && password.length <= 9;
-        const hasSpecialCharAndNumber = /[!@#$%^&*(),.?":{}|<>]/.test(password) && /\d/.test(password);
-        return isLengthValid && hasSpecialCharAndNumber;
-    };
-
-    const handleChangePassword = async () => {
-        if (error) {
-            return;
-        }
-
-        if (!isFormFilled) {
-            setError('모든 필드를 입력해 주세요.');
-            return;
-        }
-
-        try {
-            const serverIp = process.env.REACT_APP_SERVER_IP;
-            const response = await axios.post(`${serverIp}/change_password`, null, {
-                params: {
-                    new_password: password,
-                    user_name: userId
-                }
-            });
-            console.log('비밀번호 변경 응답:', response.data);
-            setPwChangeSuccess(true);
-            setTimeout(() => {
-                setPwChangeSuccess(false);
-                onClose();
-                navigate('/');
-            }, 3000);
-        } catch (error) {
-            console.error('비밀번호 변경 오류:', error);
-            setError('이전에 사용하신 비밀번호로는 변경하실 수 없습니다..');
-        }
-    };
-
-    return (
-        <PwdDiv>
-            <CustomColumn width='100%' alignItems='center' justifyContents='center'>
-                <CustomFont color='black' font='1rem' fontWeight='bold'>비밀번호 변경하기</CustomFont>
-
-                <CustomColumn width='80%'>
-                    <CustomRow>
-                        <CustomFont font='1rem' color='black'>새 비밀번호</CustomFont><CustomFont color='red' font='1rem'>*</CustomFont>
-                    </CustomRow>
-                    <InputForm type='password' placeholder='새로 사용하실 비밀번호를 입력하세요.' value={password} onChange={handlePasswordChange} />
-                    {password && <Error>{error}</Error>}
-                </CustomColumn>
-
-                <CustomColumn width='80%'>
-                    <CustomRow>
-                        <CustomFont font='1rem' color='black'>새 비밀번호 확인</CustomFont><CustomFont color='red' font='1rem'>*</CustomFont>
-                    </CustomRow>
-                    <InputForm type='password' placeholder='비밀번호를 한번 더 입력하세요.' value={doublepassword} onChange={handleDoublepasswordChange} />
-                    {doublepassword && <Error>{error}</Error>}
-                </CustomColumn>
-
-                <CustomRow width='100%' justifyContents='flex-end' alignItems='center'>
-                    <Button onClick={handleChangePassword}>확인</Button>
-                </CustomRow>
-
-                {pwChangeSuccess && (
-                    <>
-                        <ModalOverlay />
-                        <BuyModal>
-                            <StyledImg_sparkle src={'icon_sparkle.png'} width='100px' height='100px' />
-                            <StyledImg_sparkle2 src={'icon_sparkle.png'} width='100px' height='100px' />
-                        </BuyModal>
-                    </>
-                )}
-            </CustomColumn>
-        </PwdDiv>
-    );
+        {pwChangeSuccess && (
+          <>
+            <ModalOverlay />
+            <BuyModal>
+              <StyledImg_sparkle src={'icon_sparkle.png'} width='100px' height='100px' />
+              <StyledImg_sparkle2 src={'icon_sparkle.png'} width='100px' height='100px' />
+            </BuyModal>
+          </>
+        )}
+      </CustomColumn>
+    </PwdDiv>
+  );
 };

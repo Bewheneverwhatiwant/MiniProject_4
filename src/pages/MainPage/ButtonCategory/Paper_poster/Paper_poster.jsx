@@ -178,16 +178,6 @@ const ModalButton = styled.button`
   color: white;
 `;
 
-const TicketAlertModal = ({ onConfirm, onCancel }) => (
-  <ModalOverlay>
-    <ModalContent>
-      <p>티켓이 부족합니다! 티켓 구매 화면으로 이동하시겠습니까?</p>
-      <ModalButton primary onClick={onConfirm}>확인</ModalButton>
-      <ModalButton onClick={onCancel}>취소</ModalButton>
-    </ModalContent>
-  </ModalOverlay>
-);
-
 export default function Component() {
   const [recipient, setRecipient] = useState('');
   const [volume, setVolume] = useState('');
@@ -277,7 +267,7 @@ export default function Component() {
         console.error('Error:', error.response ? error.response.data : error.message);
       });
 
-    axios.post(`${serverIp}/update_user_daily_tickets`, null, {
+    axios.put(`${serverIp}/update_user_daily_tickets`, null, {
       params: {
         user_name: isLoggedIn, // AuthContext에서 가져온 사용자명
         usedDailyTicketCount: 1
@@ -344,6 +334,11 @@ export default function Component() {
     setShowModal(false);
   };
 
+  const handleTicketUsed = (category) => {
+    setShowTicketAlert(false);
+    handleAiReplyClick(category);
+  };
+
   const isFormValid = recipient && volume && reason && !volumeError;
 
   return (
@@ -398,7 +393,7 @@ export default function Component() {
           )}
 
           {showTicketAlert && (
-            <SoldOutFreeTicket onClose={() => setShowTicketAlert(false)} />
+            <SoldOutFreeTicket onClose={() => setShowTicketAlert(false)} onTicketUsed={handleTicketUsed} category="poster" />
           )}
 
           {isLoading &&

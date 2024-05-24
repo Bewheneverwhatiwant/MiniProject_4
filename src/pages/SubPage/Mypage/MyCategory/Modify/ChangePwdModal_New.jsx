@@ -75,7 +75,7 @@ export default function ChangePwModal_new({ email, userId, onClose }) {
 
         try {
             const serverIp = process.env.REACT_APP_SERVER_IP;
-            const response = await axios.post(`${serverIp}/change_password`, null, {
+            const response = await axios.put(`${serverIp}/change_password`, null, {
                 params: {
                     new_password: password,
                     user_name: userId
