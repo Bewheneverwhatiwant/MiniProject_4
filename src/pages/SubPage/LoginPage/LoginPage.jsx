@@ -190,11 +190,12 @@ export default function Component() {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  // 로그인 API 연동
+
+  // 로그인 메소드 post -> get으로 수정된 것 반영 완료
   const handleLogin = async () => {
     if (isFormFilled) {
       try {
-        const response = await axios.post(`${process.env.REACT_APP_SERVER_IP}/login`, null, {
+        const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/login`, {
           params: {
             id: userId,
             password: password,
