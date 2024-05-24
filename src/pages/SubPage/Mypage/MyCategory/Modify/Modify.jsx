@@ -152,8 +152,7 @@ export default function Component() {
   const [userData, setUserData] = useState({ username: '', password: '' });
   const [showModal, setShowModal] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(defaultImg);
-  const [hasProfileImage, setHasProfileImage] = useState(false); // 프로필 이미지 존재 여부
+  const { profileImage, setProfileImage } = useAuth(); // useAuth 훅을 사용하여 프로필 이미지 상태와 업데이트 함수를 가져옴
 
   // 프로필 이미지 업로드 및 업데이트 API
   const handleFileChange = async (event) => {
@@ -165,7 +164,7 @@ export default function Component() {
 
       try {
         let response;
-        if (hasProfileImage) {
+        if (profileImage !== defaultImg) {
           response = await axios.put(
             `${process.env.REACT_APP_SERVER_IP}/update_profile`,
             formData,
@@ -189,8 +188,8 @@ export default function Component() {
 
         if (response.status === 200) {
           console.log("프로필 이미지가 성공적으로 업로드/업데이트되었습니다.");
-          setSelectedImage(URL.createObjectURL(file));
-          setHasProfileImage(true);
+          const imageUrl = URL.createObjectURL(file);
+          setProfileImage(imageUrl); // 전역 상태 업데이트
         } else {
           console.error("프로필 이미지 업로드/업데이트 실패", response);
         }
@@ -212,8 +211,7 @@ export default function Component() {
       });
       if (response.status === 200) {
         console.log("프로필 이미지가 성공적으로 삭제되었습니다.");
-        setSelectedImage(defaultImg);
-        setHasProfileImage(false);
+        setProfileImage(defaultImg); // 전역 상태 업데이트
       } else {
         console.error("프로필 이미지 삭제 실패", response);
       }
@@ -236,14 +234,13 @@ export default function Component() {
           );
           if (response.status === 200) {
             const imageUrl = URL.createObjectURL(response.data);
-            setSelectedImage(imageUrl);
-            setHasProfileImage(true);
+            setProfileImage(imageUrl); // 전역 상태 업데이트
           } else if (response.status === 404) {
-            setHasProfileImage(false);
+            setProfileImage(defaultImg); // 기본 이미지로 설정
           }
         } catch (error) {
           console.error("프로필 이미지 불러오기 실패", error);
-          setHasProfileImage(false);
+          setProfileImage(defaultImg); // 기본 이미지로 설정
         }
       }
     };
@@ -305,7 +302,7 @@ export default function Component() {
             ) : (
               <ProfileContainer>
                 <StyledImg
-                  src={selectedImage}
+                  src={profileImage}
                   width="150px"
                   height="150px"
                   borderRadius="20px"

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import StyledImg from '../Container/StyledImg';
@@ -107,64 +107,73 @@ const StyledImg_sparkle2 = styled.img`
   animation: ${moveAndRotate} 1s linear infinite; // 1초마다 회전 및 위아래로 움직이는 애니메이션
 `;
 
+const defaultImg = 'icon_boo_big.png';
+
 export default function Header() {
-    const { isLoggedIn, logout } = useAuth();
-    const navigate = useNavigate();
-    const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const { isLoggedIn, logout, profileImage } = useAuth();
+  const navigate = useNavigate();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-    const Back = () => {
-        navigate('/mainpage');
-    };
+  const Back = () => {
+    navigate('/mainpage');
+  };
 
-    const Mypage = () => {
-        navigate('/mypage');
-    };
+  const Mypage = () => {
+    navigate('/mypage');
+  };
 
-    const handleLogout = () => {
-        setShowLogoutModal(true);
-        setTimeout(() => {
-            logout();
-            setShowLogoutModal(false);
-            navigate('/');
-        }, 3000); // 3초 후 로그아웃 및 모달 닫기
-    };
+  const handleLogout = () => {
+    setShowLogoutModal(true);
+    setTimeout(() => {
+      logout();
+      setShowLogoutModal(false);
+      navigate('/');
+    }, 3000); // 3초 후 로그아웃 및 모달 닫기
+  };
 
-    return (
-        <HeaderContainer>
-            <CustomRow width='97%' justifyContent='center'>
-                <CustomRow width='100%' justifyContent='space-between'>
-                    {!isLoggedIn ? (
-                        <>
-                            {/* 로그인되지 않은 상태 */}
-                        </>
-                    ) : (
-                        <>
-                            <LogoButton onClick={Back} />
-                            <CustomRow>
-                                <HeaderButton onClick={Mypage}>
-                                    <CustomFont color='#979797' font='1rem' fontWeight='bold'>
-                                        My
-                                    </CustomFont>
-                                </HeaderButton>
-                                <HeaderButton onClick={handleLogout}>
-                                    <CustomFont color='#979797' font='1rem' fontWeight='bold'>
-                                        Logout
-                                    </CustomFont>
-                                </HeaderButton>
-                            </CustomRow>
-                        </>
-                    )}
-                </CustomRow>
-            </CustomRow>
-            {showLogoutModal && (
-                <>
-                    <ModalOverlay />
-                    <LogoutModal>
-                        <StyledImg_sparkle src={'icon_sparkle.png'} />
-                        <StyledImg_sparkle2 src={'icon_sparkle.png'} />
-                    </LogoutModal>
-                </>
-            )}
-        </HeaderContainer>
-    );
-};
+  return (
+    <HeaderContainer>
+      <CustomRow width='97%' justifyContent='center'>
+        <CustomRow width='100%' justifyContent='space-between'>
+          {!isLoggedIn ? (
+            <>
+              {/* 로그인되지 않은 상태 */}
+            </>
+          ) : (
+            <>
+              <LogoButton onClick={Back} />
+              <CustomRow>
+                <StyledImg
+                  src={profileImage}
+                  width="30px"
+                  height="30px"
+                  borderRadius="30px"
+                  style={{ cursor: "pointer" }}
+                />
+                <HeaderButton onClick={Mypage}>
+                  <CustomFont color='#979797' font='1rem' fontWeight='bold'>
+                    My
+                  </CustomFont>
+                </HeaderButton>
+                <HeaderButton onClick={handleLogout}>
+                  <CustomFont color='#979797' font='1rem' fontWeight='bold'>
+                    Logout
+                  </CustomFont>
+                </HeaderButton>
+              </CustomRow>
+            </>
+          )}
+        </CustomRow>
+      </CustomRow>
+      {showLogoutModal && (
+        <>
+          <ModalOverlay />
+          <LogoutModal>
+            <StyledImg_sparkle src={'icon_sparkle.png'} />
+            <StyledImg_sparkle2 src={'icon_sparkle.png'} />
+          </LogoutModal>
+        </>
+      )}
+    </HeaderContainer>
+  );
+}
