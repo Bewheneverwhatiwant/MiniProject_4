@@ -232,6 +232,91 @@ const ModalOverlay = styled.div`
   z-index: 1000; /* ModalOverlay가 BuyModal의 바로 아래에 오도록 설정 */
 `;
 
+const grow = keyframes`
+  0% {
+    width: 100px;
+    height: 100px;
+  }
+  50% {
+    width: 200px;
+    height: 200px;
+  }
+  100% {
+    width: 100px;
+    height: 100px;
+  }
+`;
+// 모달의 위아래 움직임 애니메이션
+const moveUpDown_Boo = keyframes`
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+`;
+
+const BuyModalContainer = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const BuyModal = styled.div`
+  width: 400px;
+  height: 400px;
+  background-color: transparent;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url('icon_boo_happyAndBlushed.png');
+  background-size: cover;
+  animation: ${moveUpDown_Boo} 1s infinite; /* 위아래 움직임 애니메이션 적용 */
+`;
+
+const StyledImg_heart = styled.img`
+  width: 100px;
+  height: 100px;
+  animation: ${grow} 3s infinite;
+  opacity: 0.5;
+`;
+
+const rotate = keyframes`
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+`;
+
+const BadModal = styled.div`
+  width: 400px;
+  height: 400px;
+  background-color: transparent;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url('icon_boo_wounded.png');
+  background-size: cover;
+  position: relative;
+`;
+
+const StyledImg_Ooops = styled.img`
+  position: absolute;
+  top: 50px;
+  left: 10px;
+  width: 200px;
+  height: 200px;
+  animation: ${rotate} 1s linear infinite;
+`;
 
 export default function Component() {
 
@@ -240,6 +325,22 @@ export default function Component() {
     const [title, setTitle] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [saveModal, setSaveModal] = useState(false);
+    const [showGood, setShowGood] = useState(false);
+    const [showBad, setShowBad] = useState(false);
+
+    const handleGoodClick = () => {
+        setShowGood(true);
+        setTimeout(() => {
+            setShowGood(false);
+        }, 2500);
+    }
+
+    const handleBadClick = () => {
+        setShowBad(true);
+        setTimeout(() => {
+            setShowBad(false);
+        }, 2500);
+    }
 
     // 저장 오류 해결!
     const { isLoggedIn, logout } = useAuth(); // useAuth를 이용하여 로그인 상태 가져오기
@@ -382,13 +483,34 @@ export default function Component() {
                                 <CustomFont color='black' font='1rem'>답변이 마음에 드시나요?</CustomFont>
                             </CustomRow>
                             <CustomRow width='100%' gap='1.5rem' justifyContent='center' alignItems='center'>
-                                <AnimatedButton>
+                                <AnimatedButton onClick={handleGoodClick}>
                                     <StyledImg src={'icon_good.png'} />
                                 </AnimatedButton>
-                                <AnimatedButton>
+                                <AnimatedButton onClick={handleBadClick}>
                                     <StyledImg src={'icon_bad.png'} />
                                 </AnimatedButton>
                             </CustomRow>
+                            {showGood && (
+                                <>
+                                    <ModalOverlay />
+                                    <BuyModalContainer>
+                                        <BuyModal>
+                                            <StyledImg_heart src={'icon_redHeart.png'} />
+                                        </BuyModal>
+                                    </BuyModalContainer>
+                                </>
+                            )}
+
+                            {showBad && (
+                                <>
+                                    <ModalOverlay />
+                                    <BuyModalContainer>
+                                        <BadModal>
+                                            <StyledImg_Ooops src={'icon_Ooops.png'} />
+                                        </BadModal>
+                                    </BuyModalContainer>
+                                </>
+                            )}
                         </CustomColumn>
                         <CustomRow width='100%' gap='0.5rem'>
                             <Buttoms><CustomFont color="white" fontWeight='bold' onClick={copyToClipboard}>복사하기</CustomFont></Buttoms>
