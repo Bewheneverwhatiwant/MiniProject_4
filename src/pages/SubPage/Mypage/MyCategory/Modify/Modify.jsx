@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import CustomFont from '../../../../../Components/Container/CustomFont';
 import CustomColumn from '../../../../../Components/Container/CustomColumn';
 import CustomRow from '../../../../../Components/Container/CustomRow';
@@ -24,7 +24,7 @@ const PageContainer = styled(ContainerCenter)`
   justify-content: flex-start;
   padding-top: 8vh;
   padding-bottom: 5vh;
-  gap: 20px;
+  gap: 4rem;
   position: relative;
   background-color: white;
 `;
@@ -147,12 +147,146 @@ const ModalOverlay = styled.div`
   z-index: 1000;
 `;
 
+const LevelModal = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 60%;
+  height: 50vh;
+  transform: translate(-50%, -50%);
+  background-color: #ECFFE0;
+  padding: 20px;
+  border-radius: 50px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+  background-size: 100% 100%;
+`;
+
+const LevelButton = styled.button`
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 10px;
+border: none;
+border-radius: 20px;
+background-color: #C1EEA5;
+cursor: pointer;
+`;
+
+const GiftButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border: none;
+  border-radius: 20px;
+  background-color: ${props => (props.disabled ? '#D9D9D9' : '#C1EEA5')};
+  cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
+  width: 100%;
+`;
+
+const LevelModalX = styled.button`
+display: flex;
+align-items: center;
+justify-content: center;
+border: none;
+background-color: #D9D9D9;
+color: white;
+border-radius: 10px;
+cursor: pointer;
+`;
+
+const ProgressBar = styled.div`
+  width: ${props => props.width || '0%'};
+  height: 100%;
+  background-color: #8CC63F;
+  transition: width 0.3s;
+`;
+
+const ProgressBarContainer = styled.div`
+  width: 100%;
+  height: 20px;
+  background-color: #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+`;
+
+const SmallBooSay = styled.div`
+display: flex;
+background-color: #C1EEA5;
+align-items: center;
+justify-content: center;
+padding: 5px;
+text-align: center;
+border-radius: 30px;
+width: 200px;
+line-height: 1.2rem;
+`;
+
+const LevelDiv = styled.div`
+background-color: #8CC63F;
+padding: 10px;
+width: 100%;
+border-radius: 30px;
+display: flex;
+justify-content: center;
+align-items: center;
+`;
+
+const bounce = keyframes`
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+`;
+
+const AnimatedRow = styled(CustomRow)`
+  animation: ${bounce} 1s infinite;
+`;
+
 export default function Component() {
   const [isLoggedOut, setIsLoggedOut] = useState(false);
   const [userData, setUserData] = useState({ username: '', password: '' });
   const [showModal, setShowModal] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const { profileImage, setProfileImage } = useAuth(); // useAuth 훅을 사용하여 프로필 이미지 상태와 업데이트 함수를 가져옴
+  const [level, setLevel] = useState(false);
+
+  const [docCount, setDocCount] = useState(3);
+
+  // 레벨 계산 함수
+  const calculateLevel = (count) => {
+    if (count >= 1 && count < 20) return 'BOO론즈';
+    if (count >= 20 && count < 40) return 'BOO지런한 새';
+    if (count >= 40 && count < 60) return '남 BOO럽지 않아';
+    if (count >= 60 && count < 80) return '문서 BOO자';
+    if (count >= 80 && count <= 100) return '문서왕';
+  };
+
+  // 다음 레벨 계산 함수
+  const calculateNextLevel = (count) => {
+    if (count >= 1 && count < 20) return 'BOO지런한 새';
+    if (count >= 20 && count < 40) return '남 BOO럽지 않아';
+    if (count >= 40 && count < 60) return '문서 BOO자';
+    if (count >= 60 && count < 80) return '문서왕';
+    if (count >= 80 && count <= 100) return '문서왕';
+  };
+
+  const remainingDocuments = (level) => {
+    if (level === 'BOO론즈') return 20 - docCount;
+    if (level === 'BOO지런한 새') return 40 - docCount;
+    if (level === '남 BOO럽지 않아') return 60 - docCount;
+    if (level === '문서 BOO자') return 80 - docCount;
+    if (level === '문서왕') return 100 - docCount;
+  };
+
+  const currentLevel = calculateLevel(docCount);
+  const nextLevel = calculateNextLevel(docCount);
 
   // 프로필 이미지 업로드 및 업데이트 API
   const handleFileChange = async (event) => {
@@ -256,6 +390,14 @@ export default function Component() {
     setShowModal(false);
   }
 
+  const handleLevelModal = () => {
+    setLevel(true);
+  }
+
+  const handleLevelModalX = () => {
+    setLevel(false);
+  }
+
   const { isLoggedIn, logout } = useAuth(); // useAuth를 이용하여 로그인 상태 가져오기
 
   const navigate = useNavigate();
@@ -351,15 +493,104 @@ export default function Component() {
 
           {showModal && <ChangePwdModal onClose={closeModal} />}
 
+          {showLogoutModal && (
+            <>
+              <ModalOverlay />
+              <LogoutModal />
+            </>
+          )}
+
+        </CustomColumn>
+
+        <CustomColumn width='80%' justifyContent='center' alignItems='center' gap='3rem'>
+
+          <CustomColumn width='100%' justifyContent='center' alignItems='center' gap='1rem'>
+            <CustomRow width='100%' justifyContent='flex-start' alignItems='center'>
+              <CustomFont color='black' font='1.5rem' fontWeight='bold'>내가 지금까지 생성한 문서는?</CustomFont>
+            </CustomRow>
+            <CustomRow width='100%' justifyContent='flex-start' alignItems='center'>
+              <CustomFont color='#8CC63F' font='1.5rem' fontWeight='bold'>{docCount}개</CustomFont>
+            </CustomRow>
+            <CustomRow width='100%' justifyContent='flex-start' alignItems='center'>
+              <CustomFont color='#8CC63F' font='1rem'>{userData.username}님은 {currentLevel}Level 입니다.</CustomFont>
+            </CustomRow>
+          </CustomColumn>
+
+          <CustomRow width='100%' justifyContent='flex-start' alignItems='center' gap='1rem'>
+            <StyledImg src={'icon_boo_glass.png'} width='70px' height='70px' />
+            <CustomRow width='100%' justifyContent='center' alignItems='center'>
+              <ProgressBarContainer>
+                <ProgressBar width={`${docCount}%`} />
+              </ProgressBarContainer>
+            </CustomRow>
+          </CustomRow>
+
+          <CustomRow width='100%' justifyContent='flex-start' alignItems='center' gap='1rem'>
+            <CustomFont color='black' font='1rem' fontWeight='bold'>다음 레벨은?</CustomFont>
+
+            {nextLevel === '문서왕' ? (
+              <StyledImg src={'icon_boo_glass.png'} width='20px' height='20px' />
+            ) : (
+              <LevelButton onClick={handleLevelModal}>
+                <CustomFont color='white' font='1rem'>{nextLevel}</CustomFont>
+              </LevelButton>
+            )}
+          </CustomRow>
+
+          {level && (
+            <>
+              <ModalOverlay />
+              <LevelModal>
+                <CustomColumn width='95%' alignItems='center' justifyContent='center'>
+
+                  <CustomRow width='100%' alignItems='center' justifyContent='flex-end'>
+                    <CustomRow>
+                      <AnimatedRow>
+                        <StyledImg src={'icon_boo_small.png'} width='50px' height='50px' />
+                        <SmallBooSay>
+                          <CustomFont color='white' font='1rem' fontWeight='bold'>
+                            목표에 달성하는 순간, <br />버튼이 활성화될 거예요!
+                          </CustomFont>
+                        </SmallBooSay>
+                      </AnimatedRow>
+                      <LevelModalX onClick={handleLevelModalX}>x</LevelModalX>
+                    </CustomRow>
+                  </CustomRow>
+
+                  <CustomColumn width='100%' alignItems='center' justifyContent='center'>
+                    {['BOO론즈', 'BOO지런한 새', '남 BOO럽지 않아', '문서 BOO자', '문서왕'].map((level, index) => (
+                      <CustomRow key={index} width='100%' alignItems='center' justifyContent='center' gap='1rem'>
+                        <CustomRow width='25%' alignItems='center' justifyContent='center'>
+                          <StyledImg src={'icon_boo_small.png'} width={`${15 + index * 5}px`} height={`${15 + index * 5}px`} />
+                        </CustomRow>
+
+                        <CustomRow width='25%' alignItems='center' justifyContent='center'>
+                          <CustomFont color='#8CC63F' font='1rem' fontWeight='bold'>{level}</CustomFont>
+                        </CustomRow>
+
+                        <CustomRow width='25%' alignItems='center' justifyContent='center'>
+                          <LevelDiv>
+                            <CustomFont color='white' font='1rem'>
+                              {remainingDocuments(level)}장 남았어요
+                            </CustomFont>
+                          </LevelDiv>
+                        </CustomRow>
+
+                        <CustomRow width='25%' alignItems='center' justifyContent='center'>
+                          <GiftButton disabled={level !== currentLevel}>
+                            <CustomFont color='white' font='1rem'>보상받기</CustomFont>
+                          </GiftButton>
+                        </CustomRow>
+                      </CustomRow>
+                    ))}
+                  </CustomColumn>
+                </CustomColumn>
+              </LevelModal>
+            </>
+          )}
+
         </CustomColumn>
       </PageContainer>
-
-      {showLogoutModal && (
-        <>
-          <ModalOverlay />
-          <LogoutModal />
-        </>
-      )}
     </ContainerCenter>
   );
 }
