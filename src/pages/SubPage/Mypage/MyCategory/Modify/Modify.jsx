@@ -256,6 +256,7 @@ export default function Component() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const { profileImage, setProfileImage } = useAuth(); // useAuth 훅을 사용하여 프로필 이미지 상태와 업데이트 함수를 가져옴
   const [level, setLevel] = useState(false);
+  const [getGift, setGetGift] = useState(false); // 보상받기 클릭 시 모달
 
   const [docCount, setDocCount] = useState(3);
 
@@ -397,6 +398,20 @@ export default function Component() {
   const handleLevelModalX = () => {
     setLevel(false);
   }
+
+  const handleGetGift = () => {
+    setGetGift(true);
+  }
+
+  useEffect(() => {
+    if (getGift) {
+      const timer = setTimeout(() => {
+        setGetGift(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [getGift]);
+  // 나중에 getGift 모달에, 무료 쿠폰 +1 해주는 API 연동하기
 
   const { isLoggedIn, logout } = useAuth(); // useAuth를 이용하여 로그인 상태 가져오기
 
@@ -577,13 +592,27 @@ export default function Component() {
                         </CustomRow>
 
                         <CustomRow width='25%' alignItems='center' justifyContent='center'>
-                          <GiftButton disabled={level !== currentLevel}>
+                          <GiftButton disabled={level !== currentLevel} onClick={handleGetGift}>
                             <CustomFont color='white' font='1rem'>보상받기</CustomFont>
                           </GiftButton>
                         </CustomRow>
                       </CustomRow>
                     ))}
                   </CustomColumn>
+                </CustomColumn>
+              </LevelModal>
+            </>
+          )}
+
+          {getGift && (
+            <>
+              <ModalOverlay />
+              <LevelModal>
+                <CustomColumn width='100%' alignItems='center' justifyContent='center' gap='1rem'>
+                  <CustomFont color='#8CC63F' font='1.5rem' fontWeight='bold'>축하합니다! 무료 티켓 1장이 적립되었어요!</CustomFont>
+                  <AnimatedRow>
+                    <StyledImg src='icon_booAndTicket.png' width='500px' height='400px' />
+                  </AnimatedRow>
                 </CustomColumn>
               </LevelModal>
             </>
