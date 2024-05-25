@@ -45,18 +45,13 @@ export default function Component() {
   return (
     <ContainerCenter>
       <PageContainer>
-        <CustomFont color='black' fontWeight='bold' font='1.5rem'>나중에 만나요</CustomFont>
+      <CustomCenter>
+          <StyledImg src={'icon_boo.png'} width='500px' height='480px' borderRadius='20%' />
+        </CustomCenter>
 
-        <CustomRow width='80%' alignItems='flex-end' justifyContent='flex-start' gap='100px'>
-
-          <CustomColumn width='60%'>
-          <CustomFont color='black'>abc</CustomFont>
-          <CustomFont color='black'>abc</CustomFont>
-          <CustomFont color='black'>abc</CustomFont>
-          </CustomColumn>
-
-          <StyledImg src={'ex_img.png'} width='100px' height='100px' borderRadius='20%' />
-        </CustomRow>
+        <CustomFont color='skyblue' fontWeight='bold' font='50px'>Coming Soon...!</CustomFont>
+        <CustomFont color='black' fontWeight='thin' font='20px'>보다 나은 서비스 제공을 위하여 페이지 준비중에 있습니다.</CustomFont>
+        <CustomFont color='black' fontWeight='thin' font='20px'>빠른 시일 내에 만나요!</CustomFont>
 
       </PageContainer>
     </ContainerCenter>
