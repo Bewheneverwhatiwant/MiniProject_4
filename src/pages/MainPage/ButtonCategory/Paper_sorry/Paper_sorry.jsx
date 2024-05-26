@@ -308,7 +308,9 @@ export default function Component() {
       });
 
       if (updateCountResponse.status === 200) {
-        const count = updateCountResponse.data.match(/문서 생성 횟수\s*:\s*(\d+)\s*회/)[1];
+        // const count = updateCountResponse.data.match(/문서 생성 횟수\s*:\s*(\d+)\s*회/)[1];
+        // updateCountResponse.data를 문자열이 아닌 객체로 처리
+        const count = updateCountResponse.data.count;  // 데이터 구조에 맞게 수정
         console.log(`당신의 문서 생성 횟수는: ${count}회입니다`);
       }
 
