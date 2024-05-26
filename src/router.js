@@ -17,6 +17,7 @@ import Paper_notice_reply from "./pages/MainPage/ButtonCategory/Paper_notice/Pap
 import Paper_poster_reply from "./pages/MainPage/ButtonCategory/Paper_poster/Paper_poster_reply";
 import Paper_sorry_reply from "./pages/MainPage/ButtonCategory/Paper_sorry/Paper_sorry_reply";
 import BuyTicket from "./pages/SubPage/Mypage/MyCategory/CheckTicket/BuyTicket/BuyTicket";
+import BrowseDocument from "./pages/MainPage/BrowseDocument/BrowseDocument";
 
 // 로그인화면 -> 회원가입 클릭 시 모달 -> 가입 및 로그인 완료 후 메인페이지
 
@@ -92,6 +93,10 @@ export default createBrowserRouter([
             {
                 path: "/buyticketpage",
                 element: <BuyTicket />
+            },
+            {
+                path: "/browsedocumentpage",
+                element: <BrowseDocument />
             }
         ]
     }

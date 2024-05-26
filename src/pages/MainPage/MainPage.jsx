@@ -8,6 +8,7 @@ import ImgCarousel from './MainPage_banner';
 import Buttons from './MainPage_buttons';
 import { useAuth } from '../SubPage/AuthContext';
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom';
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -107,6 +108,12 @@ export default function Component() {
     }
   }, [isLoggedIn]);
 
+  const navigate = useNavigate();
+
+  const GoBrowse = () => {
+    navigate('/browsedocumentpage');
+  }
+
   return (
     <ContainerCenter>
       <PageContainer>
@@ -150,7 +157,7 @@ export default function Component() {
             <CustomFont color='black' font='2rem' fontWeight='bold' className="bmjua-text">어떤 문서를 만들어야 할지 고민된다면?</CustomFont>
           </CustomRow>
           <AnimatedRow>
-            <Button backColor='#F1DBF1'>
+            <Button backColor='#F1DBF1' onClick={GoBrowse}>
               <CustomRow width='100%' gap='1rem'>
                 <StyledImg src={'icon_boo_wink.png'} width='70px' height='70px' />
                 <CustomFont color='black' fontWeight='bold' font='1.6rem'>
