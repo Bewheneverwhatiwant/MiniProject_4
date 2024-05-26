@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import CustomFont from '../../../../../../Components/Container/CustomFont';
 import CustomColumn from '../../../../../../Components/Container/CustomColumn';
 import CustomRow from '../../../../../../Components/Container/CustomRow';
-// import StyledImg from '../../../../../../Components/Container/StyledImg';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../../../AuthContext';
@@ -10,7 +9,6 @@ import { useNavigate } from 'react-router-dom';
 import CardCarousel from './CardCarousel';
 import CustomModal from '../../../../../../Components/Container/CustomModal';
 import StyledImg from '../../../../../../Components/Container/StyledImg';
-
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -58,28 +56,16 @@ const RealBuyButton = styled.button`
     height: 50px;
     padding: 10px;
     background-color: ${({ backgroundColor }) => backgroundColor || '#8CC63F'};
-    border: ${({border}) => border || 'none'};
+    border: ${({ border }) => border || 'none'};
     border-radius: 15px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    margin-top: ${({marginTop}) => marginTop || 'none'};
-    margin-bottom: ${({marginBottom}) => marginBottom || 'none'};
+    margin-top: ${({ marginTop }) => marginTop || 'none'};
+    margin-bottom: ${({ marginBottom }) => marginBottom || 'none'};
 
 `;
-
-// const TicketDiv = styled.div`
-// display: flex;
-// flex-direction: row;
-// align-items: center;
-// justify-content: space-between;
-// border-radius: 20px;
-// background-color: rgba(193, 238, 165, 0.5);
-// border: none;
-// width: 100%;
-// height: 100px;
-// `;
 
 const PM = styled.button`
     display: flex;
@@ -139,7 +125,6 @@ const InputForm = styled.input`
     }
 `;
 
-
 export default function Component() {
     const [ticketCount, setTicketCount] = useState(1); // 초기값 및 최소값 1
     const [totalPrice, setTotalPrice] = useState(500); // 초기 총 가격 500원
@@ -176,19 +161,35 @@ export default function Component() {
         setIsBuying(true);
     }
 
-    const RealBuyTrue = () => {
-        setIsBuying(false);
-        setIsRealBuy(true);
-    }
+    const finalBuy = async () => {
+        try {
+            const response = await axios.post(`${process.env.REACT_APP_SERVER_IP}/save_payment`, null, {
+                params: {
+                    user_name: userData.username,
+                    tickets: ticketCount,
+                    price: totalPrice,
+                }
+            });
 
-    const RealBuyFalse = () => {
-        setIsRealBuy(false);
-    }
+            console.log('Payment Response:', response.data);
+            console.log('Sent Data:', {
+                user_name: userData.username,
+                tickets: ticketCount,
+                price: totalPrice,
+            });
 
-    const finalBuy = () => {
-        setIsRealBuy(false);
-        navigate('/');
-    }
+            // 티켓 개수 업데이트
+            setUserData(prevUserData => ({
+                ...prevUserData,
+                paid_tickets: prevUserData.paid_tickets + ticketCount
+            }));
+
+            setIsBuying(false);
+            setIsRealBuy(true);
+        } catch (error) {
+            console.error('Payment Error:', error);
+        }
+    };
 
     // 유저 보유 유/무료 티켓을 가져오기 위함
     useEffect(() => {
@@ -255,10 +256,10 @@ export default function Component() {
                         </CustomFont>
                         <CustomBox backgroundImage="url('TicketBg.png')">
                             <CustomText>
-                                매일 무료 티켓 5장씩 제공됩니다.<br/>
-                                티켓이 부족하다면 티켓을 구매해주세요.<br/>
-                                티켓은 한 장당 500원입니다.<br/>
-                                수량을 선택하셨다면 결제하기 버튼을 눌러 <br/>다음 단계를 진행해주세요.
+                                매일 무료 티켓 5장씩 제공됩니다.<br />
+                                티켓이 부족하다면 티켓을 구매해주세요.<br />
+                                티켓은 한 장당 500원입니다.<br />
+                                수량을 선택하셨다면 결제하기 버튼을 눌러 <br />다음 단계를 진행해주세요.
                             </CustomText>
                         </CustomBox>
 
@@ -285,7 +286,7 @@ export default function Component() {
                             <CustomRow width='100%' justifyContent='space-between' alignItems='center' marginTop='10px'>
                                 <CustomFont font='1.5rem' color='black' margin='0 10px 0 0'>결제하실 가격</CustomFont>
                                 <CustomFont font='1.5rem' color='black'>
-                                    500원 X {ticketCount} = 
+                                    500원 X {ticketCount} =
                                     <CustomFont font='1.5rem' color='#8CC63F'> {totalPrice}원</CustomFont>
                                 </CustomFont>
                             </CustomRow>
@@ -325,11 +326,11 @@ export default function Component() {
                                         </CustomRow>
 
                                         <CustomRow width='100%' justifyContent='center' alignItems='space-between' gap='1rem'>
-                                            <RealBuyButton marginBottom='30px' onClick={RealBuyTrue}>
+                                            <RealBuyButton marginBottom='30px' onClick={finalBuy}>
                                                 <CustomFont color='#FFFFFF' font='1.2rem' fontWeight='400'>REGISTER</CustomFont>
                                             </RealBuyButton>
 
-                                            <RealBuyButton marginBottom='30px' border= '2px solid #8CC63F' backgroundColor='white' onClick={BuyFalse}>
+                                            <RealBuyButton marginBottom='30px' border='2px solid #8CC63F' backgroundColor='white' onClick={BuyFalse}>
                                                 <CustomFont color='#8CC63F' font='1.2rem' fontWeight='400'>CANCEL</CustomFont>
                                             </RealBuyButton>
                                         </CustomRow>
@@ -360,7 +361,7 @@ export default function Component() {
                                             <StyledImg src={'icon_boo_middle.png'} />
                                         </CustomRow>
                                     </CustomColumn>
-                            {/* 2열 */}
+                                    {/* 2열 */}
                                     <CustomColumn width='50%' justifyContent='center' alignItems='center' gap='4rem'>
                                         <CustomFont color='#000000' font='1.8rem' fontWeight='500'>티켓 보유 현황</CustomFont>
 
@@ -374,13 +375,13 @@ export default function Component() {
                                             <CustomFont color='#8CC63F' fontWeight='bold' font='1.4rem'>{freeTickets}장</CustomFont>
                                         </CustomRow>
 
-                                        <RealBuyButton onClick={finalBuy}>
-                                                <CustomFont color='#FFFFFF' font='1.3rem' fontWeight='400'>확인</CustomFont>
+                                        <RealBuyButton onClick={() => setIsRealBuy(false)}>
+                                            <CustomFont color='#FFFFFF' font='1.3rem' fontWeight='400'>확인</CustomFont>
                                         </RealBuyButton>
                                     </CustomColumn>
                                 </CustomRow>
-                                </BuyModal>
-)
+                            </BuyModal>
+                        )
                     }
 
                 </CustomColumn>
