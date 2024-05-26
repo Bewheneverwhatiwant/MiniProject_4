@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import CustomRow from "../../Components/Container/CustomRow";
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import StyledImg from "../../Components/Container/StyledImg";
 import CustomFont from "../../Components/Container/CustomFont";
 import CustomColumn from "../../Components/Container/CustomColumn";
@@ -47,6 +47,34 @@ const Boo_says = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+const Button = styled.button`
+  background-color: ${props => props.backColor || 'white'};
+  color: black;
+  align-items: center;
+  justify-content: center;
+  border: 6px solid white;
+  border-radius: 70px;
+  width: 60%;
+  height: 7rem;
+  padding: 20px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+`;
+
+const bounce = keyframes`
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+`;
+
+const AnimatedRow = styled(CustomRow)`
+  animation: ${bounce} 1s infinite;
+  width: 100%;
 `;
 
 // 일단 디자인 개편 완료했으나, 로그인 완료 후 header 상태까지 보고 수정 더 하기(backgroung img 길이 관련)
@@ -117,6 +145,20 @@ export default function Component() {
           </CustomRow>
 
           <Buttons />
+
+          <CustomRow width='100%' alignItems='center' justifyContent='center'>
+            <CustomFont color='black' font='2rem' fontWeight='bold' className="bmjua-text">어떤 문서를 만들어야 할지 고민된다면?</CustomFont>
+          </CustomRow>
+          <AnimatedRow>
+            <Button backColor='#F1DBF1'>
+              <CustomRow width='100%' gap='1rem'>
+                <StyledImg src={'icon_boo_wink.png'} width='70px' height='70px' />
+                <CustomFont color='black' fontWeight='bold' font='1.6rem'>
+                  다른 사람 문서 구경하기
+                </CustomFont>
+              </CustomRow>
+            </Button>
+          </AnimatedRow>
           <CustomColumn height='150px'></CustomColumn>
 
         </CustomColumn>
