@@ -299,12 +299,27 @@ export default function Component() {
   };
 
   const remainingDocuments = (level) => {
+    const levels = ['BOO론즈', 'BOO지런한 새', '남 BOO럽지 않아', '문서 BOO자', '문서왕'];
+    const levelThresholds = [20, 40, 60, 80, 100];
+    const currentLevelIndex = levels.indexOf(calculateLevel(docCount));
+
+    const levelIndex = levels.indexOf(level);
+    if (levelIndex > currentLevelIndex) return '?';
+
     if (level === 'BOO론즈') return 20 - docCount;
     if (level === 'BOO지런한 새') return 40 - docCount;
     if (level === '남 BOO럽지 않아') return 60 - docCount;
     if (level === '문서 BOO자') return 80 - docCount;
     if (level === '문서왕') return 100 - docCount;
   };
+
+  const [giftStatus, setGiftStatus] = useState({
+    'BOO론즈': false,
+    'BOO지런한 새': false,
+    '남 BOO럽지 않아': false,
+    '문서 BOO자': false,
+    '문서왕': false,
+  });
 
   const currentLevel = calculateLevel(docCount);
   const nextLevel = calculateNextLevel(docCount);
@@ -412,20 +427,31 @@ export default function Component() {
   }
 
   const handleLevelModal = () => {
+    const savedGiftStatus = JSON.parse(localStorage.getItem('giftStatus'));
+    if (savedGiftStatus) {
+      setGiftStatus(savedGiftStatus);
+    }
     setLevel(true);
-  }
+  };
 
   const handleLevelModalX = () => {
     setLevel(false);
   }
 
-  const handleGetGift = async () => {
+  const handleGetGift = async (level) => {
+    if (giftStatus[level]) return; // 이미 보상을 받았으면 함수 종료
+
     try {
       const response = await axios.put('http://223.130.153.51:8080/plus_tickets', null, {
         params: { username: userData.username }
       });
 
       if (response.status === 200) {
+        setGiftStatus((prevStatus) => {
+          const newStatus = { ...prevStatus, [level]: true };
+          localStorage.setItem('giftStatus', JSON.stringify(newStatus)); // 로컬 저장소에 저장
+          return newStatus;
+        }); // 보상을 받았음을 기록
         setGetGift(true);
         console.log('무료 티켓이 성공적으로 증가되었습니다.');
       } else {
@@ -434,7 +460,15 @@ export default function Component() {
     } catch (error) {
       console.error('무료 티켓 증가 중 오류 발생:', error);
     }
-  }
+  };
+
+  // 초기 상태 설정 시 로컬 저장소에서 giftStatus 불러오기
+  useEffect(() => {
+    const savedGiftStatus = JSON.parse(localStorage.getItem('giftStatus'));
+    if (savedGiftStatus) {
+      setGiftStatus(savedGiftStatus);
+    }
+  }, []);
 
   useEffect(() => {
     if (getGift) {
@@ -634,8 +668,10 @@ export default function Component() {
                         </CustomRow>
 
                         <CustomRow width='25%' alignItems='center' justifyContent='center'>
-                          <GiftButton disabled={level !== currentLevel} onClick={handleGetGift}>
-                            <CustomFont color='white' font='1rem'>보상받기</CustomFont>
+                          <GiftButton disabled={level !== currentLevel || giftStatus[level]} onClick={() => handleGetGift(level)}>
+                            <CustomFont color='white' font='1rem'>
+                              {giftStatus[level] ? '이미 보상을 받았어요.' : '보상받기'}
+                            </CustomFont>
                           </GiftButton>
                         </CustomRow>
                       </CustomRow>
