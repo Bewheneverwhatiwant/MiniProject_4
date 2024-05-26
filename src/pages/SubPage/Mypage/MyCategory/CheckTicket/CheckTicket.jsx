@@ -129,18 +129,57 @@ export default function Component() {
   const paidTickets = userData.paid_tickets; // 사용자 보유 유료 티켓
   const freeTickets = userData.free_tickets // 사용자 보유 무료 티켓
 
-  const ticketHistory = [
-    {
-      date: '2024.04.02.14:23',
-      tickets: 4,
-      price: '40000원',
-    },
-    {
-      date: '2024.04.02.14:23',
-      tickets: 4,
-      price: '40000원',
-    },
-  ];
+  const [ticketHistory, setTicketHistory] = useState([]); // 티켓 결제 내역 상태 추가
+
+  // 유저 보유 유/무료 티켓을 가져오기 위함
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (isLoggedIn) {
+        try {
+          console.log('사용자 데이터 불러오는 중...');
+          const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/user_total_info`);
+          console.log(response.data);
+          const userData = response.data.find(u => u.username === isLoggedIn);
+          if (userData) {
+            setUserData({
+              username: userData.username,
+              free_tickets: userData.free_tickets,
+              paid_tickets: userData.paid_tickets
+            });
+            console.log(userData);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        console.log('User is not logged in or user data is not available.');
+      }
+    };
+
+    fetchUserData();
+  }, [isLoggedIn]);
+
+  // 티켓 결제 내역을 가져오는 API 호출
+  useEffect(() => {
+    const fetchTicketHistory = async () => {
+      if (isLoggedIn && userData.username) {
+        try {
+          console.log('티켓 결제 내역 불러오는 중...');
+          const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/return_payment`, {
+            params: { user_name: userData.username }
+          });
+          console.log('티켓 결제 내역:', response.data);
+          setTicketHistory(response.data); // 응답 데이터를 직접 설정
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        console.log('User is not logged in or username is not available.');
+      }
+    };
+
+    fetchTicketHistory();
+  }, [isLoggedIn, userData]);
 
   return (
     <ContainerCenter>
@@ -187,16 +226,20 @@ export default function Component() {
           </CustomRow>
 
           <MyTicketContainer>
-            {ticketHistory.map((ticket, index) => (
-              <React.Fragment key={index}>
-                <CustomRow width='90%' justifyContent='space-between' alignItems='center'>
-                  <CustomFont color='white' font='1.3rem'>{ticket.date}</CustomFont>
-                  <CustomFont color='white' font='1.3rem'>티켓 {ticket.tickets}장</CustomFont>
-                  <CustomFont color='white' font='1.3rem'>{ticket.price}</CustomFont>
-                </CustomRow>
-                {index < ticketHistory.length - 1 && <Divider key={`divider-${index}`} />}
-              </React.Fragment>
-            ))}
+            {ticketHistory.length > 0 ? (
+              ticketHistory.map((ticket, index) => (
+                <React.Fragment key={index}>
+                  <CustomRow width='90%' justifyContent='space-between' alignItems='center'>
+                    <CustomFont color='black' font='1.3rem'>{ticket.paid_time}</CustomFont>
+                    <CustomFont color='black' font='1.3rem'>티켓 {ticket.ticket}장</CustomFont>
+                    <CustomFont color='black' font='1.3rem'>{ticket.price}원</CustomFont>
+                  </CustomRow>
+                  {index < ticketHistory.length - 1 && <Divider key={`divider-${index}`} />}
+                </React.Fragment>
+              ))
+            ) : (
+              <CustomFont color='white' font='1.3rem'>아직 결제하신 내역이 없습니다.</CustomFont>
+            )}
           </MyTicketContainer>
 
         </CustomColumn>
