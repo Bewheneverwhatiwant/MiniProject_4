@@ -92,6 +92,7 @@ const OverlappingImage = styled(StyledImg)`
 export default function Component({ onClose, onShowTicketAlert }) {
     const [userId, setUserId] = useState('');
     const [isValid, setIsValid] = useState(false);
+    const [isValid_email, setIsValid_email] = useState(false);
     const [password, setPassword] = useState('');
     const [passwordConfirm, setPasswordConfirm] = useState('');
     const [email, setEmail] = useState('');
@@ -99,7 +100,7 @@ export default function Component({ onClose, onShowTicketAlert }) {
     const isPasswordsMatch = password === passwordConfirm;
     const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\W]).{6,9}$/;
     const isPasswordValid = passwordRegex.test(password);
-    const isFormFilled = userId && isValid && password && passwordConfirm && isPasswordsMatch && isPasswordValid && isCheck && email;
+    const isFormFilled = userId && isValid && password && passwordConfirm && isPasswordsMatch && isPasswordValid && isCheck && email && isValid_email;
 
     const [showTicketAlert, setShowTicketAlert] = useState(false); // happy 모달 제어
     const [username, setUsername] = useState('');
@@ -124,6 +125,11 @@ export default function Component({ onClose, onShowTicketAlert }) {
             }
         }
     };
+
+    const handleEmailCheck = async () => {
+        setIsValid_email(true);
+        // 나중에 여기 이메일 중복 확인 API 연동하기
+    }
 
     const handleSignup = async () => {
         if (isFormFilled) {
@@ -208,14 +214,27 @@ export default function Component({ onClose, onShowTicketAlert }) {
                         {!passwordConfirm && <ErrorText>필수 필드입니다.</ErrorText>}
                         {passwordConfirm && !isPasswordsMatch && <ErrorText>비밀번호가 일치하지 않습니다.</ErrorText>}
                     </CustomColumn>
-                    <CustomColumn width='80%' justifyContent='center' alignItems='flex-start' gap='1rem'>
-                        <CustomRow width='30%' justifyContent='flex-start' alignItems='center' gap='0.5rem'>
-                            <CustomFont color='black' font='1rem' fontWeight='bold'>이메일</CustomFont>
-                            <CustomFont color='red' font='1rem' fontWeight='bold'>*</CustomFont>
-                        </CustomRow>
-                        <InputForm placeholder='이메일 주소를 입력하세요.' value={email} onChange={e => setEmail(e.target.value)} />
-                        {!email && <ErrorText>필수 필드입니다.</ErrorText>}
-                    </CustomColumn>
+
+                    <CustomRow width='80%' gap='1.4rem'>
+                        <CustomColumn width='70%' justifyContent='center' alignItems='flex-start' gap='1rem'>
+                            <CustomRow width='30%' justifyContent='flex-start' alignItems='center' gap='0.5rem'>
+                                <CustomFont color='black' font='1rem' fontWeight='bold'>이메일</CustomFont>
+                                <CustomFont color='red' font='1rem' fontWeight='bold'>*</CustomFont>
+                            </CustomRow>
+                            <InputForm placeholder='이메일 주소를 입력하세요.' value={email} onChange={e => setEmail(e.target.value)} />
+                            {!email && <ErrorText>필수 필드입니다.</ErrorText>}
+                        </CustomColumn>
+
+                        <CustomColumn width='30%' alignItems='center' justifyContent='center' gap='1px'>
+                            <ImageWrapper>
+                                <OverlappingImage src={'icon_boo_small.png'} width='60px' height='60px' isValid={isValid_email} />
+                            </ImageWrapper>
+                            <IsValidButton isValid={isValid_email} onClick={handleEmailCheck}>
+                                {isValid_email ? '사용 가능' : '중복검사'}
+                            </IsValidButton>
+                        </CustomColumn>
+                    </CustomRow>
+
                     <CustomRow width='80%' justifyContent='flex-start' alignItems='center' gap='1rem'>
                         <Checkbox checked={isCheck} onChange={(e) => setIsCheck(e.target.checked)} />
                         <CustomFont color='black' font='1rem'>개인정보 이용 약관에 동의합니다.</CustomFont>
