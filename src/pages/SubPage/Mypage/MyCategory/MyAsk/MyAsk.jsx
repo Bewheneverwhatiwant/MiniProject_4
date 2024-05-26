@@ -158,6 +158,17 @@ const CancelButton = styled.button`
   cursor: pointer;
 `;
 
+const ShareButton = styled.button`
+border: none;
+border-radius: 10px;
+background-color: white;
+color: black;
+width: 80%;
+padding: 5px;
+cursor: pointer;
+margin-top: 10px;
+`;
+
 export default function MyAsk() {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('sorry');
@@ -255,6 +266,21 @@ export default function MyAsk() {
         alert('문서 삭제에 실패했습니다.');
         setShowDeleteModal(false);
       }
+    }
+  };
+
+  const handleShare = async () => {
+    try {
+      const response = await axios.put(`${process.env.REACT_APP_SERVER_IP}/update_is_shared`, null, {
+        params: {
+          user_name: isLoggedIn,
+          document_name: selectedDocument.content
+        }
+      });
+
+      console.log('공유 API 호출 성공:', response.data);
+    } catch (error) {
+      console.error('공유 API 호출 실패:', error);
     }
   };
 
@@ -358,6 +384,7 @@ export default function MyAsk() {
                 <CustomFont color='#000000' font='1rem'>대상: {selectedDocument.target}</CustomFont>
                 <CustomFont color='#000000' font='1rem'>분량: {selectedDocument.amount}</CustomFont>
                 <CustomFont color='#000000' font='1rem'>내용: {selectedDocument.name}</CustomFont>
+                <ShareButton onClick={handleShare}>공유하기</ShareButton>
                 {/* <CustomFont color='#000000' font='1rem'>출력 제목: {selectedDocument.title}</CustomFont>
               <CustomFont color='#000000' font='1rem'>출력 내용: {selectedDocument.content}</CustomFont> */}
               </MyAnswerContainer>
