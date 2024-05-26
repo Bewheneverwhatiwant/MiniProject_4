@@ -258,7 +258,27 @@ export default function Component() {
   const [level, setLevel] = useState(false);
   const [getGift, setGetGift] = useState(false); // 보상받기 클릭 시 모달
 
-  const [docCount, setDocCount] = useState(3);
+  const [docCount, setDocCount] = useState(0);
+
+  const fetchDocumentCreateCount = async () => {
+    try {
+      const response = await axios.get(`http://223.130.153.51:8080/document_create_count`, {
+        params: { user_name: userData.username }
+      });
+      if (response.status === 200) {
+        setDocCount(response.data);  // response.data.count 대신 response.data
+        console.log(response.data);
+      }
+    } catch (error) {
+      console.error('문서 생성 카운트 불러오기 실패', error);
+    }
+  };
+
+  useEffect(() => {
+    if (userData.username) {
+      fetchDocumentCreateCount();
+    }
+  }, [userData.username]);
 
   // 레벨 계산 함수
   const calculateLevel = (count) => {
@@ -399,9 +419,31 @@ export default function Component() {
     setLevel(false);
   }
 
-  const handleGetGift = () => {
-    setGetGift(true);
+  const handleGetGift = async () => {
+    try {
+      const response = await axios.put('http://223.130.153.51:8080/plus_tickets', null, {
+        params: { username: userData.username }
+      });
+
+      if (response.status === 200) {
+        setGetGift(true);
+        console.log('무료 티켓이 성공적으로 증가되었습니다.');
+      } else {
+        console.error('무료 티켓 증가 실패:', response);
+      }
+    } catch (error) {
+      console.error('무료 티켓 증가 중 오류 발생:', error);
+    }
   }
+
+  useEffect(() => {
+    if (getGift) {
+      const timer = setTimeout(() => {
+        setGetGift(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [getGift]);
 
   useEffect(() => {
     if (getGift) {
