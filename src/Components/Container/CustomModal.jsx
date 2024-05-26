@@ -138,7 +138,7 @@ const CustomModal = ({ children, flexDirection, width, maxHeight, gap, alignItem
                 >
                     <ModalHeader>
                         <CustomRow width='90%' alignItems='center' justifyContent='space-between'>
-                            <CustomRow width='30%' alignItems='center' justifyContent='space-around'>
+                            <CustomRow width='15%' alignItems='center' justifyContent='space-around'>
                                 <Circle color='#EC6A5E' />
                                 <Circle color='#F4BF4F' />
                                 <Circle color='#61C554' />

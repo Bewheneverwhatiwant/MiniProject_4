@@ -26,9 +26,8 @@ const CarouselItem = styled.div`
 `;
 
 const StyledImage = styled.img`
-  max-width: 100%;
-  max-height: 300px;
-  object-fit: contain; // 이미지 비율 유지
+width: 400px;
+height: 250px;
 `;
 
 const DotContainer = styled.div`
