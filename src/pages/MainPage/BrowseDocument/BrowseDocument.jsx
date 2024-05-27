@@ -83,15 +83,19 @@ background-color: white;
 display: flex;
 flex-direction: column;
 border-radius: 20px;
-width: 80%;
+width: 100%;
 `;
 
 const DocContent = styled.div`
 display: flex;
 flex-direction: column;
-min-height: 60px;
+min-height: 100px;
 width: 100%;
 margin: 10px;
+line-height: 1.2rem;
+
+align-items: center;
+justify-content: center;
 `;
 
 const Circle = styled.div`
@@ -120,6 +124,7 @@ export default function Component() {
     const [activeTab, setActiveTab] = useState(0);
     const [content, setContent] = useState([]);
     const [loading, setLoading] = useState(true);
+
 
     const navigate = useNavigate();
 
@@ -151,27 +156,60 @@ export default function Component() {
         fetchData(type);
     };
 
+
     const handleLikeClick = async (index) => {
         const doc = content[index];
-        if (doc.liked) {
-            alert('이미 좋아요를 누르셨습니다!');
-        } else {
-            try {
-                await axios.put(`${process.env.REACT_APP_SERVER_IP}/add_like_count`, null, {
-                    params: {
-                        doc_name: doc.name,
-                        user_name: doc.user_name
-                    }
-                });
+
+        // 좋아요 클릭 시 즉시 프론트엔드 상태 업데이트
+        setContent(prevContent => {
+            const newContent = [...prevContent];
+            newContent[index].liked = true;
+            newContent[index].like_count = (newContent[index].like_count || 0) + 1; // 초기값 설정
+            return newContent;
+        });
+
+        try {
+
+            console.log('시작');
+
+            // 서버에 좋아요 증가 요청
+            await axios.put(`${process.env.REACT_APP_SERVER_IP}/add_like_count`, null, {
+                params: {
+                    doc_name: doc.name,
+                    user_name: isLoggedIn
+                }
+            });
+
+            console.log('좋아요 post 끝');
+
+            // 서버에서 최신 좋아요 수 가져와서 업데이트
+            const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/get_like_count`, {
+                params: {
+                    doc_name: encodeURIComponent(doc.name),
+                    user_name: isLoggedIn
+                }
+            });
+
+            console.log('좋아요 개수 업데이트 끝');
+
+            const updatedLikeCount = response.data;
+
+            console.log(updatedLikeCount);
+
+            // 서버에서 받은 최신 좋아요 수가 유효한지 확인 후 상태 업데이트
+            if (typeof updatedLikeCount === 'number') {
                 setContent(prevContent => {
                     const newContent = [...prevContent];
-                    newContent[index].liked = true;
-                    newContent[index].like_count += 1;
+                    newContent[index].like_count = updatedLikeCount;
                     return newContent;
                 });
-            } catch (error) {
-                console.error('좋아요 추가 실패', error);
+            } else {
+                console.error('서버로부터 유효하지 않은 좋아요 수를 받았습니다:', updatedLikeCount);
             }
+        } catch (error) {
+            console.log(doc.name);
+            console.log(isLoggedIn);
+            console.error('좋아요 추가 실패', error);
         }
     };
 
@@ -242,7 +280,7 @@ export default function Component() {
                                     <CustomRow width='100%' alignItems='center' justifyContent='flex-start'>
                                         <LikeButton onClick={() => handleLikeClick(index)} />
                                         <CustomFont color='#D389C7' font='1.2rem' fontWeight='bold'>
-                                            좋아요 {item.like}개
+                                            좋아요 {item.like_count}개
                                         </CustomFont>
                                     </CustomRow>
                                 </PurpleBox>
