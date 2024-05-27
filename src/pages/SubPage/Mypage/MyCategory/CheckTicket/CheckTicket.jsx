@@ -53,6 +53,21 @@ const MyTicketContainer = styled.div`
   padding-bottom: 10px;
   width: 100%;
   height: 300px;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #8CC63F;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #f0f0f0;
+    border-radius: 10px;
+  }
 `;
 
 const Divider = styled.div`
