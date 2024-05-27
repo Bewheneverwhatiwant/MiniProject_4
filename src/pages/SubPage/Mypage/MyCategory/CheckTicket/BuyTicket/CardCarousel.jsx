@@ -7,27 +7,28 @@ const CarouselContainer = styled.div`
   position: relative;
   overflow: hidden;
   width: 100%;
-  
 `;
 
 const CarouselSlider = styled.div`
   display: flex;
   transition: transform 0.3s ease-in-out;
-  display: flex;
+  width: 300%;
+  align-items: center;
+  justify-content: center;
 `;
 
 const CarouselItem = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 0 0 auto;
-  width: 100%;
-  padding: 10px;
+  flex: 0 0 33.33%; /* 3개의 아이템이 동일한 너비를 갖도록 설정 */
+  width: 33.33%; /* 각 아이템의 너비를 33.33%로 설정 */
+  padding-bottom: 10px;
 `;
 
 const StyledImage = styled.img`
-width: 400px;
-height: 250px;
+  width: 400px;
+  height: 250px;
 `;
 
 const DotContainer = styled.div`
@@ -47,7 +48,7 @@ const Dot = styled.div`
   background: ${props => props.isActive ? 'limegreen' : 'grey'};
 `;
 
-export default function Component() {
+export default function CardCarousel() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const apiData_hire = Array.from({ length: 3 });
 
@@ -67,8 +68,8 @@ export default function Component() {
 
     return (
         <CarouselContainer>
-            <CarouselSlider style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
-                {Array.from({ length: 3 }, (_, index) => (
+            <CarouselSlider style={{ transform: `translateX(-${currentIndex * (100 / apiData_hire.length)}%)` }}>
+                {apiData_hire.map((_, index) => (
                     <CarouselItem key={index}>
                         <StyledImage src={`icon_card_ex${index + 1}.png`} alt={`Slide ${index + 1}`} />
                     </CarouselItem>
@@ -80,7 +81,6 @@ export default function Component() {
                     <Dot key={index} isActive={currentIndex === index} onClick={() => goToSlide(index)} />
                 ))}
             </DotContainer>
-
         </CarouselContainer>
     )
 }

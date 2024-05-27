@@ -367,7 +367,7 @@ export default function Component() {
 
                                 <CustomColumn width='100%' justifyContent='center' alignItems='center'>
 
-                                    <CustomFont font='1.8rem' fontWeight='500' color='black'>결제 수단을 등록하세요.</CustomFont>
+                                    <CustomFont font='1.8rem' fontWeight='500' color='black' className="bmjua-text">결제 수단을 등록하세요.</CustomFont>
                                     <CardCarousel />
                                     <CustomColumn width='100%' justifyContent='center' alignItems='center' gap='1rem'>
                                         <CustomColumn width='55%' justifyContent='center' alignItems='flex-start' gap='1rem'>
@@ -378,19 +378,20 @@ export default function Component() {
                                             <InputForm placeholder='CARDHOLDER NAME' />
                                         </CustomColumn>
 
-                                        <CustomRow width='55%' justifyContent='center' alignItems='space-between' gap='1rem'>
+                                        <CustomRow width='55%' justifyContent='center' alignItems='center' gap='1rem'>
+
                                             <InputForm type='' placeholder='MM' />
                                             <InputForm type='' placeholder='YY' />
                                             <InputForm type='' placeholder='CVV' />
                                         </CustomRow>
 
-                                        <CustomRow width='100%' justifyContent='center' alignItems='space-between' gap='1rem'>
+                                        <CustomRow width='100%' justifyContent='center' alignItems='center' gap='1rem'>
                                             <RealBuyButton marginBottom='30px' onClick={finalBuy}>
                                                 <CustomFont color='#FFFFFF' font='1.2rem' fontWeight='400'>REGISTER</CustomFont>
                                             </RealBuyButton>
 
                                             <RealBuyButton marginBottom='30px' border='2px solid #8CC63F' backgroundColor='white' onClick={BuyFalse}>
-                                                <CustomFont color='#8CC63F' font='1.2rem' fontWeight='400'>CANCEL</CustomFont>
+                                                <CustomFont color='#FFFFFF' font='1.2rem' fontWeight='400'>CANCEL</CustomFont>
                                             </RealBuyButton>
                                         </CustomRow>
                                     </CustomColumn>
