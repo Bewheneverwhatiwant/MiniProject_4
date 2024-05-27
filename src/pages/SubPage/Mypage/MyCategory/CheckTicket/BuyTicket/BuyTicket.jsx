@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import CustomFont from '../../../../../../Components/Container/CustomFont';
 import CustomColumn from '../../../../../../Components/Container/CustomColumn';
 import CustomRow from '../../../../../../Components/Container/CustomRow';
@@ -55,14 +55,13 @@ const RealBuyButton = styled.button`
     width: 120px;
     height: 50px;
     padding: 10px;
-    background-color: ${({ backgroundColor }) => backgroundColor || '#8CC63F'};
+    background-color: ${({ disabled }) => disabled ? '#D9D9D9' : '#8CC63F'};
     border: ${({ border }) => border || 'none'};
     border-radius: 15px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    margin-top: ${({ marginTop }) => marginTop || 'none'};
     margin-bottom: ${({ marginBottom }) => marginBottom || 'none'};
 
 `;
@@ -94,8 +93,8 @@ const CustomBox = styled.div`
 `;
 
 const CustomText = styled.div`
-    font-size: 1.3rem;
-    color: black;
+    font-size: 1.2rem;
+    color: #67A1BB;
     line-height: 2;
     text-align: left;
     margin-left: 60px;
@@ -125,9 +124,49 @@ const InputForm = styled.input`
     }
 `;
 
+const AgreementCheckbox = styled.input.attrs({ type: 'checkbox' })`
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  cursor: pointer;
+`;
+
+const ImageWrapper = styled.div`
+  position: relative;
+  width: 60px;
+  height: 60px;
+  margin-bottom: -32px;
+`;
+
+const bounceAnimation = keyframes`
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+`;
+
+const OverlappingImage = styled(StyledImg)`
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  ${props => props.isValid && css`
+    animation: ${bounceAnimation} 0.5s ease-in-out infinite;
+  `}
+`;
+
 export default function Component() {
     const [ticketCount, setTicketCount] = useState(1); // 초기값 및 최소값 1
     const [totalPrice, setTotalPrice] = useState(500); // 초기 총 가격 500원
+    const [isChecked, setIsChecked] = useState(false); // 체크박스 상태
+
+    // 체크박스 상태를 실시간으로 추적하여 결제 버튼 활성화
+    useEffect(() => {
+        // 여기서 상태 변경에 따라 버튼 활성화가 즉시 반영됨
+    }, [isChecked]);
+
 
     useEffect(() => {
         setTotalPrice(ticketCount * 500); // ticketCount가 변경될 때마다 총 가격을 업데이트
@@ -141,6 +180,10 @@ export default function Component() {
         if (ticketCount > 1) {
             setTicketCount(ticketCount - 1);
         }
+    };
+
+    const handleCheckboxChange = (e) => {
+        setIsChecked(e.target.checked); // 체크박스 상태 업데이트
     };
 
     // 매일 5번 무려 질문 가능한, 24시간 단위 갱신되는 티켓 개수
@@ -251,19 +294,19 @@ export default function Component() {
                 {/* 티켓 구매 안내 페이지 시작 */}
                 <CustomColumn width='80%' justifyContent='center' alignItems='center' gap='2rem'>
                     <CustomColumn width='100%' justifyContent='center' alignItems='center' >
-                        <CustomFont font='2.5rem' fontWeight='8px' color='black' textAlign='center' marginBottom='20px'>
+                        <CustomFont font='2.5rem' fontWeight='8px' color='black' textAlign='center' marginBottom='20px' className="bmjua-text">
                             티켓 구매 안내
                         </CustomFont>
                         <CustomBox backgroundImage="url('TicketBg.png')">
                             <CustomText>
-                                매일 무료 티켓 5장씩 제공됩니다.<br />
-                                티켓이 부족하다면 티켓을 구매해주세요.<br />
-                                티켓은 한 장당 500원입니다.<br />
+                                무료티켓은 매일 5장씩 제공되고 있습니다.<br />
+                                내 티켓 확인 후, 부족한 경우 구매해주세요.<br />
+                                유료티켓은 한 장당 500원입니다.<br />
                                 수량을 선택하셨다면 결제하기 버튼을 눌러 <br />다음 단계를 진행해주세요.
                             </CustomText>
                         </CustomBox>
 
-                        <CustomRow width='40%' justifyContent='space-between' alignItems='center' marginTop='20px'>
+                        <CustomRow width='52%' justifyContent='space-between' alignItems='center' marginTop='20px'>
                             <CustomFont font='1.5rem' color='black'>구매하실 티켓의 수량</CustomFont>
 
                             <CustomRow width='auto' alignItems='center' justifyContent='space-around'>
@@ -282,7 +325,7 @@ export default function Component() {
 
                         </CustomRow>
 
-                        <CustomRow width='40%' justifyContent='space-between' alignItems='center' marginTop='20px'>
+                        <CustomRow width='52%' justifyContent='space-between' alignItems='center' marginTop='20px'>
                             <CustomRow width='100%' justifyContent='space-between' alignItems='center' marginTop='10px'>
                                 <CustomFont font='1.5rem' color='black' margin='0 10px 0 0'>결제하실 가격</CustomFont>
                                 <CustomFont font='1.5rem' color='black'>
@@ -292,11 +335,27 @@ export default function Component() {
                             </CustomRow>
                         </CustomRow>
 
-                        <CustomRow width='100%' justifyContent='center' alignItems='center' marginTop='20px'>
-                            <RealBuyButton marginTop='20px' onClick={BuyTrue}>
-                                <CustomFont color='#FFFFFF' font='1.5rem' fontWeight='bold'> 결제하기</CustomFont>
-                            </RealBuyButton>
-                        </CustomRow>
+                        <CustomColumn width='100%' justifyContent='center' alignItems='center' marginTop='20px'>
+                            <CustomRow width='52%' justifyContent='flex-end' alignItems='center' marginTop='20px'>
+                                <AgreementCheckbox id="agreement" onChange={handleCheckboxChange} />
+                                <label htmlFor="agreement">
+                                    <CustomFont color='black' font='1rem' fontWeight='bold'>
+                                        '내 문서를 부탁해'의 전자상거래 약관에 동의합니다.
+                                    </CustomFont>
+                                </label>
+                            </CustomRow>
+                            <CustomRow width='52%' justifyContent='flex-end' alignItems='center' marginTop='20px'>
+                                <CustomColumn width='30%' alignItems='center' justifyContent='center' gap='1px'>
+                                    <ImageWrapper>
+                                        <OverlappingImage src={'icon_boo_small.png'} width='60px' height='60px' isValid={isChecked} />
+                                    </ImageWrapper>
+                                    <RealBuyButton onClick={BuyTrue} disabled={!isChecked}>
+                                        <CustomFont color='#FFFFFF' font='1.5rem' fontWeight='bold'> 결제하기</CustomFont>
+                                    </RealBuyButton>
+                                </CustomColumn>
+
+                            </CustomRow>
+                        </CustomColumn>
 
                     </CustomColumn>
                     {/* 티켓 안내 페이지 끝 */}
