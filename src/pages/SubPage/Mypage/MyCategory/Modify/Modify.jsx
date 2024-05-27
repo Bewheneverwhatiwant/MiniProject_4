@@ -257,6 +257,7 @@ export default function Component() {
   const { profileImage, setProfileImage } = useAuth(); // useAuth 훅을 사용하여 프로필 이미지 상태와 업데이트 함수를 가져옴
   const [level, setLevel] = useState(false);
   const [getGift, setGetGift] = useState(false); // 보상받기 클릭 시 모달
+  const [levelStatus, setLevelStatus] = useState([true, true, true, true, true]); // 보상 상태
 
   const [docCount, setDocCount] = useState(0);
 
@@ -277,8 +278,24 @@ export default function Component() {
   useEffect(() => {
     if (userData.username) {
       fetchDocumentCreateCount();
+      fetchLevelStatus();
     }
   }, [userData.username]);
+
+  // 레벨 상태 불러오기
+  const fetchLevelStatus = async () => {
+    try {
+      const response = await axios.get(`http://223.130.153.51:8080/get_levels`, {
+        params: { user_name: userData.username }
+      });
+      if (response.status === 200) {
+        setLevelStatus(response.data);
+        console.log('레벨 상태 불러오기 성공', response.data);
+      }
+    } catch (error) {
+      console.error('레벨 상태 불러오기 실패', error);
+    }
+  };
 
   // 레벨 계산 함수
   const calculateLevel = (count) => {
@@ -312,14 +329,6 @@ export default function Component() {
     if (level === '문서 BOO자') return 80 - docCount;
     if (level === '문서왕') return 100 - docCount;
   };
-
-  const [giftStatus, setGiftStatus] = useState({
-    'BOO론즈': false,
-    'BOO지런한 새': false,
-    '남 BOO럽지 않아': false,
-    '문서 BOO자': false,
-    '문서왕': false,
-  });
 
   const currentLevel = calculateLevel(docCount);
   const nextLevel = calculateNextLevel(docCount);
@@ -427,10 +436,7 @@ export default function Component() {
   }
 
   const handleLevelModal = () => {
-    const savedGiftStatus = JSON.parse(localStorage.getItem('giftStatus'));
-    if (savedGiftStatus) {
-      setGiftStatus(savedGiftStatus);
-    }
+    fetchLevelStatus(); // 레벨 상태 최신화
     setLevel(true);
   };
 
@@ -439,37 +445,34 @@ export default function Component() {
   }
 
   const handleGetGift = async (level) => {
-    if (giftStatus[level]) return; // 이미 보상을 받았으면 함수 종료
+    const levelMap = {
+      'BOO론즈': 'LEVEL1',
+      'BOO지런한 새': 'LEVEL2',
+      '남 BOO럽지 않아': 'LEVEL3',
+      '문서 BOO자': 'LEVEL4',
+      '문서왕': 'LEVEL5'
+    };
 
     try {
-      const response = await axios.put('http://223.130.153.51:8080/plus_tickets', null, {
-        params: { username: userData.username }
+      const response = await axios.put('http://223.130.153.51:8080/update_levels', null, {
+        params: {
+          user_name: userData.username,
+          level: levelMap[level]
+        }
       });
 
       if (response.status === 200) {
-        setGiftStatus((prevStatus) => {
-          const newStatus = { ...prevStatus, [level]: true };
-          localStorage.setItem('giftStatus', JSON.stringify(newStatus)); // 로컬 저장소에 저장
-          return newStatus;
-        }); // 보상을 받았음을 기록
+        console.log('레벨 업데이트 성공:', response);
+        fetchLevelStatus(); // 업데이트 후 상태 다시 불러오기
         setGetGift(true);
-        console.log('무료 티켓이 성공적으로 증가되었습니다.');
       } else {
-        console.error('무료 티켓 증가 실패:', response);
+        console.error('레벨 업데이트 실패:', response);
       }
     } catch (error) {
-      console.error('무료 티켓 증가 중 오류 발생:', error);
+      console.error('레벨 업데이트 중 오류 발생:', error);
     }
   };
 
-  // 초기 상태 설정 시 로컬 저장소에서 giftStatus 불러오기
-  useEffect(() => {
-    const savedGiftStatus = JSON.parse(localStorage.getItem('giftStatus'));
-    if (savedGiftStatus) {
-      setGiftStatus(savedGiftStatus);
-    }
-  }, []);
-
   useEffect(() => {
     if (getGift) {
       const timer = setTimeout(() => {
@@ -479,14 +482,6 @@ export default function Component() {
     }
   }, [getGift]);
 
-  useEffect(() => {
-    if (getGift) {
-      const timer = setTimeout(() => {
-        setGetGift(false);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [getGift]);
   // 나중에 getGift 모달에, 무료 쿠폰 +1 해주는 API 연동하기
 
   const { isLoggedIn, logout } = useAuth(); // useAuth를 이용하여 로그인 상태 가져오기
@@ -668,9 +663,11 @@ export default function Component() {
                         </CustomRow>
 
                         <CustomRow width='25%' alignItems='center' justifyContent='center'>
-                          <GiftButton disabled={level !== currentLevel || giftStatus[level]} onClick={() => handleGetGift(level)}>
+                          <GiftButton
+                            disabled={level !== currentLevel || !levelStatus[index]}
+                            onClick={() => handleGetGift(level)}>
                             <CustomFont color='white' font='1rem'>
-                              {giftStatus[level] ? '이미 보상을 받았어요.' : '보상받기'}
+                              {levelStatus[index] ? '보상받기' : '이미 보상을 받았어요.'}
                             </CustomFont>
                           </GiftButton>
                         </CustomRow>
