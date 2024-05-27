@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { useAuth } from '../../SubPage/AuthContext';
 
 import CustomFont from '../../../Components/Container/CustomFont';
@@ -113,10 +114,13 @@ border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 `;
 
-const mockData = [
-    { content: '미안', user_name: '하이이', target: '친구 윤서에게', name: '어제 우류를 쏟아서 미안해', like: 5 },
-    { content: '죄송합니다', user_name: 'lny021102', target: '선생님께', name: '공부를 낭해서 성적이 너무 떨어졌기 때문에', like: 3 },
-];
+const ContentDiv = styled.div`
+width: 100%;
+display flex;
+align-items: center;
+justify-content: center;
+line-height: 1.2rem;
+`;
 
 const defaultContent = ['b', 'c', 'd', 'e', 'f'];
 
@@ -124,34 +128,58 @@ export default function Component() {
     const { isLoggedIn } = useAuth(); // useAuth 훅에서 로그인 상태와 유저 정보를 가져옴
     const [userData, setUserData] = useState({ username: '', free_tickets: 0, paid_tickets: 0 });
     const [activeTab, setActiveTab] = useState(0);
-    const [content, setContent] = useState(mockData);
+    const [content, setContent] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const navigate = useNavigate();
 
     const handleTabClick = (index) => {
         setActiveTab(index);
         if (index === 0) {
-            setContent(mockData);
+            fetchData();
         } else {
             setContent([]);
         }
     };
 
-    const handleLikeClick = (index) => {
-        if (content[index].liked) {
+    const handleLikeClick = async (index) => {
+        const doc = content[index];
+        if (doc.liked) {
             alert('이미 좋아요를 누르셨습니다!');
         } else {
-            setContent(prevContent => {
-                const newContent = [...prevContent];
-                newContent[index].liked = true;
-                newContent[index].like += 1;
-                return newContent;
-            });
+            try {
+                await axios.put(`${process.env.REACT_APP_SERVER_IP}/add_like_count`, null, {
+                    params: {
+                        doc_name: doc.name,
+                        user_name: doc.user_name
+                    }
+                });
+                setContent(prevContent => {
+                    const newContent = [...prevContent];
+                    newContent[index].liked = true;
+                    newContent[index].like_count += 1;
+                    return newContent;
+                });
+            } catch (error) {
+                console.error('좋아요 추가 실패', error);
+            }
+        }
+    };
+
+    const fetchData = async () => {
+        try {
+            const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/shared_documents`);
+            const documents = response.data.map(doc => ({ ...doc, like: doc.like_count || 0 }));
+            setContent(documents);
+            setLoading(false);
+        } catch (error) {
+            console.error('데이터 불러오기 실패', error);
+            setLoading(false);
         }
     };
 
     useEffect(() => {
-        setContent(mockData);
+        fetchData(); // 컴포넌트가 마운트될 때 데이터를 가져옵니다.
     }, []);
 
     return (
@@ -169,47 +197,63 @@ export default function Component() {
                         <Tab active={activeTab === 5} onClick={() => handleTabClick(5)}>모집/채용공고</Tab>
                     </Tabs>
 
-                    {activeTab === 0 ? (
-                        content.map((item, index) => (
-                            <PurpleBox key={index}>
-                                <CustomFont color='#D389C7' font='1.5rem' fontWeight='bold'>
-                                    {item.content}
-                                </CustomFont>
-                                <CustomFont color='#D389C7' font='1rem'>
-                                    작성자: {item.user_name}
-                                </CustomFont>
-
-                                <CustomFont color='#D389C7' font='1rem'>
-                                    대상: {item.target}
-                                </CustomFont>
-
-                                <DocRound>
-                                    <DocHeader>
-                                        <CustomRow width='10%' alignItems='center' justifyContent='space-around'>
-                                            <Circle color='#EC6A5E' />
-                                            <Circle color='#F4BF4F' />
-                                            <Circle color='#61C554' />
-                                        </CustomRow>
-                                    </DocHeader>
-                                    <DocContent>
-                                        <CustomFont color='#D389C7' font='1rem'>
-                                            {item.name}
-                                        </CustomFont>
-                                    </DocContent>
-                                </DocRound>
-
-                                <Divide />
-
-                                <CustomRow width='100%' alignItems='center' justifyContent='flex-start'>
-                                    <LikeButton onClick={() => handleLikeClick(index)} />
-                                    <CustomFont color='#D389C7' font='1.2rem' fontWeight='bold'>
-                                        좋아요 {item.like}개
-                                    </CustomFont>
-                                </CustomRow>
-                            </PurpleBox>
-                        ))
+                    {loading ? (
+                        <p>Loading...</p>
                     ) : (
-                        <div>{defaultContent[activeTab - 1]}</div>
+                        activeTab === 0 ? (
+                            content.map((item, index) => (
+                                <PurpleBox key={index}>
+                                    <CustomFont color='#D389C7' font='1.5rem' fontWeight='bold'>
+                                        {item.content}
+                                    </CustomFont>
+                                    <CustomRow width='100%' justifyContent='flex-start' alignItems='center' gap='1rem'>
+                                        <CustomFont color='#D389C7' font='1rem' fontWeight='bold'>작성자</CustomFont>
+                                        <CustomFont color='#D389C7' font='1rem'>
+                                            {item.user_name}
+                                        </CustomFont>
+                                    </CustomRow>
+
+                                    <CustomRow width='100%' justifyContent='flex-start' alignItems='center' gap='1rem'>
+                                        <CustomRow width='10%' justifyContent='flex-start' alignItems='center'>
+                                            <CustomFont color='#D389C7' font='1rem' fontWeight='bold'>보여줄 사람</CustomFont>
+                                        </CustomRow>
+                                        <CustomRow width='90%' justifyContent='flex-start' alignItems='center'>
+                                            <ContentDiv>
+                                                <CustomFont color='#D389C7' font='1rem'>
+                                                    {item.target}
+                                                </CustomFont>
+                                            </ContentDiv>
+                                        </CustomRow>
+                                    </CustomRow>
+
+                                    <DocRound>
+                                        <DocHeader>
+                                            <CustomRow width='10%' alignItems='center' justifyContent='space-around'>
+                                                <Circle color='#EC6A5E' />
+                                                <Circle color='#F4BF4F' />
+                                                <Circle color='#61C554' />
+                                            </CustomRow>
+                                        </DocHeader>
+                                        <DocContent>
+                                            <CustomFont color='#D389C7' font='1rem'>
+                                                {item.name}
+                                            </CustomFont>
+                                        </DocContent>
+                                    </DocRound>
+
+                                    <Divide />
+
+                                    <CustomRow width='100%' alignItems='center' justifyContent='flex-start'>
+                                        <LikeButton onClick={() => handleLikeClick(index)} />
+                                        <CustomFont color='#D389C7' font='1.2rem' fontWeight='bold'>
+                                            좋아요 {item.like}개
+                                        </CustomFont>
+                                    </CustomRow>
+                                </PurpleBox>
+                            ))
+                        ) : (
+                            <div>{defaultContent[activeTab - 1]}</div>
+                        )
                     )}
 
                 </CustomColumn>
