@@ -49,6 +49,38 @@ const BuyModal = styled.div`
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     justify-content: center; 
     align-items: center; 
+    z-index: 1001;
+`;
+
+const BarcordModal = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 60%;
+  height: 50vh;
+  transform: translate(-50%, -50%);
+  background-color: #ECFFE0;
+  border-radius: 50px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+  background-image: url('Modal_barcord_back.png');
+  background-size: 100% 100%;
+`;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 900;
 `;
 
 const RealBuyButton = styled.button`
@@ -157,10 +189,47 @@ const OverlappingImage = styled(StyledImg)`
   `}
 `;
 
+const tiltAnimation = keyframes`
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(10px);
+  }
+`;
+
+const bounceAnimation_2 = keyframes`
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(20px);
+  }
+`;
+
+const BarcordReader = styled.img`
+  position: absolute;
+  top: 200px;
+  right: 300px;
+  animation: ${tiltAnimation} 1s infinite;
+  width: 100px;
+  height: 100px;
+`;
+
+const TicketIcon = styled.img`
+  position: absolute;
+  bottom: 60px;
+  left: 500px;
+  animation: ${bounceAnimation_2} 1s infinite;
+  width: 100px;
+  height: 100px;
+`;
+
 export default function Component() {
     const [ticketCount, setTicketCount] = useState(1); // 초기값 및 최소값 1
     const [totalPrice, setTotalPrice] = useState(500); // 초기 총 가격 500원
     const [isChecked, setIsChecked] = useState(false); // 체크박스 상태
+    const [barcord, setBarcord] = useState(false); // 결제 중입니다... 모달 창 상태
 
     // 체크박스 상태를 실시간으로 추적하여 결제 버튼 활성화
     useEffect(() => {
@@ -204,6 +273,14 @@ export default function Component() {
         setIsBuying(true);
     }
 
+    const BarcordTrue = () => {
+        setBarcord(true);
+    }
+
+    const BarcordFalse = () => {
+        setBarcord(false);
+    }
+
     const finalBuy = async () => {
         try {
             const response = await axios.post(`${process.env.REACT_APP_SERVER_IP}/save_payment`, null, {
@@ -232,6 +309,15 @@ export default function Component() {
         } catch (error) {
             console.error('Payment Error:', error);
         }
+    };
+
+    const handleRegisterClick = () => {
+        setBarcord(true);
+        setTimeout(() => {
+            setBarcord(false);
+            finalBuy();
+            setIsRealBuy(true);
+        }, 10000); // 나중에 4초로 다시 바꾸기
     };
 
     // 유저 보유 유/무료 티켓을 가져오기 위함
@@ -363,84 +449,108 @@ export default function Component() {
                     {/* 결제(카드 등록) 페이지 시작*/}
                     {
                         isBuying && (
-                            <CustomModal width='40%' padding='20px' onClose={BuyFalse}>
+                            <>
+                                <ModalOverlay />
+                                <CustomModal width='40%' padding='20px' onClose={BuyFalse}>
 
-                                <CustomColumn width='100%' justifyContent='center' alignItems='center'>
+                                    <CustomColumn width='100%' justifyContent='center' alignItems='center'>
 
-                                    <CustomFont font='1.8rem' fontWeight='500' color='black' className="bmjua-text">결제 수단을 등록하세요.</CustomFont>
-                                    <CardCarousel />
-                                    <CustomColumn width='100%' justifyContent='center' alignItems='center' gap='1rem'>
-                                        <CustomColumn width='55%' justifyContent='center' alignItems='flex-start' gap='1rem'>
-                                            <InputForm placeholder='CARD NUMBER' />
+                                        <CustomFont font='1.8rem' fontWeight='500' color='black' className="bmjua-text">결제 수단을 등록하세요.</CustomFont>
+                                        <CardCarousel />
+                                        <CustomColumn width='100%' justifyContent='center' alignItems='center' gap='1rem'>
+                                            <CustomColumn width='55%' justifyContent='center' alignItems='flex-start' gap='1rem'>
+                                                <InputForm placeholder='CARD NUMBER' />
+                                            </CustomColumn>
+
+                                            <CustomColumn width='55%' justifyContent='center' alignItems='flex-start' gap='1rem'>
+                                                <InputForm placeholder='CARDHOLDER NAME' />
+                                            </CustomColumn>
+
+                                            <CustomRow width='55%' justifyContent='center' alignItems='center' gap='1rem'>
+
+                                                <InputForm type='' placeholder='MM' />
+                                                <InputForm type='' placeholder='YY' />
+                                                <InputForm type='' placeholder='CVV' />
+                                            </CustomRow>
+
+                                            <CustomRow width='100%' justifyContent='center' alignItems='center' gap='1rem'>
+                                                <RealBuyButton marginBottom='30px' onClick={handleRegisterClick}>
+                                                    <CustomFont color='#FFFFFF' font='1.2rem' fontWeight='400'>REGISTER</CustomFont>
+                                                </RealBuyButton>
+
+                                                <RealBuyButton marginBottom='30px' border='2px solid #8CC63F' backgroundColor='white' onClick={BuyFalse}>
+                                                    <CustomFont color='#FFFFFF' font='1.2rem' fontWeight='400'>CANCEL</CustomFont>
+                                                </RealBuyButton>
+                                            </CustomRow>
                                         </CustomColumn>
-
-                                        <CustomColumn width='55%' justifyContent='center' alignItems='flex-start' gap='1rem'>
-                                            <InputForm placeholder='CARDHOLDER NAME' />
-                                        </CustomColumn>
-
-                                        <CustomRow width='55%' justifyContent='center' alignItems='center' gap='1rem'>
-
-                                            <InputForm type='' placeholder='MM' />
-                                            <InputForm type='' placeholder='YY' />
-                                            <InputForm type='' placeholder='CVV' />
-                                        </CustomRow>
-
-                                        <CustomRow width='100%' justifyContent='center' alignItems='center' gap='1rem'>
-                                            <RealBuyButton marginBottom='30px' onClick={finalBuy}>
-                                                <CustomFont color='#FFFFFF' font='1.2rem' fontWeight='400'>REGISTER</CustomFont>
-                                            </RealBuyButton>
-
-                                            <RealBuyButton marginBottom='30px' border='2px solid #8CC63F' backgroundColor='white' onClick={BuyFalse}>
-                                                <CustomFont color='#FFFFFF' font='1.2rem' fontWeight='400'>CANCEL</CustomFont>
-                                            </RealBuyButton>
-                                        </CustomRow>
                                     </CustomColumn>
-                                </CustomColumn>
-                            </CustomModal>
+                                </CustomModal>
+                            </>
                         )
                     }
-                    {/* 결제(카드 등록) 페이지 끝 */}
+
+                    {
+                        barcord && (
+                            <>
+                                <ModalOverlay />
+                                <BarcordModal>
+                                    <BarcordReader src='icon_barcordReader.png' />
+                                    <TicketIcon src='icon_ticket.png' />
+
+                                    <CustomColumn width='100%' height='100%' alignItems='center' justifyContent='flex-end' gap='1rem'>
+                                        <CustomRow width='100%' height='100%' alignItems='flex-start' justifyContent='center'>
+                                            <CustomFont color='white' font='1.5rem' fontWeight='bold'>결제 중입니다...</CustomFont>
+                                        </CustomRow>
+                                        <StyledImg src={'icon_booAndCart.png'} width='600px' height='300px' />
+                                    </CustomColumn>
+                                </BarcordModal>
+                            </>
+                        )
+                    }
 
                     {
                         isRealBuy && (
                             // 1열
-                            <BuyModal>
-                                <CustomRow width='100%' height='100%' justifyContent='space-between' alignItems='center'>
-                                    <CustomColumn width='50%' justifyContent='flex-end' alignItems='flex-end' textAlign='right'>
-                                        <CustomFont font='3rem' color='black' >결제가</CustomFont>
-                                        <CustomFont font='3rem' color='black' >완료되었습니다!</CustomFont>
-                                        <CustomRow>
-                                            <CustomFont color='black' fontWeight='bold' font='1rem'>오늘 남은 무료 질문 횟수</CustomFont>
-                                            <CustomFont color='#8CC63F' fontWeight='bold' font='1rem'>
-                                                {remainingFreeQuestions !== null ? `(${remainingFreeQuestions}/5)` : 'Loading...'}
-                                            </CustomFont>
-                                        </CustomRow>
-                                        <CustomRow width='90%' justifyContent='center' alignItems='flex-end' gap='0.1rem'>
-                                            <StyledImg src={'icon_boo_small.png'} />
-                                            <StyledImg src={'icon_boo_big.png'} />
-                                            <StyledImg src={'icon_boo_middle.png'} />
-                                        </CustomRow>
-                                    </CustomColumn>
-                                    {/* 2열 */}
-                                    <CustomColumn width='50%' justifyContent='center' alignItems='center' gap='4rem'>
-                                        <CustomFont color='#000000' font='1.8rem' fontWeight='500'>티켓 보유 현황</CustomFont>
+                            <>
+                                <ModalOverlay />
+                                <BuyModal>
+                                    <CustomRow width='100%' height='100%' justifyContent='space-between' alignItems='center'>
+                                        <CustomColumn width='50%' justifyContent='flex-end' alignItems='flex-end' textAlign='right'>
+                                            <CustomFont font='3rem' color='black' >결제가</CustomFont>
+                                            <CustomFont font='3rem' color='black' >완료되었습니다!</CustomFont>
+                                            <CustomRow>
+                                                <CustomFont color='black' fontWeight='bold' font='1rem'>오늘 남은 무료 질문 횟수</CustomFont>
+                                                <CustomFont color='#8CC63F' fontWeight='bold' font='1rem'>
+                                                    {remainingFreeQuestions !== null ? `(${remainingFreeQuestions}/5)` : 'Loading...'}
+                                                </CustomFont>
+                                            </CustomRow>
+                                            <CustomRow width='90%' justifyContent='center' alignItems='flex-end' gap='0.1rem'>
+                                                <StyledImg src={'icon_boo_small.png'} />
+                                                <StyledImg src={'icon_boo_big.png'} />
+                                                <StyledImg src={'icon_boo_middle.png'} />
+                                            </CustomRow>
+                                        </CustomColumn>
+                                        {/* 2열 */}
+                                        <CustomColumn width='50%' justifyContent='center' alignItems='center' gap='4rem'>
+                                            <CustomFont color='#000000' font='1.8rem' fontWeight='500'>티켓 보유 현황</CustomFont>
 
-                                        <CustomRow width='50%' justifyContent='space-between' alignItems='center'>
-                                            <CustomFont color='#000000' font='1.4rem'>내 보유 유료 티켓</CustomFont>
-                                            <CustomFont color='#8CC63F' fontWeight='bold' font='1.4rem'>{paidTickets}장</CustomFont>
-                                        </CustomRow>
+                                            <CustomRow width='50%' justifyContent='space-between' alignItems='center'>
+                                                <CustomFont color='#000000' font='1.4rem'>내 보유 유료 티켓</CustomFont>
+                                                <CustomFont color='#8CC63F' fontWeight='bold' font='1.4rem'>{paidTickets}장</CustomFont>
+                                            </CustomRow>
 
-                                        <CustomRow width='50%' justifyContent='space-between' alignItems='center'>
-                                            <CustomFont color='#000000' font='1.4rem'>내 보유 무료 티켓</CustomFont>
-                                            <CustomFont color='#8CC63F' fontWeight='bold' font='1.4rem'>{freeTickets}장</CustomFont>
-                                        </CustomRow>
+                                            <CustomRow width='50%' justifyContent='space-between' alignItems='center'>
+                                                <CustomFont color='#000000' font='1.4rem'>내 보유 무료 티켓</CustomFont>
+                                                <CustomFont color='#8CC63F' fontWeight='bold' font='1.4rem'>{freeTickets}장</CustomFont>
+                                            </CustomRow>
 
-                                        <RealBuyButton onClick={() => setIsRealBuy(false)}>
-                                            <CustomFont color='#FFFFFF' font='1.3rem' fontWeight='400'>확인</CustomFont>
-                                        </RealBuyButton>
-                                    </CustomColumn>
-                                </CustomRow>
-                            </BuyModal>
+                                            <RealBuyButton onClick={() => setIsRealBuy(false)}>
+                                                <CustomFont color='#FFFFFF' font='1.3rem' fontWeight='400'>확인</CustomFont>
+                                            </RealBuyButton>
+                                        </CustomColumn>
+                                    </CustomRow>
+                                </BuyModal>
+                            </>
                         )
                     }
 
