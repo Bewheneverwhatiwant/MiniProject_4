@@ -126,10 +126,26 @@ export default function Component({ onClose, onShowTicketAlert }) {
         }
     };
 
+
+    // 이메일 중복검사 API. 서버한테 중복 시 400말고 409로 상태코드 달라고 말하기
     const handleEmailCheck = async () => {
-        setIsValid_email(true);
-        // 나중에 여기 이메일 중복 확인 API 연동하기
-    }
+        try {
+            const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/duplicate_email`, {
+                params: {
+                    email: email,
+                }
+            });
+            setIsValid_email(true);
+        } catch (error) {
+            setIsValid_email(false);
+            if (error.response && error.response.status === 409) {
+                alert('이미 사용 중인 이메일입니다.');
+            } else {
+                console.error('이메일 중복 검사 실패', error);
+                alert('이메일 중복 검사에 실패했습니다.');
+            }
+        }
+    };
 
     const handleSignup = async () => {
         if (isFormFilled) {
