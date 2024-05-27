@@ -212,14 +212,14 @@ export default function Component() {
                             content.map((item, index) => (
                                 <PurpleBox key={index}>
                                     <CustomFont color='#D389C7' font='1.5rem' fontWeight='bold'>
-                                        {item.content}
+                                        {item.name}
                                     </CustomFont>
                                     <CustomFont color='#D389C7' font='1rem'>
                                         작성자: {item.user_name}
                                     </CustomFont>
 
                                     <CustomFont color='#D389C7' font='1rem'>
-                                        대상: {item.target}
+                                        대상: {item.content}
                                     </CustomFont>
 
                                     <DocRound>
@@ -232,7 +232,7 @@ export default function Component() {
                                         </DocHeader>
                                         <DocContent>
                                             <CustomFont color='#D389C7' font='1rem'>
-                                                {item.name}
+                                                {item.target}
                                             </CustomFont>
                                         </DocContent>
                                     </DocRound>
