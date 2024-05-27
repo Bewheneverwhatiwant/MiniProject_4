@@ -282,7 +282,7 @@ export default function Component() {
 
   // 레벨 계산 함수
   const calculateLevel = (count) => {
-    if (count >= 1 && count < 20) return 'BOO론즈';
+    if (count >= 0 && count < 20) return 'BOO론즈';
     if (count >= 20 && count < 40) return 'BOO지런한 새';
     if (count >= 40 && count < 60) return '남 BOO럽지 않아';
     if (count >= 60 && count < 80) return '문서 BOO자';
@@ -291,7 +291,7 @@ export default function Component() {
 
   // 다음 레벨 계산 함수
   const calculateNextLevel = (count) => {
-    if (count >= 1 && count < 20) return 'BOO지런한 새';
+    if (count >= 0 && count < 20) return 'BOO지런한 새';
     if (count >= 20 && count < 40) return '남 BOO럽지 않아';
     if (count >= 40 && count < 60) return '문서 BOO자';
     if (count >= 60 && count < 80) return '문서왕';

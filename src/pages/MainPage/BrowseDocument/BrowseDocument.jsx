@@ -114,16 +114,6 @@ border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 `;
 
-const ContentDiv = styled.div`
-width: 100%;
-display flex;
-align-items: center;
-justify-content: center;
-line-height: 1.2rem;
-`;
-
-const defaultContent = ['b', 'c', 'd', 'e', 'f'];
-
 export default function Component() {
     const { isLoggedIn } = useAuth(); // useAuth 훅에서 로그인 상태와 유저 정보를 가져옴
     const [userData, setUserData] = useState({ username: '', free_tickets: 0, paid_tickets: 0 });
@@ -135,11 +125,30 @@ export default function Component() {
 
     const handleTabClick = (index) => {
         setActiveTab(index);
-        if (index === 0) {
-            fetchData();
-        } else {
-            setContent([]);
+        let type = '';
+        switch (index) {
+            case 0:
+                type = 'sorry';
+                break;
+            case 1:
+                type = 'notice';
+                break;
+            case 2:
+                type = 'letter';
+                break;
+            case 3:
+                type = 'poster';
+                break;
+            case 4:
+                type = 'job';
+                break;
+            case 5:
+                type = 'hire';
+                break;
+            default:
+                type = '';
         }
+        fetchData(type);
     };
 
     const handleLikeClick = async (index) => {
@@ -166,10 +175,10 @@ export default function Component() {
         }
     };
 
-    const fetchData = async () => {
+    const fetchData = async (type) => {
         try {
             const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/shared_documents`);
-            const documents = response.data.map(doc => ({ ...doc, like: doc.like_count || 0 }));
+            const documents = response.data.filter(doc => doc.type === type).map(doc => ({ ...doc, like: doc.like_count || 0 }));
             setContent(documents);
             setLoading(false);
         } catch (error) {
@@ -179,14 +188,13 @@ export default function Component() {
     };
 
     useEffect(() => {
-        fetchData(); // 컴포넌트가 마운트될 때 데이터를 가져옵니다.
+        fetchData('sorry'); // 처음 로드할 때는 사과문 카테고리를 로드합니다.
     }, []);
 
     return (
         <ContainerCenter>
             <PageContainer>
                 <CustomColumn width='80%' justifyContent='center' alignItems='center' gap='2rem'>
-                    <CustomFont color='black'>문서 구경 페이지</CustomFont>
 
                     <Tabs>
                         <Tab active={activeTab === 0} onClick={() => handleTabClick(0)}>사과문</Tab>
@@ -200,31 +208,19 @@ export default function Component() {
                     {loading ? (
                         <p>Loading...</p>
                     ) : (
-                        activeTab === 0 ? (
+                        content.length > 0 ? (
                             content.map((item, index) => (
                                 <PurpleBox key={index}>
                                     <CustomFont color='#D389C7' font='1.5rem' fontWeight='bold'>
                                         {item.content}
                                     </CustomFont>
-                                    <CustomRow width='100%' justifyContent='flex-start' alignItems='center' gap='1rem'>
-                                        <CustomFont color='#D389C7' font='1rem' fontWeight='bold'>작성자</CustomFont>
-                                        <CustomFont color='#D389C7' font='1rem'>
-                                            {item.user_name}
-                                        </CustomFont>
-                                    </CustomRow>
+                                    <CustomFont color='#D389C7' font='1rem'>
+                                        작성자: {item.user_name}
+                                    </CustomFont>
 
-                                    <CustomRow width='100%' justifyContent='flex-start' alignItems='center' gap='1rem'>
-                                        <CustomRow width='10%' justifyContent='flex-start' alignItems='center'>
-                                            <CustomFont color='#D389C7' font='1rem' fontWeight='bold'>보여줄 사람</CustomFont>
-                                        </CustomRow>
-                                        <CustomRow width='90%' justifyContent='flex-start' alignItems='center'>
-                                            <ContentDiv>
-                                                <CustomFont color='#D389C7' font='1rem'>
-                                                    {item.target}
-                                                </CustomFont>
-                                            </ContentDiv>
-                                        </CustomRow>
-                                    </CustomRow>
+                                    <CustomFont color='#D389C7' font='1rem'>
+                                        대상: {item.target}
+                                    </CustomFont>
 
                                     <DocRound>
                                         <DocHeader>
@@ -252,7 +248,7 @@ export default function Component() {
                                 </PurpleBox>
                             ))
                         ) : (
-                            <div>{defaultContent[activeTab - 1]}</div>
+                            <p>아직 공유된 문서가 없어요.</p>
                         )
                     )}
 
