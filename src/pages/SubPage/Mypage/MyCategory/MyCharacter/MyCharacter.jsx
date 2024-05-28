@@ -311,14 +311,16 @@ export default function CharacterComponent() {
   };
 
   const getImageBasedOnDocumentCount = () => {
-    if (documentCount >= 1 && documentCount < 20) return 'Boo_grow_1.png';
-    if (documentCount >= 20 && documentCount < 40) return 'Boo_grow_2.png';
-    if (documentCount >= 40 && documentCount < 60) return 'Boo_grow_3.png';
-    if (documentCount >= 60 && documentCount < 80) return 'Boo_grow_4.png';
-    if (documentCount >= 80 && documentCount < 100) return 'Boo_grow_5.png';
-    if (documentCount >= 100 && documentCount < 120) return 'Boo_grow_6.png';
-    if (documentCount >= 120 && documentCount < 140) return 'Boo_grow_7.png';
-    if (documentCount >= 140) return 'Boo_grow_8.png';
+    if (documentCount >= 0 && documentCount < 10) return 'Boo_grow_1.png';
+    if (documentCount >= 10 && documentCount < 20) return 'Boo_grow_2.png';
+    if (documentCount >= 20 && documentCount < 30) return 'Boo_grow_3.png';
+    if (documentCount >= 30 && documentCount < 40) return 'Boo_grow_4.png';
+    if (documentCount >= 40 && documentCount < 50) return 'Boo_grow_5.png';
+    if (documentCount >= 50 && documentCount < 60) return 'Boo_grow_6.png';
+    if (documentCount >= 60 && documentCount < 70) return 'Boo_grow_7.png';
+    if (documentCount >= 70 && documentCount < 80) return 'Boo_grow_8.png';
+    if (documentCount >= 80 && documentCount < 90) return 'Boo_grow_9.png';
+    if (documentCount >= 90 && documentCount < 100) return 'Boo_grow_10.png';
     return 'Boo_grow_1.png';
   };
 
