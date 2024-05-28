@@ -181,6 +181,7 @@ export default function Component() {
   const [volume, setVolume] = useState('');
   const [reason, setReason] = useState('');
   const [volumeError, setVolumeError] = useState('');
+  const [docId, setDocId] = useState(null);
 
   // 육하원칙에 따른 보고서 양식
   const [who, setWho] = useState(''); // 누가
@@ -267,6 +268,7 @@ export default function Component() {
         if (docIdMatch) {
           const docId = docIdMatch[1];
           localStorage.setItem('doc_id', docId);
+          setDocId(docId);
         }
       })
       .catch(error => {

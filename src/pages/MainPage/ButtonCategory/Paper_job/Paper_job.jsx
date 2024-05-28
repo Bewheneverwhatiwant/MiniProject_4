@@ -177,6 +177,7 @@ export default function Component() {
   const [sendContent, setSendContent] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [runGPT, setRunGPT] = useState(false);
+  const [docId, setDocId] = useState(null);
 
   const openai = new OpenAI({
     apiKey: process.env.REACT_APP_OPENAI_API_KEY,
@@ -250,6 +251,7 @@ export default function Component() {
         if (docIdMatch) {
           const docId = docIdMatch[1];
           localStorage.setItem('doc_id', docId);
+          setDocId(docId);
         }
       })
       .catch(error => {

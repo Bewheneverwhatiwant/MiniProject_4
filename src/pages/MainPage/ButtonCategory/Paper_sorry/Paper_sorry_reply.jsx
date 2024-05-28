@@ -9,6 +9,7 @@ import CustomCenter from '../../../../Components/Container/CustomCenter';
 import axios from 'axios';
 import CustomModal from "../../../../Components/Container/CustomModal";
 import { useAuth } from "../../../SubPage/AuthContext";
+import CustomChat from "../../../../Components/Container/CustomChat";
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -52,7 +53,7 @@ background-size: 100% 100%;
 const Buttoms = styled.button`
 width: ${props => props.width || '200px'};
 hwight: 70px;
-background-color: #FFC7C7;
+background-color: #8CC63F;
 border-radius: 10px;
 padding: 10px;
 display: flex;
@@ -320,244 +321,286 @@ const StyledImg_Ooops = styled.img`
 
 export default function Component() {
 
-    const [content, setContent] = useState('');
-    const navigate = useNavigate();
-    const [title, setTitle] = useState('');
-    const [showModal, setShowModal] = useState(false);
-    const [saveModal, setSaveModal] = useState(false);
-    const [showGood, setShowGood] = useState(false);
-    const [showBad, setShowBad] = useState(false);
+  const [content, setContent] = useState('');
+  const navigate = useNavigate();
+  const [title, setTitle] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [saveModal, setSaveModal] = useState(false);
+  const [showGood, setShowGood] = useState(false);
+  const [showBad, setShowBad] = useState(false);
+  const [formattedResponse, setFormattedResponse] = useState(null); // 포맷팅된 응답을 저장할 상태 변수
+  const [docId, setDocId] = useState(null);
 
-    const handleGoodClick = () => {
-        setShowGood(true);
-        setTimeout(() => {
-            setShowGood(false);
-        }, 2500);
+  useEffect(() => {
+    // a 파일에서 저장한 문서 ID를 로컬 스토리지에서 가져옴
+    const savedDocId = localStorage.getItem('doc_id');
+    if (savedDocId) {
+      setDocId(savedDocId);
     }
+  }, []);
 
-    const handleBadClick = () => {
-        setShowBad(true);
-        setTimeout(() => {
-            setShowBad(false);
-        }, 2500);
-    }
-
-    // 저장 오류 해결!
-    const { isLoggedIn, logout } = useAuth(); // useAuth를 이용하여 로그인 상태 가져오기
-    const [userData, setUserData] = useState({ username: '' });
-
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/user_total_info`);
-                const user = response.data.find(user => user.username === isLoggedIn);
-                if (user) {
-                    setUserData({ username: isLoggedIn });
-                }
-            } catch (error) {
-                console.error('Failed to fetch user data', error);
-            }
-        };
-
-        if (isLoggedIn) {
-            fetchUserData();
+  useEffect(() => {
+    if (docId) {
+      const serverIp = process.env.REACT_APP_SERVER_IP;
+      axios.get(`${serverIp}/get_document_input`, {
+        params: {
+          doc_input: docId  // 문서 ID를 doc_input 값으로 사용
         }
-    }, [isLoggedIn]);
+      })
+        .then(response => {
+          console.log('이 문서의 input들은', response.data);
+          // setApiResponse(JSON.stringify(response.data)); // API 응답을 상태 변수에 저장
+          const data = response.data;
 
-    useEffect(() => {
-        const storedContent = localStorage.getItem('content');
-        if (storedContent) {
-            setContent(storedContent);
-        }
-    }, []);
-
-    const copyToClipboard = () => {
-        navigator.clipboard.writeText(content);
-        alert("문서가 복사되었습니다.");
-    };
-
-    const BackToGen = () => {
-        navigate('/paper_hire');
-    }
-
-    const showModalSaveContent = () => {
-        setShowModal(true);
-    }
-
-    const handleTitleChange = (e) => {
-        setTitle(e.target.value);
-    }
-
-    const [showComingsoon, setShowcomingsoon] = useState(false);
-
-    const Soon = () => {
-        setShowcomingsoon(true);
-    }
-
-    const SoonX = () => {
-        setShowcomingsoon(false);
-    }
-
-    const closeModal = () => {
-        setShowModal(false);
-    }
-
-    const handleApiSave = () => {
-        const serverIp = process.env.REACT_APP_SERVER_IP;
-        const docId = localStorage.getItem('doc_id'); // 서버에서 doc_id 받아오는 걸로 바꾸기
-
-        if (!docId) {
-            alert('doc_id가 없습니다. 다시 시도해 주세요.');
-            return;
-        }
-
-        console.log('요창된 데이터는', { doc_id: docId, document_name: title, content: content, user_name: userData.username, });
-
-        axios.post(`${serverIp}/save_doc_output`, null, {
-            params: {
-                user_name: userData.username,
-                doc_id: docId,
-                document_name: title,
-                content: encodeURIComponent(content) // 여기서 encode 처리 안해주면 400 bad req 오류남
-                // content: ""
-            }
+          // 응답 데이터를 원하는 형식으로 포맷팅
+          const formattedData = `
+문서 종류: ${data.type},
+보여주는 사람: ${data.target},
+문서 분량: ${data.amount},
+내가 보낸 내용: ${data.text}.
+BOO, 내가 원하는 문서를 생성해줘!
+                `;
+          setFormattedResponse(formattedData); // 포맷팅된 응답을 상태 변수에 저장
         })
-            .then(response => {
-                console.log('API 응답은?', response.data);
-                handleSaveContent();
-            })
-            .catch(error => {
-                console.error('Error:', error.response ? error.response.data : error.message);
-            });
+        .catch(error => {
+          console.error('API Error:', error.response ? error.response.data : error.message);
+        });
     }
+  }, [docId]);
 
-    const handleSaveContent = () => {
-        const existingContents = JSON.parse(localStorage.getItem('savedContents')) || [];
-        existingContents.push({ title, content });
-        localStorage.setItem('savedContents', JSON.stringify(existingContents));
-        setSaveModal(true); // 여기다가 추가해야 하는 거였음
-        //alert('저장되었습니다.');
-        setShowModal(false);
-        // navigate('/myask');
+  const handleGoodClick = () => {
+    setShowGood(true);
+    setTimeout(() => {
+      setShowGood(false);
+    }, 2500);
+  }
+
+  const handleBadClick = () => {
+    setShowBad(true);
+    setTimeout(() => {
+      setShowBad(false);
+    }, 2500);
+  }
+
+  // 저장 오류 해결!
+  const { isLoggedIn, logout } = useAuth(); // useAuth를 이용하여 로그인 상태 가져오기
+  const [userData, setUserData] = useState({ username: '' });
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/user_total_info`);
+        const user = response.data.find(user => user.username === isLoggedIn);
+        if (user) {
+          setUserData({ username: isLoggedIn });
+        }
+      } catch (error) {
+        console.error('Failed to fetch user data', error);
+      }
     };
 
-    useEffect(() => {
-        let timer;
-        if (saveModal) {
-            timer = setTimeout(() => {
-                navigate('/myask');
-            }, 2500); // 2.5초 후(아직 saveModal이 true일 때)에 navigate 실행
+    if (isLoggedIn) {
+      fetchUserData();
+    }
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    const storedContent = localStorage.getItem('content');
+    if (storedContent) {
+      setContent(storedContent);
+    }
+  }, []);
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(content);
+    alert("문서가 복사되었습니다.");
+  };
+
+  const BackToGen = () => {
+    navigate('/paper_hire');
+  }
+
+  const showModalSaveContent = () => {
+    setShowModal(true);
+  }
+
+  const handleTitleChange = (e) => {
+    setTitle(e.target.value);
+  }
+
+  const [showComingsoon, setShowcomingsoon] = useState(false);
+
+  const Soon = () => {
+    setShowcomingsoon(true);
+  }
+
+  const SoonX = () => {
+    setShowcomingsoon(false);
+  }
+
+  const closeModal = () => {
+    setShowModal(false);
+  }
+
+  const handleApiSave = () => {
+    const serverIp = process.env.REACT_APP_SERVER_IP;
+    const docId = localStorage.getItem('doc_id'); // 서버에서 doc_id 받아오는 걸로 바꾸기
+
+    if (!docId) {
+      alert('doc_id가 없습니다. 다시 시도해 주세요.');
+      return;
+    }
+
+    console.log('요창된 데이터는', { doc_id: docId, document_name: title, content: content, user_name: userData.username, });
+
+    axios.post(`${serverIp}/save_doc_output`, null, {
+      params: {
+        user_name: userData.username,
+        doc_id: docId,
+        document_name: title,
+        content: encodeURIComponent(content) // 여기서 encode 처리 안해주면 400 bad req 오류남
+        // content: ""
+      }
+    })
+      .then(response => {
+        console.log('API 응답은?', response.data);
+        handleSaveContent();
+      })
+      .catch(error => {
+        console.error('Error:', error.response ? error.response.data : error.message);
+      });
+  }
+
+  const handleSaveContent = () => {
+    const existingContents = JSON.parse(localStorage.getItem('savedContents')) || [];
+    existingContents.push({ title, content });
+    localStorage.setItem('savedContents', JSON.stringify(existingContents));
+    setSaveModal(true); // 여기다가 추가해야 하는 거였음
+    //alert('저장되었습니다.');
+    setShowModal(false);
+    // navigate('/myask');
+  };
+
+  useEffect(() => {
+    let timer;
+    if (saveModal) {
+      timer = setTimeout(() => {
+        navigate('/myask');
+      }, 2500); // 2.5초 후(아직 saveModal이 true일 때)에 navigate 실행
+    }
+    return () => clearTimeout(timer); // 타이머 클리어
+  }, [saveModal]);
+
+  useEffect(() => {
+    if (saveModal) {
+      console.log('saveModal is true');
+      const timer = setTimeout(() => {
+        console.log('3초 후 saveModal을 false로 설정');
+        setSaveModal(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [saveModal]);
+
+  return (
+    <ContainerCenter>
+      <PageContainer>
+
+        <CustomCenter>
+          <CustomFont color='#8CC63F' font='2rem' fontWeight='bold'>
+            Boo가 생성한 사과문이 도착했습니다!
+          </CustomFont>
+        </CustomCenter>
+
+        {formattedResponse && (
+          <CustomChat isMe={true} text={formattedResponse} />
+        )}
+        {content ? (
+          <CustomChat text={content} isMe={false} />
+        ) : (
+          '답변이 없습니다.'
+        )}
+
+        {content && (
+          <CustomColumn width='100%' gap='1.5rem' justifyContent='center' alignItems='center'>
+            <CustomColumn width='100%' gap='1.5rem' justifyContent='center' alignItems='center'>
+
+              <CustomRow width='100%' gap='1.5rem' justifyContent='center' alignItems='center'>
+                <AnimatedButton onClick={handleGoodClick}>
+                  <StyledImg src={'icon_good.png'} />
+                </AnimatedButton>
+                <AnimatedButton onClick={handleBadClick}>
+                  <StyledImg src={'icon_bad.png'} />
+                </AnimatedButton>
+              </CustomRow>
+              {showGood && (
+                <>
+                  <ModalOverlay />
+                  <BuyModalContainer>
+                    <BuyModal>
+                      <StyledImg_heart src={'icon_redHeart.png'} />
+                    </BuyModal>
+                  </BuyModalContainer>
+                </>
+              )}
+
+              {showBad && (
+                <>
+                  <ModalOverlay />
+                  <BuyModalContainer>
+                    <BadModal>
+                      <StyledImg_Ooops src={'icon_Ooops.png'} />
+                    </BadModal>
+                  </BuyModalContainer>
+                </>
+              )}
+            </CustomColumn>
+            <CustomRow width='100%' gap='0.5rem'>
+              <Buttoms><CustomFont color="white" fontWeight='bold' onClick={copyToClipboard}>복사하기</CustomFont></Buttoms>
+              <Buttoms><CustomFont color="white" fontWeight='bold' onClick={BackToGen}>재생성하기</CustomFont></Buttoms>
+              <Buttoms onClick={showModalSaveContent}>
+                <CustomFont color="white" fontWeight='bold'>저장하기</CustomFont>
+              </Buttoms>
+            </CustomRow>
+            <Buttoms width='620px' onClick={Soon}> <CustomFont color="white" fontWeight='bold'>카카오톡으로 공유하기</CustomFont></Buttoms>
+          </CustomColumn>
+        )}
+
+        {
+          showComingsoon && (
+            <Overlay onClick={SoonX}>
+              <Modal>
+                <ModalX onClick={SoonX}>X</ModalX>
+              </Modal>
+            </Overlay>
+          )
         }
-        return () => clearTimeout(timer); // 타이머 클리어
-    }, [saveModal]);
 
-    useEffect(() => {
-        if (saveModal) {
-            console.log('saveModal is true');
-            const timer = setTimeout(() => {
-                console.log('3초 후 saveModal을 false로 설정');
-                setSaveModal(false);
-            }, 3000);
-            return () => clearTimeout(timer);
+        {showModal && (
+          <CustomModal width='30%' height='90vh' padding='20px' onClose={closeModal} maxHeight='100vh'>
+            <CustomColumn width='100%' justifyContent='center' alignItems='center' gap='2rem'>
+              <CustomFont color='black' font='1rem'>문서를 저장할 제목을 입력해주세요.</CustomFont>
+              <InputForm value={title} onChange={handleTitleChange} />
+              <CustomRow width='100%' alignItems='center' justifyContent='center' gap='1rem'>
+                <ConfirmButton onClick={handleApiSave} disabled={!title.trim()}>확인</ConfirmButton>
+                <CancelButton onClick={() => setShowModal(false)}>취소</CancelButton>
+              </CustomRow>
+            </CustomColumn>
+          </CustomModal>
+        )}
+
+        {
+          saveModal && (
+            <>
+              <ModalOverlay />
+              <Modal_save>
+                <StyledImg_Doc src={'icon_Doc.png'} />
+              </Modal_save>
+            </>
+          )
         }
-    }, [saveModal]);
 
-    return (
-        <ContainerCenter>
-            <PageContainer>
-
-                <CustomCenter>
-                    <CustomFont color='#8CC63F' font='2rem' fontWeight='bold'>
-                        Boo가 생성한 사과문이 도착했습니다!
-                    </CustomFont>
-                </CustomCenter>
-
-                <ReplyDiv>
-                    {content ? content : '답변이 없습니다.'}
-                </ReplyDiv>
-
-                {content && (
-                    <CustomColumn width='100%' gap='1.5rem' justifyContent='center' alignItems='center'>
-                        <CustomColumn width='100%' gap='1.5rem' justifyContent='center' alignItems='center'>
-                            <CustomRow width='100%' gap='1.5rem' justifyContent='center' alignItems='center'>
-                                <CustomFont color='black' font='1rem'>답변이 마음에 드시나요?</CustomFont>
-                            </CustomRow>
-                            <CustomRow width='100%' gap='1.5rem' justifyContent='center' alignItems='center'>
-                                <AnimatedButton onClick={handleGoodClick}>
-                                    <StyledImg src={'icon_good.png'} />
-                                </AnimatedButton>
-                                <AnimatedButton onClick={handleBadClick}>
-                                    <StyledImg src={'icon_bad.png'} />
-                                </AnimatedButton>
-                            </CustomRow>
-                            {showGood && (
-                                <>
-                                    <ModalOverlay />
-                                    <BuyModalContainer>
-                                        <BuyModal>
-                                            <StyledImg_heart src={'icon_redHeart.png'} />
-                                        </BuyModal>
-                                    </BuyModalContainer>
-                                </>
-                            )}
-
-                            {showBad && (
-                                <>
-                                    <ModalOverlay />
-                                    <BuyModalContainer>
-                                        <BadModal>
-                                            <StyledImg_Ooops src={'icon_Ooops.png'} />
-                                        </BadModal>
-                                    </BuyModalContainer>
-                                </>
-                            )}
-                        </CustomColumn>
-                        <CustomRow width='100%' gap='0.5rem'>
-                            <Buttoms><CustomFont color="white" fontWeight='bold' onClick={copyToClipboard}>복사하기</CustomFont></Buttoms>
-                            <Buttoms><CustomFont color="white" fontWeight='bold' onClick={BackToGen}>재생성하기</CustomFont></Buttoms>
-                            <Buttoms onClick={showModalSaveContent}>
-                                <CustomFont color="white" fontWeight='bold'>저장하기</CustomFont>
-                            </Buttoms>
-                        </CustomRow>
-                        <Buttoms width='620px' onClick={Soon}> <CustomFont color="white" fontWeight='bold'>카카오톡으로 공유하기</CustomFont></Buttoms>
-                    </CustomColumn>
-                )}
-
-                {
-                    showComingsoon && (
-                        <Overlay onClick={SoonX}>
-                            <Modal>
-                                <ModalX onClick={SoonX}>X</ModalX>
-                            </Modal>
-                        </Overlay>
-                    )
-                }
-
-                {showModal && (
-                    <CustomModal width='30%' height='90vh' padding='20px' onClose={closeModal} maxHeight='100vh'>
-                        <CustomColumn width='100%' justifyContent='center' alignItems='center' gap='2rem'>
-                            <CustomFont color='black' font='1rem'>문서를 저장할 제목을 입력해주세요.</CustomFont>
-                            <InputForm value={title} onChange={handleTitleChange} />
-                            <CustomRow width='100%' alignItems='center' justifyContent='center' gap='1rem'>
-                                <ConfirmButton onClick={handleApiSave} disabled={!title.trim()}>확인</ConfirmButton>
-                                <CancelButton onClick={() => setShowModal(false)}>취소</CancelButton>
-                            </CustomRow>
-                        </CustomColumn>
-                    </CustomModal>
-                )}
-
-                {
-                    saveModal && (
-                        <>
-                            <ModalOverlay />
-                            <Modal_save>
-                                <StyledImg_Doc src={'icon_Doc.png'} />
-                            </Modal_save>
-                        </>
-                    )
-                }
-
-            </PageContainer>
-        </ContainerCenter>
-    );
+      </PageContainer>
+    </ContainerCenter>
+  );
 }

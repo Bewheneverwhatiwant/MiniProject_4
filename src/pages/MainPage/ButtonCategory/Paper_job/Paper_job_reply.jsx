@@ -9,6 +9,7 @@ import CustomCenter from '../../../../Components/Container/CustomCenter';
 import axios from 'axios';
 import CustomModal from "../../../../Components/Container/CustomModal";
 import { useAuth } from "../../../SubPage/AuthContext";
+import CustomChat from "../../../../Components/Container/CustomChat";
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -52,7 +53,7 @@ background-size: 100% 100%;
 const Buttoms = styled.button`
 width: ${props => props.width || '200px'};
 hwight: 70px;
-background-color: #FFC7C7;
+background-color: #8CC63F;
 border-radius: 10px;
 padding: 10px;
 display: flex;
@@ -328,6 +329,46 @@ export default function Component() {
   const [showGood, setShowGood] = useState(false);
   const [showBad, setShowBad] = useState(false);
 
+  const [docId, setDocId] = useState(null); // input 조회를 위해서
+  const [formattedResponse, setFormattedResponse] = useState(null); // 포맷팅된 응답을 저장할 상태 변수
+
+  useEffect(() => {
+    // a 파일에서 저장한 문서 ID를 로컬 스토리지에서 가져옴
+    const savedDocId = localStorage.getItem('doc_id');
+    if (savedDocId) {
+      setDocId(savedDocId);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (docId) {
+      const serverIp = process.env.REACT_APP_SERVER_IP;
+      axios.get(`${serverIp}/get_document_input`, {
+        params: {
+          doc_input: docId  // 문서 ID를 doc_input 값으로 사용
+        }
+      })
+        .then(response => {
+          console.log('이 문서의 input들은', response.data);
+          // setApiResponse(JSON.stringify(response.data)); // API 응답을 상태 변수에 저장
+          const data = response.data;
+
+          // 응답 데이터를 원하는 형식으로 포맷팅
+          const formattedData = `
+문서 종류: ${data.type},
+보여주는 사람: ${data.target},
+문서 분량: ${data.amount},
+내가 보낸 내용: ${data.text}.
+BOO, 내가 원하는 문서를 생성해줘!
+                `;
+          setFormattedResponse(formattedData); // 포맷팅된 응답을 상태 변수에 저장
+        })
+        .catch(error => {
+          console.error('API Error:', error.response ? error.response.data : error.message);
+        });
+    }
+  }, [docId]);
+
   const handleGoodClick = () => {
     setShowGood(true);
     setTimeout(() => {
@@ -473,16 +514,19 @@ export default function Component() {
           </CustomFont>
         </CustomCenter>
 
-        <ReplyDiv>
-          {content ? content : '답변이 없습니다.'}
-        </ReplyDiv>
+        {formattedResponse && (
+          <CustomChat isMe={true} text={formattedResponse} />
+        )}
+        {content ? (
+          <CustomChat text={content} isMe={false} />
+        ) : (
+          '답변이 없습니다.'
+        )}
 
         {content && (
           <CustomColumn width='100%' gap='1.5rem' justifyContent='center' alignItems='center'>
             <CustomColumn width='100%' gap='1.5rem' justifyContent='center' alignItems='center'>
-              <CustomRow width='100%' gap='1.5rem' justifyContent='center' alignItems='center'>
-                <CustomFont color='black' font='1rem'>답변이 마음에 드시나요?</CustomFont>
-              </CustomRow>
+
               <CustomRow width='100%' gap='1.5rem' justifyContent='center' alignItems='center'>
                 <AnimatedButton onClick={handleGoodClick}>
                   <StyledImg src={'icon_good.png'} />

@@ -189,6 +189,8 @@ export default function Component() {
   const [isLoading, setIsLoading] = useState(false);
   const [runGPT, setRunGPT] = useState(false);
 
+  const [docId, setDocId] = useState(null);
+
   const openai = new OpenAI({
     apiKey: process.env.REACT_APP_OPENAI_API_KEY,
     dangerouslyAllowBrowser: true
@@ -261,6 +263,7 @@ export default function Component() {
         if (docIdMatch) {
           const docId = docIdMatch[1];
           localStorage.setItem('doc_id', docId);
+          setDocId(docId);  // 문서 ID를 상태 변수에 저장
         }
       })
       .catch(error => {
