@@ -282,6 +282,11 @@ export default function Component() {
         setBarcord(false);
     }
 
+    const BackToMypage = () => {
+        setIsRealBuy(false);
+        navigate('/mypage');
+    }
+
     const finalBuy = async () => {
         try {
             const response = await axios.post(`${process.env.REACT_APP_SERVER_IP}/save_payment`, null, {
@@ -318,7 +323,7 @@ export default function Component() {
             setBarcord(false);
             finalBuy();
             setIsRealBuy(true);
-        }, 6000);
+        }, 2500);
     };
 
     // 유저 보유 유/무료 티켓을 가져오기 위함
@@ -545,7 +550,7 @@ export default function Component() {
                                                 <CustomFont color='#8CC63F' fontWeight='bold' font='1.4rem'>{freeTickets}장</CustomFont>
                                             </CustomRow>
 
-                                            <RealBuyButton onClick={() => setIsRealBuy(false)}>
+                                            <RealBuyButton onClick={BackToMypage}>
                                                 <CustomFont color='#FFFFFF' font='1.3rem' fontWeight='400'>확인</CustomFont>
                                             </RealBuyButton>
                                         </CustomColumn>
