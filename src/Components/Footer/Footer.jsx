@@ -155,6 +155,7 @@ export default function Component() {
             });
             if (response.status === 200) {
                 alert('회원 탈퇴가 완료되었습니다.');
+                setShowModal(false);
                 logout();
                 navigate('/'); // 탈퇴 후 홈으로 이동
             }
