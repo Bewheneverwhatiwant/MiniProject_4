@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import CustomColumn from '../../../../../Components/Container/CustomColumn';
 import CustomRow from '../../../../../Components/Container/CustomRow';
 import CustomFont from '../../../../../Components/Container/CustomFont';
@@ -169,6 +169,78 @@ cursor: pointer;
 margin-top: 10px;
 `;
 
+const ModalOverlay_share = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* ModalOverlay가 BuyModal의 바로 아래에 오도록 설정 */
+`;
+
+// 모달의 위아래 움직임 애니메이션
+const moveUpDown_Boo = keyframes`
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+`;
+
+const BuyModalContainer = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const BuyModal_share = styled.div`
+  width: 600px;
+  height: 400px;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url('Modal_share_success_back.png');
+  background-size: 100% 100%;
+`;
+
+const StyledImg_tamburin = styled.img`
+  width: 150px;
+  height: 150px;
+  animation: ${moveUpDown_Boo} 1s infinite; /* 위아래 움직임 애니메이션 적용 */
+  position: fixed;
+  top: 150px;
+  left: 200px;
+`;
+
+const StyledImg_Boo = styled.img`
+  width: 250px;
+  height: 250px;
+  animation: ${moveUpDown_Boo} 1s infinite; /* 위아래 움직임 애니메이션 적용 */
+  position: fixed;
+  bottom: 50px;
+  right: 50px;
+`;
+
+const StyledImg_mike = styled.img`
+  width: 200px;
+  height: 200px;
+  animation: ${moveUpDown_Boo} 1s infinite; /* 위아래 움직임 애니메이션 적용 */
+  position: fixed;
+  bottom: 0;
+  left: 20px;
+`;
+
 export default function MyAsk() {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('sorry');
@@ -178,6 +250,17 @@ export default function MyAsk() {
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [docToDelete, setDocToDelete] = useState(null);
+
+  // 공유하기 클릭 시 뜨는 모달 상태 제어
+  const [showGood, setShowGood] = useState(false);
+
+  const handleGoodClick = () => {
+    setShowGood(true);
+    setTimeout(() => {
+      setShowGood(false);
+    }, 2500);
+  }
+
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -277,6 +360,8 @@ export default function MyAsk() {
           document_name: selectedDocument.content
         }
       });
+
+      handleGoodClick();
 
       console.log('공유 API 호출 성공:', response.data);
     } catch (error) {
@@ -391,6 +476,19 @@ export default function MyAsk() {
             </CustomColumn>
           </CustomModal>
         </ModalOverlay>
+      )}
+
+      {showGood && (
+        <>
+          <ModalOverlay_share />
+          <BuyModalContainer>
+            <BuyModal_share>
+              <StyledImg_tamburin src={'icon_tamburin.png'} />
+              <StyledImg_mike src={'icon_mike.png'} />
+              <StyledImg_Boo src={'icon_Boo_blush.png'} />
+            </BuyModal_share>
+          </BuyModalContainer>
+        </>
       )}
     </ContainerCenter>
   );

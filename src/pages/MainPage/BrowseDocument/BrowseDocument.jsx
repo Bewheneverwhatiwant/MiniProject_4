@@ -118,19 +118,6 @@ border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 `;
 
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000; /* ModalOverlay가 BuyModal의 바로 아래에 오도록 설정 */
-`;
-
 const grow = keyframes`
   0% {
     width: 100px;
@@ -145,6 +132,20 @@ const grow = keyframes`
     height: 100px;
   }
 `;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* ModalOverlay가 BuyModal의 바로 아래에 오도록 설정 */
+`;
+
 // 모달의 위아래 움직임 애니메이션
 const moveUpDown_Boo = keyframes`
   0%, 100% {
