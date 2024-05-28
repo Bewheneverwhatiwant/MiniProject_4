@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import CustomFont from '../../../../../Components/Container/CustomFont';
 import CustomCenter from '../../../../../Components/Container/CustomCenter';
 import CustomColumn from '../../../../../Components/Container/CustomColumn';
@@ -163,6 +163,40 @@ const AnimatedRow = styled(CustomRow)`
   animation: ${bounce} 1s infinite;
 `;
 
+const BooGrowModal = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 50%;
+  height: 70vh;
+  transform: translate(-50%, -50%);
+  background-color: #ECFFE0;
+  padding: 20px;
+  border-radius: 50px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001; /* Modal이 항상 위에 오도록 설정 */
+  background-image: url('Modal_Boo_Grow.png');
+  background-size: 100% 100%;
+`;
+
+const moveUpDown = keyframes`
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+`;
+
+const AnimatedImage = styled(StyledImg)`
+  ${props => props.animate && css`
+    animation: ${moveUpDown} 1s infinite;
+  `}
+`;
+
 export default function CharacterComponent() {
   const [documentCount, setDocumentCount] = useState(0);
   const [nickname, setNickname] = useState('');
@@ -176,6 +210,7 @@ export default function CharacterComponent() {
   const [getGift, setGetGift] = useState(false); // 보상받기 클릭 시 모달
   const [level, setLevel] = useState(false);
   const [levelStatus, setLevelStatus] = useState([true, true, true, true, true]); // 보상 상태
+  const [boogrow, setBoogrow] = useState(false);
 
   useEffect(() => {
     if (username) {
@@ -267,6 +302,14 @@ export default function CharacterComponent() {
 
   const handleLevelModalX = () => {
     setLevel(false);
+  };
+
+  const handleBooGrowModal = () => {
+    setBoogrow(true);
+  }
+
+  const handleBooGrwoModalX = () => {
+    setBoogrow(false);
   }
 
 
@@ -319,8 +362,10 @@ export default function CharacterComponent() {
     if (documentCount >= 50 && documentCount < 60) return 'Boo_grow_6.png';
     if (documentCount >= 60 && documentCount < 70) return 'Boo_grow_7.png';
     if (documentCount >= 70 && documentCount < 80) return 'Boo_grow_8.png';
-    if (documentCount >= 80 && documentCount < 90) return 'Boo_grow_9.png';
-    if (documentCount >= 90 && documentCount < 100) return 'Boo_grow_10.png';
+    if (documentCount >= 80 && documentCount < 90) return 'Boo_grow_8_1.png';
+    if (documentCount >= 90 && documentCount < 100) return 'Boo_grow_8_2.png';
+    if (documentCount >= 100 && documentCount < 110) return 'Boo_grow_9.png';
+    if (documentCount >= 110 && documentCount < 120) return 'Boo_grow_10.png';
     return 'Boo_grow_1.png';
   };
 
@@ -347,7 +392,7 @@ export default function CharacterComponent() {
 
             <CustomRow width='100%' alignItems='center' justifyContent='flex-start'>
               <AnimatedRow>
-                <LevelButton>
+                <LevelButton onClick={handleBooGrowModal}>
                   <CustomColumn width='100%' alignItems='center' justifyContent='center' gap='0.5rem'>
                     <CustomFont color='#8CC63F' font='0.7rem' fontWeight='bold'>"귀여운 BOO가 어른이 되면, 어떤 모습일까?"</CustomFont>
                     <CustomFont color='#8CC63F' font='1rem' fontWeight='bold'>BOO의 생애 미리보기</CustomFont>
@@ -467,6 +512,48 @@ export default function CharacterComponent() {
                 </LevelModal>
               </>
             )}
+
+            {
+              boogrow && (
+                <>
+                  <ModalOverlay />
+                  <BooGrowModal>
+                    <CustomColumn width='100%' alignItems='center' justifyContent='center' gap='1rem'>
+
+                      <CustomRow width='80%' alignItems='center' justifyContent='flex-end' gap='1rem'>
+                        <LevelModalX onClick={handleBooGrwoModalX}>
+                          X
+                        </LevelModalX>
+                      </CustomRow>
+
+                      <CustomRow width='80%' alignItems='center' justifyContent='space-between' gap='1rem'>
+                        <AnimatedImage src={'Boo_grow_1.png'} width='100px' height='100px' animate={documentCount >= 0 && documentCount < 10} />
+                        <AnimatedImage src={'Boo_grow_2.png'} width='100px' height='100px' animate={documentCount >= 10 && documentCount < 20} />
+                        <AnimatedImage src={'Boo_grow_3.png'} width='100px' height='100px' animate={documentCount >= 20 && documentCount < 30} />
+                      </CustomRow>
+
+                      <CustomRow width='80%' alignItems='center' justifyContent='space-between' gap='1rem'>
+                        <AnimatedImage src={'Boo_grow_6.png'} width='100px' height='100px' animate={documentCount >= 50 && documentCount < 60} />
+                        <AnimatedImage src={'Boo_grow_5.png'} width='100px' height='100px' animate={documentCount >= 40 && documentCount < 50} />
+                        <AnimatedImage src={'Boo_grow_4.png'} width='100px' height='100px' animate={documentCount >= 30 && documentCount < 40} />
+                      </CustomRow>
+
+                      <CustomRow width='80%' alignItems='center' justifyContent='space-between' gap='1rem'>
+                        <AnimatedImage src={'Boo_grow_7.png'} width='100px' height='100px' animate={documentCount >= 60 && documentCount < 70} />
+                        <AnimatedImage src={'Boo_grow_8.png'} width='100px' height='100px' animate={documentCount >= 70 && documentCount < 80} />
+                        <AnimatedImage src={'Boo_grow_8_1.png'} width='100px' height='150px' animate={documentCount >= 80 && documentCount < 90} />
+                      </CustomRow>
+
+                      <CustomRow width='80%' alignItems='flex-start' justifyContent='space-between' gap='1rem'>
+                        <AnimatedImage src={'Boo_grow_10.png'} width='200px' height='100px' animate={documentCount >= 110 && documentCount < 120} />
+                        <AnimatedImage src={'Boo_grow_9.png'} width='200px' height='150px' animate={documentCount >= 100 && documentCount < 110} />
+                        <AnimatedImage src={'Boo_grow_8_2.png'} width='120px' height='120px' animate={documentCount >= 90 && documentCount < 100} />
+                      </CustomRow>
+                    </CustomColumn>
+                  </BooGrowModal>
+                </>
+              )
+            }
 
           </CustomColumn>
 
