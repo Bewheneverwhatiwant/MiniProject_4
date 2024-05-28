@@ -192,6 +192,29 @@ const moveUpDown_Boo = keyframes`
   }
 `;
 
+// 좌우 움직임 애니메이션
+const moveLeftRight = keyframes`
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(20px);
+  }
+`;
+
+// 좌우 기울임 애니메이션
+const tiltLeftRight = keyframes`
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-20deg);
+  }
+  75% {
+    transform: rotate(20deg);
+  }
+`;
+
 const BuyModalContainer = styled.div`
   position: fixed;
   top: 50%;
@@ -217,7 +240,7 @@ const BuyModal_share = styled.div`
 const StyledImg_tamburin = styled.img`
   width: 150px;
   height: 150px;
-  animation: ${moveUpDown_Boo} 1s infinite; /* 위아래 움직임 애니메이션 적용 */
+  animation: ${moveLeftRight} 1s infinite; /* 위아래 움직임 애니메이션 적용 */
   position: fixed;
   top: 150px;
   left: 200px;
@@ -235,7 +258,7 @@ const StyledImg_Boo = styled.img`
 const StyledImg_mike = styled.img`
   width: 200px;
   height: 200px;
-  animation: ${moveUpDown_Boo} 1s infinite; /* 위아래 움직임 애니메이션 적용 */
+  animation: ${tiltLeftRight} 1s infinite; /* 위아래 움직임 애니메이션 적용 */
   position: fixed;
   bottom: 0;
   left: 20px;

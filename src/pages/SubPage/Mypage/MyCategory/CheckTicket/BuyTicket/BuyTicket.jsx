@@ -68,6 +68,7 @@ const BarcordModal = styled.div`
   z-index: 1001;
   background-image: url('Modal_barcord_back.png');
   background-size: 100% 100%;
+  padding-top: 20px;
 `;
 
 const ModalOverlay = styled.div`
@@ -221,8 +222,8 @@ const TicketIcon = styled.img`
   bottom: 60px;
   left: 500px;
   animation: ${bounceAnimation_2} 1s infinite;
-  width: 100px;
-  height: 100px;
+  width: 150px;
+  height: 150px;
 `;
 
 export default function Component() {
@@ -317,7 +318,7 @@ export default function Component() {
             setBarcord(false);
             finalBuy();
             setIsRealBuy(true);
-        }, 10000); // 나중에 4초로 다시 바꾸기
+        }, 6000);
     };
 
     // 유저 보유 유/무료 티켓을 가져오기 위함
@@ -499,7 +500,7 @@ export default function Component() {
 
                                     <CustomColumn width='100%' height='100%' alignItems='center' justifyContent='flex-end' gap='1rem'>
                                         <CustomRow width='100%' height='100%' alignItems='flex-start' justifyContent='center'>
-                                            <CustomFont color='white' font='1.5rem' fontWeight='bold'>결제 중입니다...</CustomFont>
+                                            <CustomFont color='white' font='2rem' fontWeight='bold'>결제 중입니다...</CustomFont>
                                         </CustomRow>
                                         <StyledImg src={'icon_booAndCart.png'} width='600px' height='300px' />
                                     </CustomColumn>
