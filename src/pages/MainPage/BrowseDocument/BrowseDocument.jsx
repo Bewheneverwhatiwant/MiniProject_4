@@ -331,7 +331,7 @@ export default function Component() {
                         <p>Loading...</p>
                     ) : (
                         content.length > 0 ? (
-                            content.map((item, index) => (
+                            content.slice().reverse().map((item, index) => (
                                 <PurpleBox key={index}>
                                     <CustomFont color='#D389C7' font='1.5rem' fontWeight='bold'>
                                         {item.name}
