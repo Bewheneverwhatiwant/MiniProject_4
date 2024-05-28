@@ -187,6 +187,16 @@ const StyledImg_heart = styled.img`
   opacity: 0.5;
 `;
 
+const Button = styled.button`
+  padding: 0.5rem 1rem;
+  margin: 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  background-color: #C1EEA5;
+  border: none;
+  border-radius: 20px;
+`;
+
 export default function Component() {
     const { isLoggedIn } = useAuth(); // useAuth 훅에서 로그인 상태와 유저 정보를 가져옴
     const [userData, setUserData] = useState({ username: '', free_tickets: 0, paid_tickets: 0 });
@@ -196,13 +206,32 @@ export default function Component() {
 
     const [showGood, setShowGood] = useState(false);
 
+    const sortByLikes = () => {
+        setLoading(true);
+        setTimeout(() => {
+            const sortedContent = [...content].sort((a, b) => b.like_count - a.like_count);
+            setContent(sortedContent);
+            setLoading(false);
+        }, 1000);
+    };
+
+    const [originalContent, setOriginalContent] = useState([]); // 원래 데이터를 저장할 상태
+
+    const sortByRecent = () => {
+        setLoading(true);
+        setTimeout(() => {
+            const sortedContent = [...originalContent].slice().reverse();
+            setContent(sortedContent); // 원래 데이터를 사용하여 복원하고 역순으로 정렬
+            setLoading(false);
+        }, 1000);
+    };
+
     const handleGoodClick = () => {
         setShowGood(true);
         setTimeout(() => {
             setShowGood(false);
         }, 2500);
     }
-
 
     const navigate = useNavigate();
 
@@ -302,6 +331,7 @@ export default function Component() {
             const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/shared_documents`);
             const documents = response.data.filter(doc => doc.type === type).map(doc => ({ ...doc, like: doc.like_count || 0 }));
             setContent(documents);
+            setOriginalContent(documents); // 원래 데이터를 저장
             setLoading(false);
         } catch (error) {
             console.error('데이터 불러오기 실패', error);
@@ -327,11 +357,19 @@ export default function Component() {
                         <Tab active={activeTab === 5} onClick={() => handleTabClick(5)}>모집/채용공고</Tab>
                     </Tabs>
 
+                    <CustomRow width='80%' justifyContent='center' alignItems='center' gap='1rem'>
+                        <Button onClick={sortByLikes}>
+                            <CustomFont color='#8CC63F' font='1rem' fontWeight='bold'>좋아요순</CustomFont>
+                        </Button>
+                        <Button onClick={sortByRecent}>
+                            <CustomFont color='#8CC63F' font='1rem' fontWeight='bold'>최신순</CustomFont>
+                        </Button>
+                    </CustomRow>
                     {loading ? (
                         <p>Loading...</p>
                     ) : (
                         content.length > 0 ? (
-                            content.slice().reverse().map((item, index) => (
+                            content.map((item, index) => (
                                 <PurpleBox key={index}>
                                     <CustomFont color='#D389C7' font='1.5rem' fontWeight='bold'>
                                         {item.name}
