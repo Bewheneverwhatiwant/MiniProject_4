@@ -38,7 +38,8 @@ const LogoButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: url('icon_boo_small.png');
+  background-image: url('icon_nest.png');
+  background-color: transparent;
   background-size: 100% 100%;
   border: none;
   width: 50px;

@@ -53,7 +53,7 @@ align-items: center;
 justify-content: center;
 width: 100%;
 height: 100px;
-background-color: #FFD7D7;
+background-color: #DDF6CE;
 border: none;
 border-radius: 10px;
 margin: 10px;
@@ -399,32 +399,32 @@ export default function MyAsk() {
 
           <CustomColumn width='30%' justifyContent='center' alignItems='center' gap='1rem'>
             <CategoryButton onClick={() => setSelectedCategory('sorry')}>
-              <CustomFont color={selectedCategory === 'sorry' ? '#FF9292' : 'black'} fontWeight='bold' font='1.5rem'>
+              <CustomFont color={selectedCategory === 'sorry' ? '#71A62B' : 'black'} fontWeight='bold' font='1.5rem'>
                 사과문
               </CustomFont>
             </CategoryButton>
             <CategoryButton onClick={() => setSelectedCategory('notice')}>
-              <CustomFont color={selectedCategory === 'notice' ? '#FF9292' : 'black'} fontWeight='bold' font='1.5rem'>
+              <CustomFont color={selectedCategory === 'notice' ? '#71A62B' : 'black'} fontWeight='bold' font='1.5rem'>
                 보고서/시말서
               </CustomFont>
             </CategoryButton>
             <CategoryButton onClick={() => setSelectedCategory('letter')}>
-              <CustomFont color={selectedCategory === 'letter' ? '#FF9292' : 'black'} fontWeight='bold' font='1.5rem'>
+              <CustomFont color={selectedCategory === 'letter' ? '#71A62B' : 'black'} fontWeight='bold' font='1.5rem'>
                 편지
               </CustomFont>
             </CategoryButton>
             <CategoryButton onClick={() => setSelectedCategory('poster')}>
-              <CustomFont color={selectedCategory === 'poster' ? '#FF9292' : 'black'} fontWeight='bold' font='1.5rem'>
+              <CustomFont color={selectedCategory === 'poster' ? '#71A62B' : 'black'} fontWeight='bold' font='1.5rem'>
                 광고/포스터
               </CustomFont>
             </CategoryButton>
             <CategoryButton onClick={() => setSelectedCategory('job')}>
-              <CustomFont color={selectedCategory === 'job' ? '#FF9292' : 'black'} fontWeight='bold' font='1.5rem'>
+              <CustomFont color={selectedCategory === 'job' ? '#71A62B' : 'black'} fontWeight='bold' font='1.5rem'>
                 이력서
               </CustomFont>
             </CategoryButton>
             <CategoryButton onClick={() => setSelectedCategory('hire')}>
-              <CustomFont color={selectedCategory === 'hire' ? '#FF9292' : 'black'} fontWeight='bold' font='1.5rem'>
+              <CustomFont color={selectedCategory === 'hire' ? '#71A62B' : 'black'} fontWeight='bold' font='1.5rem'>
                 모집/채용 공고
               </CustomFont>
             </CategoryButton>
@@ -441,7 +441,7 @@ export default function MyAsk() {
                 documents.map((doc, index) => (
                   <CustomRow key={index} width='100%' justifyContent='space-between' alignItems='center'>
                     <TitleAnswer onClick={() => openModal(doc)}>
-                      <CustomFont color='white' font='1.6rem' fontWeight='bold'>{doc.content}</CustomFont>
+                      <CustomFont color='#71A62B' font='1.6rem' fontWeight='bold'>{doc.content}</CustomFont>
                     </TitleAnswer>
 
                     <Xbutton onClick={() => {

@@ -74,7 +74,7 @@ const Button = styled.button`
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 
   &:hover {
-    background-color: #7BB32E;
+    background-color: #8CC63F;
   }
 `;
 
@@ -572,7 +572,7 @@ export default function Component() {
             <CustomRow width='80%' justifyContent='space-between' alignItems='center'>
               <CustomFont color='#8CC63F' fontWeight='bold' font='1.2rem'>비밀번호</CustomFont>
               <Button onClick={Modal}>
-                <CustomFont color='white' fontWeight='bold' font='1.2rem'>비밀번호 변경</CustomFont>
+                <CustomFont color='#619E10' fontWeight='bold' font='1.2rem'>비밀번호 변경</CustomFont>
               </Button>
             </CustomRow>
           </InfoContainer>
@@ -618,7 +618,7 @@ export default function Component() {
               <StyledImg src={'icon_boo_glass.png'} width='20px' height='20px' />
             ) : (
               <LevelButton onClick={handleLevelModal}>
-                <CustomFont color='white' font='1rem'>{nextLevel}</CustomFont>
+                <CustomFont color='#8CC63F' fontWeight='bold' font='1rem'>{nextLevel}</CustomFont>
               </LevelButton>
             )}
           </CustomRow>

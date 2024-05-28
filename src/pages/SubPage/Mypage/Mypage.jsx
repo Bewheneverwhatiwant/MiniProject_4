@@ -75,22 +75,22 @@ export default function Component() {
         <CustomRow width='100%' justifyContent='space-between' alignItems='center' gap='0.1rem'>
           <CustomColumn width='50%' justifyContent='center' alignItems='center' gap='1rem'>
             <CategoryButton onClick={() => setSelectedCategory('modify')}>
-              <CustomFont color={selectedCategory === 'modify' ? '#8CC63F' : 'black'} fontWeight='bold' font='1.5rem'>
+              <CustomFont color={selectedCategory === 'modify' ? '#71A62B' : 'black'} fontWeight='bold' font='1.5rem'>
                 내 정보 수정
               </CustomFont>
             </CategoryButton>
             <CategoryButton onClick={() => setSelectedCategory('checkTicket')}>
-              <CustomFont color={selectedCategory === 'checkTicket' ? '#8CC63F' : 'black'} fontWeight='bold' font='1.5rem'>
+              <CustomFont color={selectedCategory === 'checkTicket' ? '#71A62B' : 'black'} fontWeight='bold' font='1.5rem'>
                 내 티켓 확인
               </CustomFont>
             </CategoryButton>
             <CategoryButton onClick={() => setSelectedCategory('myCharacter')}>
-              <CustomFont color={selectedCategory === 'myCharacter' ? '#8CC63F' : 'black'} fontWeight='bold' font='1.5rem'>
+              <CustomFont color={selectedCategory === 'myCharacter' ? '#71A62B' : 'black'} fontWeight='bold' font='1.5rem'>
                 내 캐릭터
               </CustomFont>
             </CategoryButton>
             <CategoryButton onClick={MyAsk}>
-              <CustomFont color='#FF9292' fontWeight='bold' font='1.5rem'>내 질문 목록</CustomFont>
+              <CustomFont color='#9EE93A' fontWeight='bold' font='1.5rem'>내 질문 목록</CustomFont>
             </CategoryButton>
           </CustomColumn>
 
