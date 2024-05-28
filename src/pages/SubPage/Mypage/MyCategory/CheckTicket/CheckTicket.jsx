@@ -45,7 +45,7 @@ const MyTicketContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-around;
+  justify-content: flex-start;
   background-color: #C1EEA580;
   border: none;
   border-radius: 20px;
@@ -53,6 +53,7 @@ const MyTicketContainer = styled.div`
   padding-bottom: 10px;
   width: 100%;
   height: 300px;
+  gap: 10px;
   overflow-y: auto;
 
   &::-webkit-scrollbar {

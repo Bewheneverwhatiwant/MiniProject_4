@@ -216,7 +216,7 @@ export default function Component({ onClose, onShowTicketAlert }) {
         if (idDuc) {
             const timer = setTimeout(() => {
                 setIdDuc(false);
-            }, 3000); // 3초 후에 모달을 닫음
+            }, 1500); // 1.5초 후에 모달을 닫음
             return () => clearTimeout(timer); // 컴포넌트 언마운트 시 타이머 클리어
         }
     }, [idDuc]);
@@ -225,7 +225,7 @@ export default function Component({ onClose, onShowTicketAlert }) {
         if (emailDuc) {
             const timer = setTimeout(() => {
                 setEmailDuc(false);
-            }, 3000); // 3초 후에 모달을 닫음
+            }, 1500); // 1.5초 후에 모달을 닫음
             return () => clearTimeout(timer); // 컴포넌트 언마운트 시 타이머 클리어
         }
     }, [emailDuc]);

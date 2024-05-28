@@ -193,10 +193,11 @@ display: flex;
 align-items: center;
 justify-content: center;
 border: none;
-background-color: #D9D9D9;
+background-color: #8CC63F;
 color: white;
-border-radius: 10px;
+border-radius: 50px;
 cursor: pointer;
+width: 2rem;
 `;
 
 const ProgressBar = styled.div`
@@ -639,7 +640,9 @@ export default function Component() {
                           </CustomFont>
                         </SmallBooSay>
                       </AnimatedRow>
-                      <LevelModalX onClick={handleLevelModalX}>x</LevelModalX>
+                      <LevelModalX onClick={handleLevelModalX}>
+                        <CustomFont color='white' fontWeight='bold' font='1.5rem'>X</CustomFont>
+                      </LevelModalX>
                     </CustomRow>
                   </CustomRow>
 

@@ -42,6 +42,21 @@ const IsValidButton = styled.button`
   cursor: pointer;
 `;
 
+const IsValidButton_2 = styled.button`
+  width: 30%;
+  height: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem;
+  color: white;
+  border: none;
+  border-radius: 15px;
+  background-color: #FFC7C7;
+  cursor: pointer;
+`;
+
+
 const InputForm = styled.input`
   display: flex;
   border: 1.5px solid #8CC63F;
@@ -122,9 +137,9 @@ display: flex;
 align-items: center;
 justify-content: center;
 border: none;
-background-color: #D9D9D9;
+background-color: #8CC63F;
 color: white;
-border-radius: 10px;
+border-radius: 50px;
 cursor: pointer;
 `;
 
@@ -408,8 +423,12 @@ export default function CharacterComponent() {
               <CustomColumn width='80%' alignItems='center' gap='10px'>
                 <InputForm placeholder='새 닉네임 입력' value={newNickname} onChange={(e) => setNewNickname(e.target.value)} />
                 <CustomRow width='100%' justifyContent='space-around'>
-                  <IsValidButton onClick={updateNickname}>확인</IsValidButton>
-                  <IsValidButton onClick={() => setIsEditing(false)}>취소</IsValidButton>
+                  <IsValidButton onClick={updateNickname}>
+                    <CustomFont font='1rem' fontWeight='bold' color='#8CC63F'>확인</CustomFont>
+                  </IsValidButton>
+                  <IsValidButton_2 onClick={() => setIsEditing(false)}>
+                    <CustomFont font='1rem' fontWeight='bold' color='white'>취소</CustomFont>
+                  </IsValidButton_2>
                 </CustomRow>
               </CustomColumn>
             ) : (
@@ -461,7 +480,7 @@ export default function CharacterComponent() {
                 <StyledImg src={'icon_boo_glass.png'} width='20px' height='20px' />
               ) : (
                 <LevelButton onClick={handleLevelModal}>
-                  <CustomFont color='white' font='1rem'>{nextLevel}</CustomFont>
+                  <CustomFont color='#8CC63F' fontWeight='bold' font='1rem'>{nextLevel}</CustomFont>
                 </LevelButton>
               )}
             </CustomRow>
@@ -482,7 +501,9 @@ export default function CharacterComponent() {
                             </CustomFont>
                           </SmallBooSay>
                         </AnimatedRow>
-                        <LevelModalX onClick={handleLevelModalX}>x</LevelModalX>
+                        <LevelModalX onClick={handleLevelModalX}>
+                          <CustomFont color='white' font='1.5rem' fontWeight='bold'>X</CustomFont>
+                        </LevelModalX>
                       </CustomRow>
                     </CustomRow>
 

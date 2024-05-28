@@ -441,16 +441,18 @@ export default function MyAsk() {
                 documents.map((doc, index) => (
                   <CustomRow key={index} width='100%' justifyContent='space-between' alignItems='center'>
                     <TitleAnswer onClick={() => openModal(doc)}>
-                      <CustomFont color='#71A62B' font='1.6rem' fontWeight='bold'>{doc.content}</CustomFont>
-                    </TitleAnswer>
 
-                    <Xbutton onClick={() => {
-                      console.log('삭제할 문서 설정:', doc.content); // 삭제할 문서 설정 로그 출력
-                      setDocToDelete(doc.content);
-                      setShowDeleteModal(true);
-                    }}>
-                      x
-                    </Xbutton>
+                      <CustomRow width='80%' alignItems='center' justifyContent='space-between'>
+                        <CustomFont color='#71A62B' font='1.6rem' fontWeight='bold'>{doc.content}</CustomFont>
+                        <Xbutton onClick={() => {
+                          console.log('삭제할 문서 설정:', doc.content); // 삭제할 문서 설정 로그 출력
+                          setDocToDelete(doc.content);
+                          setShowDeleteModal(true);
+                        }}>
+                          x
+                        </Xbutton>
+                      </CustomRow>
+                    </TitleAnswer>
 
 
                     {showDeleteModal && (
