@@ -173,10 +173,11 @@ export default function Component() {
             console.log('시작');
 
             // 서버에 좋아요 증가 요청
+            // 여기서 400 오류 해결 중 -> user_name에 누르난 사람이 아닌 doc 작성자 아이디 담도록 변경!
             await axios.put(`${process.env.REACT_APP_SERVER_IP}/add_like_count`, null, {
                 params: {
                     doc_name: doc.name,
-                    user_name: isLoggedIn
+                    user_name: doc.user_name
                 }
             });
 
@@ -185,8 +186,8 @@ export default function Component() {
             // 서버에서 최신 좋아요 수 가져와서 업데이트
             const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/get_like_count`, {
                 params: {
-                    doc_name: encodeURIComponent(doc.name),
-                    user_name: isLoggedIn
+                    doc_name: doc.name,
+                    user_name: doc.user_name
                 }
             });
 
@@ -207,8 +208,11 @@ export default function Component() {
                 console.error('서버로부터 유효하지 않은 좋아요 수를 받았습니다:', updatedLikeCount);
             }
         } catch (error) {
-            console.log(doc.name);
+            // 인코딩된 doc_name과 user_name을 콘솔에 출력
+            console.log('doc_name:', encodeURIComponent(doc.name));
+            console.log('user_name:', encodeURIComponent(isLoggedIn));
             console.log(isLoggedIn);
+            console.log(doc.name);
             console.error('좋아요 추가 실패', error);
         }
     };
