@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -118,12 +118,89 @@ border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 `;
 
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* ModalOverlay가 BuyModal의 바로 아래에 오도록 설정 */
+`;
+
+const grow = keyframes`
+  0% {
+    width: 100px;
+    height: 100px;
+  }
+  50% {
+    width: 200px;
+    height: 200px;
+  }
+  100% {
+    width: 100px;
+    height: 100px;
+  }
+`;
+// 모달의 위아래 움직임 애니메이션
+const moveUpDown_Boo = keyframes`
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+`;
+
+const BuyModalContainer = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const BuyModal = styled.div`
+  width: 400px;
+  height: 400px;
+  background-color: transparent;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url('icon_boo_happyAndBlushed.png');
+  background-size: cover;
+  animation: ${moveUpDown_Boo} 1s infinite; /* 위아래 움직임 애니메이션 적용 */
+`;
+
+const StyledImg_heart = styled.img`
+  width: 100px;
+  height: 100px;
+  animation: ${grow} 3s infinite;
+  opacity: 0.5;
+`;
+
 export default function Component() {
     const { isLoggedIn } = useAuth(); // useAuth 훅에서 로그인 상태와 유저 정보를 가져옴
     const [userData, setUserData] = useState({ username: '', free_tickets: 0, paid_tickets: 0 });
     const [activeTab, setActiveTab] = useState(0);
     const [content, setContent] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    const [showGood, setShowGood] = useState(false);
+
+    const handleGoodClick = () => {
+        setShowGood(true);
+        setTimeout(() => {
+            setShowGood(false);
+        }, 2500);
+    }
 
 
     const navigate = useNavigate();
@@ -167,6 +244,8 @@ export default function Component() {
             newContent[index].like_count = (newContent[index].like_count || 0) + 1; // 초기값 설정
             return newContent;
         });
+
+        handleGoodClick();
 
         try {
 
@@ -292,6 +371,17 @@ export default function Component() {
                         ) : (
                             <p>아직 공유된 문서가 없어요.</p>
                         )
+                    )}
+
+                    {showGood && (
+                        <>
+                            <ModalOverlay />
+                            <BuyModalContainer>
+                                <BuyModal>
+                                    <StyledImg_heart src={'icon_redHeart.png'} />
+                                </BuyModal>
+                            </BuyModalContainer>
+                        </>
                     )}
 
                 </CustomColumn>
