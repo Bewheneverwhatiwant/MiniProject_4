@@ -171,6 +171,7 @@ export default function Component({ onClose, onShowTicketAlert }) {
     const [userId, setUserId] = useState('');
     const [isValid, setIsValid] = useState(false);
     const [isValid_email, setIsValid_email] = useState(false);
+    const [isEmailOk, setIsEmailOk] = useState(true); // 이메일 양식 체크를 위한 상태 변수
     const [password, setPassword] = useState('');
     const [passwordConfirm, setPasswordConfirm] = useState('');
     const [email, setEmail] = useState('');
@@ -180,6 +181,19 @@ export default function Component({ onClose, onShowTicketAlert }) {
     const isPasswordValid = passwordRegex.test(password);
     const isFormFilled = userId && isValid && password && passwordConfirm && isPasswordsMatch && isPasswordValid && isCheck && email && isValid_email;
 
+
+    // 이메일 형식 검사 함수
+    const validateEmail = (email) => {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(String(email).toLowerCase());
+    };
+
+    // 이메일 입력 변경 핸들러
+    const handleEmailChange = (e) => {
+        const value = e.target.value;
+        setEmail(value);
+        setIsEmailOk(validateEmail(value));
+    };
 
     // 아이디, 이메일 중복 시 모달 제어 상태
     const [idDuc, setIdDuc] = useState(false);
@@ -239,6 +253,12 @@ export default function Component({ onClose, onShowTicketAlert }) {
 
     // 이메일 중복검사 API. 서버한테 중복 시 400말고 409로 상태코드 달라고 말하기
     const handleEmailCheck = async () => {
+
+        if (!isEmailOk) {
+            alert('이메일 양식을 알맞게 작성해주세요.');
+            return;
+        }
+
         try {
             const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/duplicate_email`, {
                 params: {
@@ -348,8 +368,9 @@ export default function Component({ onClose, onShowTicketAlert }) {
                                 <CustomFont color='black' font='1rem' fontWeight='bold'>이메일</CustomFont>
                                 <CustomFont color='red' font='1rem' fontWeight='bold'>*</CustomFont>
                             </CustomRow>
-                            <InputForm placeholder='이메일 주소를 입력하세요.' value={email} onChange={e => setEmail(e.target.value)} />
+                            <InputForm placeholder='이메일 주소를 입력하세요.' value={email} onChange={handleEmailChange} />
                             {!email && <ErrorText>필수 필드입니다.</ErrorText>}
+                            {email && !isEmailOk && <ErrorText>이메일 양식을 지켜주세요.</ErrorText>}
                         </CustomColumn>
 
                         <CustomColumn width='30%' alignItems='center' justifyContent='center' gap='1px'>
