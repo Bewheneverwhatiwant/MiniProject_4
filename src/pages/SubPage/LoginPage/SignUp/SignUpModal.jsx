@@ -89,6 +89,84 @@ const OverlappingImage = styled(StyledImg)`
   `}
 `;
 
+const IdDuc = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 50%;
+  height: 50vh;
+  transform: translate(-50%, -50%);
+  background-color: #ECFFE0;
+  padding: 20px;
+  border-radius: 50px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001; /* Modal이 항상 위에 오도록 설정 */
+  background-image: url('Modal_ID_ducp.png');
+  background-size: 100% 100%;
+`;
+
+const EmailDuc = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 50%;
+  height: 50vh;
+  transform: translate(-50%, -50%);
+  background-color: #ECFFE0;
+  padding: 20px;
+  border-radius: 50px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001; /* Modal이 항상 위에 오도록 설정 */
+  background-image: url('Modal_email_ducp.png');
+  background-size: 100% 100%;
+`;
+
+const moveUpDown = keyframes`
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+`;
+
+const StyledImg_Boo = styled.img`
+  width: 100px;
+  height: 100px;
+  animation: ${moveUpDown} 0.5s infinite; /* 위아래 움직임 애니메이션 적용 */
+  position: fixed;
+  top: 50px;
+  right: 50px;
+`;
+
+const StyledImg_Boo_2 = styled.img`
+  width: 100px;
+  height: 100px;
+  animation: ${moveUpDown} 0.5s infinite; /* 위아래 움직임 애니메이션 적용 */
+  position: fixed;
+  top: 50px;
+  left: 50px;
+`;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
 export default function Component({ onClose, onShowTicketAlert }) {
     const [userId, setUserId] = useState('');
     const [isValid, setIsValid] = useState(false);
@@ -102,10 +180,41 @@ export default function Component({ onClose, onShowTicketAlert }) {
     const isPasswordValid = passwordRegex.test(password);
     const isFormFilled = userId && isValid && password && passwordConfirm && isPasswordsMatch && isPasswordValid && isCheck && email && isValid_email;
 
+
+    // 아이디, 이메일 중복 시 모달 제어 상태
+    const [idDuc, setIdDuc] = useState(false);
+    const [emailDuc, setEmailDuc] = useState(false);
+
+    const handleIdDuc = () => {
+        setIdDuc(true);
+    }
+
+    const handleEmailDuc = () => {
+        setEmailDuc(true);
+    }
+
     const [showTicketAlert, setShowTicketAlert] = useState(false); // happy 모달 제어
     const [username, setUsername] = useState('');
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (idDuc) {
+            const timer = setTimeout(() => {
+                setIdDuc(false);
+            }, 3000); // 3초 후에 모달을 닫음
+            return () => clearTimeout(timer); // 컴포넌트 언마운트 시 타이머 클리어
+        }
+    }, [idDuc]);
+
+    useEffect(() => {
+        if (emailDuc) {
+            const timer = setTimeout(() => {
+                setEmailDuc(false);
+            }, 3000); // 3초 후에 모달을 닫음
+            return () => clearTimeout(timer); // 컴포넌트 언마운트 시 타이머 클리어
+        }
+    }, [emailDuc]);
 
     const handleIdCheck = async () => {
         try {
@@ -118,7 +227,8 @@ export default function Component({ onClose, onShowTicketAlert }) {
         } catch (error) {
             setIsValid(false);
             if (error.response && error.response.status === 409) {
-                alert('이미 사용 중인 아이디입니다.');
+                //alert('이미 사용 중인 아이디입니다.');
+                handleIdDuc();
             } else {
                 console.error('아이디 중복 검사 실패', error);
                 alert('아이디 중복 검사에 실패했습니다.');
@@ -139,7 +249,8 @@ export default function Component({ onClose, onShowTicketAlert }) {
         } catch (error) {
             setIsValid_email(false);
             if (error.response && error.response.status === 409) {
-                alert('이미 사용 중인 이메일입니다.');
+                //alert('이미 사용 중인 이메일입니다.');
+                handleEmailDuc();
             } else {
                 console.error('이메일 중복 검사 실패', error);
                 alert('이메일 중복 검사에 실패했습니다.');
@@ -263,6 +374,26 @@ export default function Component({ onClose, onShowTicketAlert }) {
                     )}
                 </CustomColumn>
             </CustomColumn>
+
+            {idDuc && (
+                <>
+                    <ModalOverlay />
+                    <IdDuc>
+                        <StyledImg_Boo src={'icon_surprise.png'} />
+                        <StyledImg_Boo_2 src={'icon_surprise_2.png'} />
+                    </IdDuc>
+                </>
+            )}
+
+            {emailDuc && (
+                <>
+                    <ModalOverlay />
+                    <EmailDuc>
+                        <StyledImg_Boo src={'icon_surprise.png'} />
+                        <StyledImg_Boo_2 src={'icon_surprise_2.png'} />
+                    </EmailDuc>
+                </>
+            )}
         </CustomModal>
     );
 }
