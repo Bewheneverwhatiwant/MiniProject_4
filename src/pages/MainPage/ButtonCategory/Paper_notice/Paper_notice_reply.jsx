@@ -328,23 +328,23 @@ export default function Component({ onClose }) {
   const [saveModal, setSaveModal] = useState(false);
   const [showGood, setShowGood] = useState(false);
   const [showBad, setShowBad] = useState(false);
-  const [docId, setDocId] = useState(null); // input 조회를 위해서
+  const [docId_chat, setDocId_chat] = useState(null); // input 조회를 위해서
   const [formattedResponse, setFormattedResponse] = useState(null); // 포맷팅된 응답을 저장할 상태 변수
 
   useEffect(() => {
     // a 파일에서 저장한 문서 ID를 로컬 스토리지에서 가져옴
     const savedDocId = localStorage.getItem('doc_id');
     if (savedDocId) {
-      setDocId(savedDocId);
+      setDocId_chat(savedDocId);
     }
   }, []);
 
   useEffect(() => {
-    if (docId) {
+    if (docId_chat) {
       const serverIp = process.env.REACT_APP_SERVER_IP;
       axios.get(`${serverIp}/get_document_input`, {
         params: {
-          doc_input: docId  // 문서 ID를 doc_input 값으로 사용
+          doc_input: docId_chat  // 문서 ID를 doc_input 값으로 사용
         }
       })
         .then(response => {
@@ -366,7 +366,7 @@ BOO, 내가 원하는 문서를 생성해줘!
           console.error('API Error:', error.response ? error.response.data : error.message);
         });
     }
-  }, [docId]);
+  }, [docId_chat]);
 
   const handleGoodClick = () => {
     setShowGood(true);

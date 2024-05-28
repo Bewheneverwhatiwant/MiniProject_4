@@ -169,13 +169,14 @@ export default function Component() {
   const [atmosphere, setAtmosphere] = useState(''); // 어떤 분위기
   const [duzen, setDuzen] = useState(''); // 반말 또는 존댓발의 어투
   const [why, setWhy] = useState(''); // 편지 작성 이유
+  const [lan, setLan] = useState(''); // 언어 입력 필드 추가
 
 
   // chat gpt ai api 관련
   const [sendContent, setSendContent] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [runGPT, setRunGPT] = useState(false);
-  const [docId, setDocId] = useState(null);
+  const [docId_chat, setDocId_chat] = useState(null);
 
   const openai = new OpenAI({
     apiKey: process.env.REACT_APP_OPENAI_API_KEY,
@@ -202,7 +203,8 @@ export default function Component() {
 
                 작성 가이드라인:
                 - 이 문서는 누군가에게 편지를 쓰기 위한 목적으로 내용이 작성되어야 한다.
-                - 사용자가 전달해준 정보를 전부 사용하여 문서를 생성해야 한다.`
+                - 사용자가 전달해준 정보를 전부 사용하여 문서를 생성해야 한다.
+                - 사용자가 지정한 언어로 내용을 생성해야 한다.`
         }],
       model: 'gpt-4-turbo',
     })
@@ -225,7 +227,8 @@ export default function Component() {
 
   const handleAiReplyClick = () => {
     let content = `문서의 최대 분량 : ${volume} || 문서를 작성하는 이유 : ${reason} ||
-    누가 : ${who} || 누구에게 : ${recipient} || 편지의 분위기는 : ${atmosphere} || 편지의 어투는 : ${duzen} || 편지를 쓰는 이유는 : ${why}`;
+    누가 : ${who} || 누구에게 : ${recipient} || 편지의 분위기는 : ${atmosphere} || 편지의 어투는 : ${duzen} 
+    || 편지를 쓰는 이유는 : ${why} || 문서를 생성할 언어: ${lan}`;
     console.log(content);
     setRunGPT(true);
     setSendContent(content);
@@ -244,12 +247,10 @@ export default function Component() {
       .then(response => {
         console.log('API Response:', response.data);
         const responseMessage = response.data;
-        const docIdMatch = responseMessage.match(/doc_id는 (\d+)/);
-        if (docIdMatch) {
-          const docId = docIdMatch[1];
-          localStorage.setItem('doc_id', docId);
-          setDocId(docId);
-        }
+        localStorage.setItem('doc_id', responseMessage);
+        setDocId_chat(responseMessage);  // 문서 ID를 상태 변수에 저장
+        console.log('로컬 스터리지에 저장된 doc_id는');
+        console.log(docId_chat);
       })
       .catch(error => {
         console.error('Error:', error.response ? error.response.data : error.message);
@@ -339,7 +340,7 @@ export default function Component() {
     handleAiReplyClick(category);
   };
 
-  const isFormValid = who && recipient && volume && !volumeError && atmosphere && duzen && why;
+  const isFormValid = who && recipient && volume && !volumeError && atmosphere && duzen && why && lan;
 
   return (
     <ContainerCenter>
@@ -352,6 +353,13 @@ export default function Component() {
           </CustomRow>
 
           <CustomColumn width='60%' justifyContent='center' alignItems='center'>
+
+            <CustomRow width='100%' justifyContent='flex-start' alignItems='center' gap='1rem'>
+              <CustomFont color='black' font='1rem'>문서를 생성할 언어를 알려주세요</CustomFont>
+              <CustomFont color='red' font='1rem'>*</CustomFont>
+            </CustomRow>
+            <InputForm value={lan} onChange={(e) => setLan(e.target.value)} />
+            {!lan && <ErrorMessage>필수 필드입니다.</ErrorMessage>}
 
             <CustomRow width='100%' justifyContent='flex-start' alignItems='center' gap='1rem'>
               <CustomFont color='black' font='1rem'>누가 적어주는 편지인가요?</CustomFont>

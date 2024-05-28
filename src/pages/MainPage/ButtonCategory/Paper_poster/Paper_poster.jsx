@@ -179,6 +179,7 @@ const ModalButton = styled.button`
 `;
 
 export default function Component() {
+  const [lan, setLan] = useState(''); // 언어 입력 필드 추가
   const [recipient, setRecipient] = useState('');
   const [volume, setVolume] = useState('');
   const [reason, setReason] = useState('');
@@ -189,7 +190,7 @@ export default function Component() {
   const [isLoading, setIsLoading] = useState(false);
   const [runGPT, setRunGPT] = useState(false);
 
-  const [docId, setDocId] = useState(null);
+  const [docId_chat, setDocId_chat] = useState(null);
 
   const openai = new OpenAI({
     apiKey: process.env.REACT_APP_OPENAI_API_KEY,
@@ -217,7 +218,8 @@ export default function Component() {
                 작성 가이드라인:
                 - 이 문서는 어떤 기업, 상품, 매체, 공익 등 무언가를 공공연히 알리고 홍보하기 위한 목적으로 내용이 작성되어야 한다.
                 - 사용자가 전달해준 정보를 전부 사용하여 문서를 생성해야 한다.
-                - 운율이 있거나 규칙적인 발음의 문장으로 구성하여 사람들이 오래 기억할 수 있도록 문장을 구성해야 한다.`
+                - 운율이 있거나 규칙적인 발음의 문장으로 구성하여 사람들이 오래 기억할 수 있도록 문장을 구성해야 한다.
+                - 사용자가 지정한 언어로 내용을 생성해야 한다.`
         }],
       model: 'gpt-4-turbo',
     })
@@ -240,7 +242,7 @@ export default function Component() {
 
   const handleAiReplyClick = () => {
     let content = `문서의 최대 분량 : ${volume} || 문서를 작성하는 이유 : ${reason} ||
-    누구에게 : ${recipient}`;
+    누구에게 : ${recipient} || 문서를 생성할 언어: ${lan}`;
     console.log(content);
     setRunGPT(true);
     setSendContent(content);
@@ -259,12 +261,12 @@ export default function Component() {
       .then(response => {
         console.log('API Response:', response.data);
         const responseMessage = response.data;
-        const docIdMatch = responseMessage.match(/doc_id는 (\d+)/);
-        if (docIdMatch) {
-          const docId = docIdMatch[1];
-          localStorage.setItem('doc_id', docId);
-          setDocId(docId);  // 문서 ID를 상태 변수에 저장
-        }
+
+        localStorage.setItem('doc_id', responseMessage);
+        setDocId_chat(responseMessage);  // 문서 ID를 상태 변수에 저장
+        console.log('로컬 스터리지에 저장된 doc_id는');
+        console.log(docId_chat);
+
       })
       .catch(error => {
         console.error('Error:', error.response ? error.response.data : error.message);
@@ -354,7 +356,7 @@ export default function Component() {
     handleAiReplyClick(category);
   };
 
-  const isFormValid = recipient && volume && reason && !volumeError;
+  const isFormValid = recipient && volume && reason && !volumeError && lan;
 
   return (
     <ContainerCenter>
@@ -367,6 +369,13 @@ export default function Component() {
           </CustomRow>
 
           <CustomColumn width='60%' justifyContent='center' alignItems='center'>
+
+            <CustomRow width='100%' justifyContent='flex-start' alignItems='center' gap='1rem'>
+              <CustomFont color='black' font='1rem'>문서를 생성할 언어를 알려주세요</CustomFont>
+              <CustomFont color='red' font='1rem'>*</CustomFont>
+            </CustomRow>
+            <InputForm value={lan} onChange={(e) => setLan(e.target.value)} />
+            {!lan && <ErrorMessage>필수 필드입니다.</ErrorMessage>}
 
             <CustomRow width='100%' justifyContent='flex-start' alignItems='center' gap='1rem'>
               <CustomFont color='black' font='1rem'>문서를 보여주고 싶은 대상을 설명해주세요</CustomFont>
