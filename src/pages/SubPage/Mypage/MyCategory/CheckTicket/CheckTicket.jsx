@@ -223,6 +223,16 @@ export default function Component() {
     fetchTicketHistory();
   }, [isLoggedIn, userData]);
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    return `${year}년 ${month}월 ${day}일 ${hours}시 ${minutes}분`;
+  };
+
   return (
     <ContainerCenter>
       <PageContainer>
@@ -272,7 +282,7 @@ export default function Component() {
               ticketHistory.map((ticket, index) => (
                 <React.Fragment key={index}>
                   <CustomRow width='90%' justifyContent='space-between' alignItems='center'>
-                    <CustomFont color='black' font='1rem'>{ticket.paid_time}</CustomFont>
+                    <CustomFont color='black' font='1rem'>{formatDate(ticket.paid_time)}</CustomFont>
                     <CustomFont color='black' font='1rem'>티켓 {ticket.ticket}장</CustomFont>
                     <CustomFont color='black' font='1rem'>{ticket.price}원</CustomFont>
                   </CustomRow>
@@ -293,7 +303,7 @@ export default function Component() {
               ticketUsageHistory.map((ticket, index) => (
                 <React.Fragment key={index}>
                   <CustomRow width='90%' justifyContent='space-between' alignItems='center'>
-                    <CustomFont color='black' font='1rem'>{ticket.createdAt}</CustomFont>
+                    <CustomFont color='black' font='1rem'>{formatDate(ticket.createdAt)}</CustomFont>
                     <CustomFont color='black' font='1.rem'>{ticket.ticketType}</CustomFont>
                   </CustomRow>
                   {index < ticketUsageHistory.length - 1 && <Divider key={`divider-${index}`} />}
