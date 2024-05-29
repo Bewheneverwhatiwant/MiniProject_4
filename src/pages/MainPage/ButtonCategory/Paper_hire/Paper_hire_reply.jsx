@@ -649,7 +649,7 @@ BOO, 내가 원하는 문서를 생성해줘!
           </CustomColumn>
         )}
 
-        {refund && <RefundTicket username={isLoggedIn} onClose={closeRefundModal} />}
+        {refund && <RefundTicket username={isLoggedIn} onClose={closeRefundModal} gptFinalContent={content} />}
 
         {
           showComingsoon && (

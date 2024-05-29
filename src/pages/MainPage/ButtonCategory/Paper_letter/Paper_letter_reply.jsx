@@ -653,7 +653,7 @@ export default function Component({ username }) {
           </CustomColumn>
         )}
 
-        {refund && <RefundTicket username={isLoggedIn} onClose={closeRefundModal} />}
+        {refund && <RefundTicket username={isLoggedIn} onClose={closeRefundModal} gptFinalContent={content} />}
 
         {
           showComingsoon && (

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import { useAuth } from '../../SubPage/AuthContext';
 
 import CustomRow from '../../../Components/Container/CustomRow';
 import CustomColumn from '../../../Components/Container/CustomColumn';
@@ -37,13 +38,13 @@ const ModalContent = styled.div`
 `;
 
 const CloseButton = styled.button`
-background-color: #D9D9D9;
-color: white;
-border: none;
-padding: 10px 20px;
-border-radius: 5px;
-margin-top: 20px;
-cursor: pointer;
+  background-color: #D9D9D9;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  margin-top: 20px;
+  cursor: pointer;
 `;
 
 const RefundButton = styled.button`
@@ -58,35 +59,55 @@ const RefundButton = styled.button`
 `;
 
 const SorryDiv = styled.div`
-background-color: #8CC63F;
-border-radius: 30px;
-padding: 10px;
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
-width: 60%;
-gap: 1rem;
+  background-color: #8CC63F;
+  border-radius: 30px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 60%;
+  gap: 1rem;
 `;
 
-const RefundTicket = ({ username, onClose }) => {
+const RefundTicket = ({ onClose, gptFinalContent }) => {
     const [isChecked, setIsChecked] = useState(false);
+    const { isLoggedIn } = useAuth();
+    const navigate = useNavigate();
 
     const handleCheckboxChange = () => {
         setIsChecked(!isChecked);
     };
 
-    const navigate = useNavigate();
-
     const handleRefundClick = async () => {
         if (isChecked) {
             try {
                 const response = await axios.put('http://223.130.153.51:8080/plus_tickets', null, {
-                    params: { username }
+                    params: { username: isLoggedIn }
                 });
 
                 if (response.status === 200) {
                     alert('티켓 환불이 완료되었습니다.');
+                    const gptContent = localStorage.getItem('gpt_content');
+
+                    try {
+                        const saveResponse = await axios.post('http://223.130.153.51:8080/save_refunded_doc', null, {
+                            params: {
+                                send_content: gptContent,
+                                content: gptFinalContent,
+                                user_name: isLoggedIn
+                            }
+                        });
+
+                        if (saveResponse.status === 200) {
+                            console.log('환불 내역 저장 완료');
+                        } else {
+                            console.error('환불 내역 저장 실패:', saveResponse);
+                        }
+                    } catch (error) {
+                        console.error('환불 내역 저장 중 오류 발생:', error);
+                    }
+
                     onClose();
                     navigate('/mypage');
                 } else {
@@ -115,7 +136,6 @@ const RefundTicket = ({ username, onClose }) => {
                 </CustomRow>
 
                 <CustomColumn width='80%' alignItems='flex-start' justifyContent='center' gap='2rem'>
-
                     <CustomColumn width='100%' alignItems='flex-start' justifyContent='center' gap='0.7rem'>
                         <CustomFont color='#8CC63F' font='0.8rem' fontWeight='bold'>사용하신 티켓은 무료 티켓으로 환불됩니다.</CustomFont>
                         <CustomFont color='#8CC63F' font='0.8rem' fontWeight='bold'>환불을 신청하시는 즉시 무료 티켓이 적립됩니다.</CustomFont>

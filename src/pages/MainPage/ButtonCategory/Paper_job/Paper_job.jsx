@@ -239,6 +239,9 @@ export default function Component() {
     setRunGPT(true);
     setSendContent(content);
 
+    // 환불 내역을 저장하기 위해, content를 로컬스토리지에 저장
+    localStorage.setItem('gpt_content', content);
+
     const serverIp = process.env.REACT_APP_SERVER_IP;
 
     axios.post(`${serverIp}/save_doc_input`, null, {
