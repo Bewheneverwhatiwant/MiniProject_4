@@ -338,6 +338,25 @@ const StyledImg_Ooops = styled.img`
   animation: ${rotate} 1s linear infinite;
 `;
 
+const TooBig_Modal = styled.div`
+  position: fixed;  /* 부모 요소의 위치와 상관없이 화면 전체 기준으로 배치 */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);  /* 중앙 정렬 */
+  width: 40%;
+  height: 50vh;
+  background-color: white;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1500;  /* Modal이 항상 위에 오도록 설정 */
+  background-image: url('Modal_TooBig.png');
+  background-size: 100% 100%;
+`;
+
 export default function Component({ username }) {
 
   const [content, setContent] = useState('');
@@ -352,6 +371,15 @@ export default function Component({ username }) {
   const [formattedResponse, setFormattedResponse] = useState(null); // 포맷팅된 응답을 저장할 상태 변수
 
   const [refund, setRefund] = useState(false); // 환불 버튼 클릭 시 모달 상태 관리
+  const [toobig, setToobig] = useState(false); // 문서가 너무 커서 저장할 수 없을 경우 에러 모달 표시
+
+  const handleToobig = () => {
+    setShowModal(false);
+    setToobig(true);
+    setTimeout(() => {
+      setToobig(false);
+    }, 2000);
+  }
 
   const openRefundModal = () => {
     setRefund(true);
@@ -532,7 +560,15 @@ BOO, 내가 원하는 문서를 생성해줘!
       //alert('저장되었습니다!');
       handleSaveContent();
     } catch (error) {
-      console.error('Error:', error.response ? error.response.data : error.message);
+      // console.error('Error:', error.response ? error.response.data : error.message);
+      if (error.response && error.response.status === 400) {
+        setShowModal(false);
+        handleToobig();
+      } else {
+        setShowModal(false);
+        handleToobig();
+        console.error('Error:', error.response ? error.response.data : error.message);
+      }
     }
   }
 

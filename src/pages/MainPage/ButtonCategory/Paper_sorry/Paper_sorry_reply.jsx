@@ -35,22 +35,6 @@ const PageContainer = styled(ContainerCenter)`
   align-items: center;
 `;
 
-const ReplyDiv = styled.div`
-width: 80%;
-height: 500px;
-background-color: #4A4A4A;
-border-radius: 20px;
-line-height: 30px;
-padding: 10px;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-color: white;
-background-image: url('ReplyDiv_sorry.png');
-background-size: 100% 100%;
-`;
-
 const Buttoms = styled.button`
 width: ${props => props.width || '200px'};
 hwight: 70px;
@@ -179,6 +163,25 @@ const Modal = styled.div`
   justify-content: center;
   z-index: 1001; /* Modal이 항상 위에 오도록 설정 */
   background-image: url('Modal_ComingSoon.png');
+  background-size: 100% 100%;
+`;
+
+const TooBig_Modal = styled.div`
+  position: fixed;  /* 부모 요소의 위치와 상관없이 화면 전체 기준으로 배치 */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);  /* 중앙 정렬 */
+  width: 40%;
+  height: 50vh;
+  background-color: white;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1500;  /* Modal이 항상 위에 오도록 설정 */
+  background-image: url('Modal_TooBig.png');
   background-size: 100% 100%;
 `;
 
@@ -378,6 +381,16 @@ export default function Component({ username }) {
     setRefund(false);
   };
 
+  const [toobig, setToobig] = useState(false); // 문서가 너무 커서 저장할 수 없을 경우 에러 모달 표시
+
+  const handleToobig = () => {
+    setShowModal(false);
+    setToobig(true);
+    setTimeout(() => {
+      setToobig(false);
+    }, 2000);
+  }
+
   useEffect(() => {
     // a 파일에서 저장한 문서 ID를 로컬 스토리지에서 가져옴
     const savedDocId = localStorage.getItem('doc_id');
@@ -520,7 +533,15 @@ BOO, 내가 원하는 문서를 생성해줘!
         handleSaveContent();
       })
       .catch(error => {
-        console.error('Error:', error.response ? error.response.data : error.message);
+        // console.error('Error:', error.response ? error.response.data : error.message);
+        if (error.response && error.response.status === 400) {
+          setShowModal(false);
+          handleToobig();
+        } else {
+          setShowModal(false);
+          handleToobig();
+          console.error('Error:', error.response ? error.response.data : error.message);
+        }
       });
   }
 
@@ -651,6 +672,13 @@ BOO, 내가 원하는 문서를 생성해줘!
               </CustomRow>
             </CustomColumn>
           </CustomModal>
+        )}
+
+        {toobig && (
+          <>
+            <ModalOverlay />
+            <TooBig_Modal />
+          </>
         )}
 
         {
