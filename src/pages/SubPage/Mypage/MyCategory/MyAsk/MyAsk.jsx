@@ -461,6 +461,7 @@ export default function MyAsk() {
 
   const closeModal_2 = () => {
     setSelectedDocument(null);
+    setIsEditingTitle(false);  // isEditingTitle을 false로 설정
   }
 
   // 문서 삭제 API -> user_name 필드가 string으로 고쳐지면 다시 시도해보기
