@@ -197,6 +197,25 @@ const Button = styled.button`
   border-radius: 20px;
 `;
 
+const RewardButton = styled.button`
+  padding: 0.5rem 1rem;
+  margin: 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  background-color: ${props => props.active ? 'red' : '#D9D9D9'};
+  border: none;
+  border-radius: 20px;
+  color: white;
+`;
+
+// 나중에 서버에서 true, true, true로 수정하면 다시 테스트해보기. 현재 셋 다 기본값이 false라서, 버튼이 전부
+// 비활성화 상태라 테스트 불가 상황
+const CustomButton = ({ active, onClick, text }) => (
+    <RewardButton active={active} onClick={onClick} disabled={!active}>
+        {text}
+    </RewardButton>
+);
+
 export default function Component() {
     useEffect(() => {
         window.scrollTo(0, 0); // 페이지 로딩 시 스크롤을 맨 위로 설정
@@ -211,23 +230,53 @@ export default function Component() {
     const [showGood, setShowGood] = useState(false);
 
     const [totalLikes, setTotalLikes] = useState(0);
+    const [ranking, setRanking] = useState('');
+
+    const [rewards, setRewards] = useState([true, true, true]); // 서버에서 가져온 초기 상
+
+    const fetchTotalLikes = async () => {
+        try {
+            const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/get_total_likes`, {
+                params: { user_name: isLoggedIn }
+            });
+            const responseData = response.data.split('\n'); // 응답 데이터를 줄바꿈으로 분할
+            setTotalLikes(responseData[0]); // 첫 번째 줄은 totalLikes
+            setRanking(responseData[1]); // 두 번째 줄은 ranking
+        } catch (error) {
+            console.error('총 좋아요 수를 불러오는 데 실패했습니다.', error);
+        }
+    };
+
+    const fetchRewards = async () => {
+        try {
+            const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/get_like_levels`, {
+                params: { user_name: isLoggedIn }
+            });
+            setRewards(response.data);
+        } catch (error) {
+            console.error('보상 정보를 불러오는 데 실패했습니다.', error);
+        }
+    };
 
     useEffect(() => {
-        const fetchTotalLikes = async () => {
-            try {
-                const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/get_total_likes`, {
-                    params: { user_name: isLoggedIn }
-                });
-                setTotalLikes(response.data);
-            } catch (error) {
-                console.error('총 좋아요 수를 불러오는 데 실패했습니다.', error);
-            }
-        };
-
         if (isLoggedIn) {
             fetchTotalLikes();
+            fetchRewards();
         }
     }, [isLoggedIn]);
+
+    const handleRewardClick = async (level) => {
+        try {
+            await axios.put(`${process.env.REACT_APP_SERVER_IP}/update_like_levels`, null, {
+                params: { user_name: isLoggedIn, level }
+            });
+            fetchRewards(); // 보상 정보를 다시 가져와 업데이트
+        } catch (error) {
+            console.error('보상 업데이트에 실패했습니다.', error);
+        }
+    };
+
+    // 여기까지 좋아요 보상 관련
 
     const sortByLikes = () => {
         setLoading(true);
@@ -378,7 +427,25 @@ export default function Component() {
 
                         <CustomRow width='100%' justifyContent='center' alignItems='center' gap='1rem'>
                             <CustomFont color='black' font='1rem' fontWeight='bold'>나는 문서를 부탁하는 사람들 중에서</CustomFont>
-                            <CustomFont color='black' font='1rem' fontWeight='bold'>m등이에요!</CustomFont>
+                            <CustomFont color='black' font='1rem' fontWeight='bold'>{ranking}등이에요!</CustomFont>
+                        </CustomRow>
+
+                        <CustomRow width='100%' justifyContent='center' alignItems='center' gap='1rem'>
+                            <CustomButton
+                                active={totalLikes >= 10 && rewards[0]}
+                                onClick={() => handleRewardClick('LEVEL1')}
+                                text={!rewards[0] ? '10' : '이미 보상을 받았어요.'}
+                            />
+                            <CustomButton
+                                active={totalLikes >= 50 && rewards[1]}
+                                onClick={() => handleRewardClick('LEVEL2')}
+                                text={!rewards[1] ? '50' : '이미 보상을 받았어요.'}
+                            />
+                            <CustomButton
+                                active={totalLikes >= 100 && rewards[2]}
+                                onClick={() => handleRewardClick('LEVEL3')}
+                                text={!rewards[2] ? '100' : '이미 보상을 받았어요.'}
+                            />
                         </CustomRow>
                     </CustomColumn>
 
