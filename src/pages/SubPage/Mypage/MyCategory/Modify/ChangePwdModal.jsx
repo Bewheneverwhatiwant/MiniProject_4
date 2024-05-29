@@ -1,11 +1,9 @@
 import styled from 'styled-components';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import CustomColumn from '../../../../../Components/Container/CustomColumn';
 import CustomFont from '../../../../../Components/Container/CustomFont';
 import CustomRow from '../../../../../Components/Container/CustomRow';
 import StyledImg from '../../../../../Components/Container/StyledImg';
-
 import CustomModal from '../../../../../Components/Container/CustomModal';
 import ChangePwdModal_New from './ChangePwdModal_New';
 
@@ -55,33 +53,24 @@ const Error = styled.div`
   font-size: 0.8rem;
 `;
 
-export default function SignUpModal({ onClose }) {
-    const navigate = useNavigate();
-    const [email, setEmail] = useState('');
+export default function ChangePwdModal({ onClose }) {
     const [id, setId] = useState('');
-    const isFormFilled = email && id;
+    const [password, setPassword] = useState('');
+    const isFormFilled = id && password;
     const [click, setClick] = useState(false);
-    const [isEmailValid, setIsEmailValid] = useState(true); // 이메일 유효성 상태 추가
-
-    const validateEmail = (email) => {
-        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return re.test(String(email).toLowerCase());
-    };
-
-    const handleEmailChange = (e) => {
-        const value = e.target.value;
-        setEmail(value);
-        setIsEmailValid(validateEmail(value)); // 이메일 유효성 검사
-    };
-
-    const CheckFilled = () => {
-        if (isFormFilled && isEmailValid) {
-            setClick(true);
-        }
-    };
 
     const handleIdChange = (e) => {
         setId(e.target.value);
+    };
+
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value);
+    };
+
+    const handleSubmit = () => {
+        if (isFormFilled) {
+            setClick(true);
+        }
     };
 
     return (
@@ -94,26 +83,25 @@ export default function SignUpModal({ onClose }) {
                             <CustomFont color='black' font='1rem' fontWeight='bold'>비밀번호 변경하기</CustomFont>
                             <CustomColumn width='80%'>
                                 <CustomRow>
-                                    <CustomFont font='1rem' color='black'>이메일</CustomFont><CustomFont color='red' font='1rem'>*</CustomFont>
-                                </CustomRow>
-                                <InputForm placeholder='회원가입 시 등록하신 이메일을 입력하세요.' value={email} onChange={handleEmailChange} />
-                                {!email && <Error>필수 필드입니다.</Error>}
-                                {email && !isEmailValid && <Error>이메일 양식을 알맞게 입력해주세요.</Error>}
-                            </CustomColumn>
-                            <CustomColumn width='80%'>
-                                <CustomRow>
                                     <CustomFont font='1rem' color='black'>아이디</CustomFont><CustomFont color='red' font='1rem'>*</CustomFont>
                                 </CustomRow>
                                 <InputForm placeholder='회원가입 시 등록하신 아이디를 입력하세요.' value={id} onChange={handleIdChange} />
                                 {!id && <Error>필수 필드입니다.</Error>}
                             </CustomColumn>
+                            <CustomColumn width='80%'>
+                                <CustomRow>
+                                    <CustomFont font='1rem' color='black'>현재 비밀번호</CustomFont><CustomFont color='red' font='1rem'>*</CustomFont>
+                                </CustomRow>
+                                <InputForm type='password' placeholder='현재 비밀번호를 입력하세요.' value={password} onChange={handlePasswordChange} />
+                                {!password && <Error>필수 필드입니다.</Error>}
+                            </CustomColumn>
                             <CustomRow width='100%' justifyContent='flex-end' alignItems='center'>
-                                <Button onClick={CheckFilled} disabled={!isFormFilled || !isEmailValid}>확인</Button>
+                                <Button onClick={handleSubmit} disabled={!isFormFilled}>확인</Button>
                             </CustomRow>
                         </CustomColumn>
                     </PwdDiv>
                 )}
-                {click && <ChangePwdModal_New email={email} userId={id} onClose={onClose} />}
+                {click && <ChangePwdModal_New userId={id} oldPassword={password} onClose={onClose} />}
             </CustomRow>
         </CustomModal>
     );

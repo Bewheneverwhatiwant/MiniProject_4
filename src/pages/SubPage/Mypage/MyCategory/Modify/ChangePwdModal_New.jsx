@@ -36,7 +36,7 @@ const PwdDiv = styled.div`
 `;
 
 const Button = styled.button`
-  background-color: #FFC7C7;
+  background-color: ${props => props.disabled ? '#D9D9D9' : '#FFC7C7'};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -45,6 +45,7 @@ const Button = styled.button`
   border-radius: 10px;
   color: white;
   width: 20%;
+  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
 `;
 
 const Error = styled.div`
@@ -84,7 +85,7 @@ const ModalOverlay = styled.div`
   z-index: 1000;
 `;
 
-export default function ChangePwModal_new({ email, userId, onClose, oldPassword }) {
+export default function ChangePwdModal_New({ userId, oldPassword, onClose }) {
     const navigate = useNavigate();
     const [password, setPassword] = useState('');
     const [doublepassword, setDoublepassword] = useState('');
@@ -92,7 +93,7 @@ export default function ChangePwModal_new({ email, userId, onClose, oldPassword 
     const [doublePasswordError, setDoublePasswordError] = useState('');
     const [generalError, setGeneralError] = useState('');
     const [showLogoutModal, setShowLogoutModal] = useState(false);
-    const { isLoggedIn, logout } = useAuth(); // useAuth를 이용하여 로그인 상태 가져오기
+    const { logout } = useAuth(); // useAuth를 이용하여 로그인 상태 가져오기
 
     const validatePassword = (password) => {
         const isLengthValid = password.length >= 6 && password.length <= 9;
@@ -134,20 +135,21 @@ export default function ChangePwModal_new({ email, userId, onClose, oldPassword 
 
         try {
             const serverIp = process.env.REACT_APP_SERVER_IP;
-            const response = await axios.put(`${serverIp}/change_password`, null, {
+            const response = await axios.put(`${serverIp}/update_password`, null, {
                 params: {
-                    new_password: password,
-                    user_name: userId
+                    username: userId,
+                    password: oldPassword,
+                    new_password: password
                 }
             });
             console.log('비밀번호 변경 응답:', response.data);
             alert('비밀번호 변경이 완료되었습니다! 다시 로그인해주세요.');
             handleLogout();
-            onClose(); // ChangePwModal_new와 SignUpModal 모두 닫기
+            onClose(); // ChangePwdModal_New와 SignUpModal 모두 닫기
             navigate('/');
         } catch (error) {
             console.error('비밀번호 변경 오류:', error);
-            setGeneralError('이전에 사용된 비밀번호로는 바꾸실 수 없습니다.');
+            setGeneralError('비밀번호 변경에 실패했습니다.');
         }
     };
 
@@ -155,7 +157,6 @@ export default function ChangePwModal_new({ email, userId, onClose, oldPassword 
         setShowLogoutModal(true);
         setTimeout(() => {
             logout();
-            //setShowLogoutModal(false);
             navigate('/');
         }, 3000); // 3초 후 로그아웃 및 모달 닫기
     };
@@ -185,7 +186,8 @@ export default function ChangePwModal_new({ email, userId, onClose, oldPassword 
                 </CustomColumn>
 
                 <CustomRow width='100%' justifyContents='flex-end' alignItems='center'>
-                    <Button onClick={handleChangePassword}>확인</Button>
+                    <Button onClick={handleChangePassword} disabled={!isFormFilled || passwordError || doublePasswordError}>확인</Button>
+
                 </CustomRow>
 
                 {generalError && <Error>{generalError}</Error>}
