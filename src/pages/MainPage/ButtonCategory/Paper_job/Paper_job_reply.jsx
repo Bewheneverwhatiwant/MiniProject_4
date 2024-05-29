@@ -406,7 +406,7 @@ BOO, 내가 원하는 문서를 생성해줘!
 
   const handleRemake = () => {
     setShowBad(false);
-    navigate('/paper_hire');
+    navigate('/paper_job');
   }
 
   const handleNotRemake = () => {

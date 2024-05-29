@@ -95,6 +95,22 @@ flex-direction: column;
 align-items: flex-start;
 justify-content: center;
 padding: 10px;
+
+overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #8CC63F;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #f0f0f0;
+    border-radius: 10px;
+  }
 `;
 
 const Xbutton = styled.button`

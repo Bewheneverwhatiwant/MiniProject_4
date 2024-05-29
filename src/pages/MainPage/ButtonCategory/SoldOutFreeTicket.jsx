@@ -180,6 +180,7 @@ export default function SoldOutFreeTicket({ onClose, onTicketUsed, category }) {
                     }
                 } else {
                     // 유료 티켓도 없는 경우
+                    console.log(userData.paid_tickets);
                     alert('보유한 유료 티켓이 없습니다. 구매 화면으로 이동합니다.');
                     navigate('/buyticketpage');
                 }

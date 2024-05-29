@@ -408,7 +408,7 @@ export default function Component() {
 
   const handleRemake = () => {
     setShowBad(false);
-    navigate('/paper_hire');
+    navigate('/paper_job');
   }
 
   const handleNotRemake = () => {
