@@ -466,6 +466,24 @@ export default function Component() {
         console.log('레벨 업데이트 성공:', response);
         fetchLevelStatus(); // 업데이트 후 상태 다시 불러오기
         setGetGift(true);
+
+        // /plus_tickets API 호출
+        try {
+          const ticketResponse = await axios.put('http://223.130.153.51:8080/plus_tickets', null, {
+            params: {
+              username: userData.username
+            }
+          });
+
+          if (ticketResponse.status === 200) {
+            console.log('티켓 증가 성공:', ticketResponse);
+          } else {
+            console.error('티켓 증가 실패:', ticketResponse);
+          }
+        } catch (ticketError) {
+          console.error('티켓 증가 중 오류 발생:', ticketError);
+        }
+
       } else {
         console.error('레벨 업데이트 실패:', response);
       }
