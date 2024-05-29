@@ -150,6 +150,16 @@ export default function SoldOutFreeTicket({ onClose, onTicketUsed, category }) {
                 });
 
                 console.log('Updated free tickets:', response.data);
+
+                // 무료 티켓 사용 내역 저장
+                await axios.post(`${process.env.REACT_APP_SERVER_IP}/create_ticket_history`, null, {
+                    params: {
+                        user_name: userData.username,
+                        ticket_type: 'FREE'
+                    }
+                });
+                console.log('사용자 무료 티켓 사용 내역 저장 완료');
+
                 alert('완료되었습니다. 다시 생성을 진행하세요.');
                 onTicketUsed(category);
 
@@ -169,6 +179,16 @@ export default function SoldOutFreeTicket({ onClose, onTicketUsed, category }) {
                         });
 
                         console.log('Updated paid tickets:', response.data);
+
+                        // 유료 티켓 사용 내역 저장
+                        await axios.post(`${process.env.REACT_APP_SERVER_IP}/create_ticket_history`, null, {
+                            params: {
+                                user_name: userData.username,
+                                ticket_type: 'PAID'
+                            }
+                        });
+                        console.log('유료 티켓 사용 내역 저장 완료');
+
                         await updateDocumentCount(); // 문서 생성 업데이트 API 호출
                         alert('완료되었습니다. 다시 생성을 진행하세요.');
                         onTicketUsed(category);

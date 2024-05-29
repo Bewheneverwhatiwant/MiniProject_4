@@ -265,22 +265,31 @@ export default function Component() {
         setDocId_chat(responseMessage);  // 문서 ID를 상태 변수에 저장
         console.log('로컬 스터리지에 저장된 doc_id는');
         console.log(docId_chat);
+
+        // update_user_daily_tickets API 호출
+        return axios.put(`${serverIp}/update_user_daily_tickets`, null, {
+          params: {
+            user_name: isLoggedIn, // AuthContext에서 가져온 사용자명
+            usedDailyTicketCount: 1
+          }
+        });
+      })
+      .then(response => {
+        console.log('Ticket API Response:', response.data);
+
+        // create_ticket_history API 호출
+        return axios.post(`${serverIp}/create_ticket_history`, null, {
+          params: {
+            user_name: isLoggedIn, // AuthContext에서 가져온 사용자명
+            ticket_type: 'DAILY_FREE'
+          }
+        });
+      })
+      .then(response => {
+        console.log('티켓 사용 내역 저장 완료');
       })
       .catch(error => {
         console.error('Error:', error.response ? error.response.data : error.message);
-      });
-
-    axios.put(`${serverIp}/update_user_daily_tickets`, null, {
-      params: {
-        user_name: isLoggedIn, // AuthContext에서 가져온 사용자명
-        usedDailyTicketCount: 1
-      }
-    })
-      .then(response => {
-        console.log('Ticket API Response:', response.data);
-      })
-      .catch(error => {
-        console.error('Ticket API Error:', error.response ? error.response.data : error.message);
       });
   };
 

@@ -367,7 +367,7 @@ export default function MyAsk() {
     setShowGood(true);
     setTimeout(() => {
       setShowGood(false);
-    }, 800);
+    }, 2000);
   }
 
   // 수정 완료 시 뜨는 모달 상태 제어
