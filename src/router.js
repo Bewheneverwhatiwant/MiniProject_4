@@ -18,6 +18,7 @@ import Paper_poster_reply from "./pages/MainPage/ButtonCategory/Paper_poster/Pap
 import Paper_sorry_reply from "./pages/MainPage/ButtonCategory/Paper_sorry/Paper_sorry_reply";
 import BuyTicket from "./pages/SubPage/Mypage/MyCategory/CheckTicket/BuyTicket/BuyTicket";
 import BrowseDocument from "./pages/MainPage/BrowseDocument/BrowseDocument";
+import AdminPage from './pages/SubPage/Mypage/MyCategory/CheckTicket/AdminPage';
 
 // 로그인화면 -> 회원가입 클릭 시 모달 -> 가입 및 로그인 완료 후 메인페이지
 
@@ -97,6 +98,10 @@ export default createBrowserRouter([
             {
                 path: "/browsedocumentpage",
                 element: <BrowseDocument />
+            },
+            {
+                path: "/adminpage",
+                element: <AdminPage />
             }
         ]
     }

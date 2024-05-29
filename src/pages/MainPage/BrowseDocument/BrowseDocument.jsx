@@ -210,6 +210,25 @@ export default function Component() {
 
     const [showGood, setShowGood] = useState(false);
 
+    const [totalLikes, setTotalLikes] = useState(0);
+
+    useEffect(() => {
+        const fetchTotalLikes = async () => {
+            try {
+                const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/get_total_likes`, {
+                    params: { user_name: isLoggedIn }
+                });
+                setTotalLikes(response.data);
+            } catch (error) {
+                console.error('총 좋아요 수를 불러오는 데 실패했습니다.', error);
+            }
+        };
+
+        if (isLoggedIn) {
+            fetchTotalLikes();
+        }
+    }, [isLoggedIn]);
+
     const sortByLikes = () => {
         setLoading(true);
         setTimeout(() => {
@@ -351,6 +370,17 @@ export default function Component() {
         <ContainerCenter>
             <PageContainer>
                 <CustomColumn width='80%' justifyContent='center' alignItems='center' gap='2rem'>
+                    <CustomColumn width='80%' justifyContent='center' alignItems='center' gap='1rem'>
+                        <CustomRow width='100%' justifyContent='center' alignItems='center' gap='1rem'>
+                            <CustomFont color='black' font='1rem' fontWeight='bold'>내 문서의 총 좋아요 개수는?</CustomFont>
+                            <CustomFont color='black' font='1rem' fontWeight='bold'>{totalLikes}개</CustomFont>
+                        </CustomRow>
+
+                        <CustomRow width='100%' justifyContent='center' alignItems='center' gap='1rem'>
+                            <CustomFont color='black' font='1rem' fontWeight='bold'>나는 문서를 부탁하는 사람들 중에서</CustomFont>
+                            <CustomFont color='black' font='1rem' fontWeight='bold'>m등이에요!</CustomFont>
+                        </CustomRow>
+                    </CustomColumn>
 
                     <Tabs>
                         <Tab active={activeTab === 0} onClick={() => handleTabClick(0)}>사과문</Tab>

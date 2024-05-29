@@ -233,6 +233,10 @@ export default function Component() {
     return `${year}년 ${month}월 ${day}일 ${hours}시 ${minutes}분`;
   };
 
+  const GoAdmin = () => {
+    navigate('/adminpage');
+  };
+
   return (
     <ContainerCenter>
       <PageContainer>
@@ -313,6 +317,7 @@ export default function Component() {
               <CustomFont color='black' fontWeight='bold' font='1.3rem'>아직 티켓을 사용하신 내역이 없습니다.</CustomFont>
             )}
           </MyTicketContainer>
+          <button onClick={GoAdmin}>미프 전용 관리자 계정 엿보기</button>
 
         </CustomColumn>
       </PageContainer>
