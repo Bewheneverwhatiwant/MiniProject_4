@@ -52,7 +52,7 @@ const MyTicketContainer = styled.div`
   padding-top: 10px;
   padding-bottom: 10px;
   width: 100%;
-  height: 300px;
+  height: 250px;
   gap: 10px;
   overflow-y: auto;
 
