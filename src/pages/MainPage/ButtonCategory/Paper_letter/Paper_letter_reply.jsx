@@ -303,11 +303,35 @@ const BadModal = styled.div`
   background-color: transparent;
   padding: 20px;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   background-image: url('icon_boo_wounded.png');
   background-size: cover;
   position: relative;
+`;
+
+const ReMake = styled.button`
+width: 150px;
+background-color: #8CC63F;
+border: none;
+border-radius: 20px;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 5px;
+cursor: pointer;
+`;
+
+const Not_ReMake = styled.button`
+width: 150px;
+background-color: #FFBEBE;
+border: none;
+border-radius: 20px;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 5px;
+cursor: pointer;
 `;
 
 const StyledImg_Ooops = styled.img`
@@ -380,11 +404,16 @@ export default function Component() {
 
   const handleBadClick = () => {
     setShowBad(true);
-    setTimeout(() => {
-      setShowBad(false);
-    }, 2500);
   }
 
+  const handleRemake = () => {
+    setShowBad(false);
+    navigate('/paper_hire');
+  }
+
+  const handleNotRemake = () => {
+    setShowBad(false);
+  }
   // 저장 오류 해결!
   const { isLoggedIn, logout, profileImage } = useAuth(); // useAuth를 이용하여 로그인 상태 가져오기
   const [userData, setUserData] = useState({ username: '' });
@@ -553,6 +582,14 @@ export default function Component() {
                   <BuyModalContainer>
                     <BadModal>
                       <StyledImg_Ooops src={'icon_Ooops.png'} />
+                      <CustomRow>
+                        <ReMake onClick={handleRemake}>
+                          <CustomFont color='white' fontWeight='bold' font='1rem'>재생성하기</CustomFont>
+                        </ReMake>
+                        <Not_ReMake onClick={handleNotRemake}>
+                          <CustomFont color='white' fontWeight='bold' font='1rem'>취소</CustomFont>
+                        </Not_ReMake>
+                      </CustomRow>
                     </BadModal>
                   </BuyModalContainer>
                 </>
