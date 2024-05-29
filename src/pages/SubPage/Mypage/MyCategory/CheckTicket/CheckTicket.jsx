@@ -280,9 +280,13 @@ export default function Component() {
                 </React.Fragment>
               ))
             ) : (
-              <CustomFont color='white' font='1.3rem'>아직 결제하신 내역이 없습니다.</CustomFont>
+              <CustomFont color='black' fontWeight='bold' font='1.3rem'>아직 결제하신 내역이 없습니다.</CustomFont>
             )}
           </MyTicketContainer>
+
+          <CustomRow width='100%' justifyContent='flex-start' align-items='center'>
+            <CustomFont color='black' fontWeight='bold' font='1.5rem'>티켓 사용 내역</CustomFont>
+          </CustomRow>
 
           <MyTicketContainer>
             {ticketUsageHistory.length > 0 ? (
@@ -296,7 +300,7 @@ export default function Component() {
                 </React.Fragment>
               ))
             ) : (
-              <CustomFont color='white' font='1.3rem'>아직 티켓을 사용하신 내역이 없습니다.</CustomFont>
+              <CustomFont color='black' fontWeight='bold' font='1.3rem'>아직 티켓을 사용하신 내역이 없습니다.</CustomFont>
             )}
           </MyTicketContainer>
 

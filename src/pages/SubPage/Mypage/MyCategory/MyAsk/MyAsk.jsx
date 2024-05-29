@@ -95,7 +95,7 @@ display: flex;
 flex-direction: column;
 align-items: flex-start;
 justify-content: center;
-padding: 10px;
+padding-top: 30px;
 
 overflow-y: auto;
 
@@ -339,7 +339,8 @@ const InputForm = styled.input`
   padding: 0.3rem;
 
   &::placeholder {
-    color: #D9D9D9;
+    color: white;
+    font-weight: bold;
   }
 
   &:active {
@@ -484,7 +485,8 @@ export default function MyAsk() {
 
         if (response.status === 200) {
           alert('삭제되었습니다!');
-          setShowDeleteModal(false);
+          setShowDeleteModal(false); // 여기
+          closeModal_2();
           setDocuments(documents.filter(doc => doc.content !== docName));
         } else {
           alert('문서 삭제에 실패했습니다.');
@@ -655,8 +657,12 @@ export default function MyAsk() {
                       value={newTitle}
                       onChange={(e) => setNewTitle(e.target.value)}
                     />
-                    <IsValidButton onClick={handleTitleUpdate}>완료</IsValidButton>
-                    <IsValidButton_2 onClick={handleCancelEditTitle}>취소</IsValidButton_2>
+                    <IsValidButton onClick={handleTitleUpdate}>
+                      <CustomFont color='white' fontWeight='bold' font='1rem'>완료</CustomFont>
+                    </IsValidButton>
+                    <IsValidButton_2 onClick={handleCancelEditTitle}>
+                      <CustomFont color='white' fontWeight='bold' font='1rem'>취소</CustomFont>
+                    </IsValidButton_2>
                   </CustomRow>
                 ) : (
                   <ShareButton onClick={handleEditTitleClick}>
