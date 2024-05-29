@@ -37,7 +37,7 @@ const PwdDiv = styled.div`
 `;
 
 const Button = styled.button`
-  background-color: #FFC7C7;
+  background-color: ${props => props.disabled ? '#D9D9D9' : '#FFC7C7'};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -46,6 +46,7 @@ const Button = styled.button`
   border-radius: 10px;
   color: white;
   width: 20%;
+  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
 `;
 
 const Error = styled.div`
@@ -61,13 +62,22 @@ export default function SignUpModal({ onClose }) {
     const [click, setClick] = useState(false);
 
     const CheckFilled = () => {
-        if (isFormFilled) {
+        if (isFormFilled && isEmailValid) {
             setClick(true);
         }
     };
 
+    const [isEmailValid, setIsEmailValid] = useState(true); // 이메일 유효성 상태 추가
+
+    const validateEmail = (email) => {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(String(email).toLowerCase());
+    };
+
     const handleEmailChange = (e) => {
-        setEmail(e.target.value);
+        const value = e.target.value;
+        setEmail(value);
+        setIsEmailValid(validateEmail(value)); // 이메일 유효성 검사
     };
 
     const handleIdChange = (e) => {
@@ -88,6 +98,7 @@ export default function SignUpModal({ onClose }) {
                                 </CustomRow>
                                 <InputForm placeholder='회원가입 시 등록하신 이메일을 입력하세요.' value={email} onChange={handleEmailChange} />
                                 {!email && <Error>필수 필드입니다.</Error>}
+                                {email && !isEmailValid && <Error>이메일 양식을 알맞게 입력해주세요.</Error>}
                             </CustomColumn>
                             <CustomColumn width='80%'>
                                 <CustomRow>
@@ -97,7 +108,7 @@ export default function SignUpModal({ onClose }) {
                                 {!id && <Error>필수 필드입니다.</Error>}
                             </CustomColumn>
                             <CustomRow width='100%' justifyContent='flex-end' alignItems='center'>
-                                <Button onClick={CheckFilled}>확인</Button>
+                                <Button onClick={CheckFilled} disabled={!isFormFilled || !isEmailValid}>확인</Button>
                             </CustomRow>
                         </CustomColumn>
                     </PwdDiv>
