@@ -84,6 +84,29 @@ export default function Component() {
   const { isLoggedIn } = useAuth(); // useAuth 훅에서 로그인 상태와 유저 정보를 가져옴
   // 닉네임, 보유 무료티켓(매일 5개 무료 x, 이벤트 등 보유하고 있는 무료 티켓 o), 보유 유료티켓
   const [userData, setUserData] = useState({ username: '', free_tickets: 0, paid_tickets: 0 });
+  const [ticketUsageHistory, setTicketUsageHistory] = useState([]); // 티켓 사용 내역 상태 추가
+
+  // 티켓 사용 내역을 가져오는 API 호출
+  useEffect(() => {
+    const fetchTicketUsageHistory = async () => {
+      if (isLoggedIn && userData.username) {
+        try {
+          console.log('티켓 사용 내역 불러오는 중...');
+          const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/get_ticket_history`, {
+            params: { user_name: userData.username }
+          });
+          console.log('티켓 사용 내역:', response.data);
+          setTicketUsageHistory(response.data); // 응답 데이터를 직접 설정
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        console.log('User is not logged in or username is not available.');
+      }
+    };
+
+    fetchTicketUsageHistory();
+  }, [isLoggedIn, userData]);
 
   const navigate = useNavigate();
 
@@ -246,15 +269,31 @@ export default function Component() {
               ticketHistory.map((ticket, index) => (
                 <React.Fragment key={index}>
                   <CustomRow width='90%' justifyContent='space-between' alignItems='center'>
-                    <CustomFont color='black' font='1.3rem'>{ticket.paid_time}</CustomFont>
-                    <CustomFont color='black' font='1.3rem'>티켓 {ticket.ticket}장</CustomFont>
-                    <CustomFont color='black' font='1.3rem'>{ticket.price}원</CustomFont>
+                    <CustomFont color='black' font='1rem'>{ticket.paid_time}</CustomFont>
+                    <CustomFont color='black' font='1rem'>티켓 {ticket.ticket}장</CustomFont>
+                    <CustomFont color='black' font='1rem'>{ticket.price}원</CustomFont>
                   </CustomRow>
                   {index < ticketHistory.length - 1 && <Divider key={`divider-${index}`} />}
                 </React.Fragment>
               ))
             ) : (
               <CustomFont color='white' font='1.3rem'>아직 결제하신 내역이 없습니다.</CustomFont>
+            )}
+          </MyTicketContainer>
+
+          <MyTicketContainer>
+            {ticketUsageHistory.length > 0 ? (
+              ticketUsageHistory.map((ticket, index) => (
+                <React.Fragment key={index}>
+                  <CustomRow width='90%' justifyContent='space-between' alignItems='center'>
+                    <CustomFont color='black' font='1rem'>{ticket.createdAt}</CustomFont>
+                    <CustomFont color='black' font='1.rem'>{ticket.ticketType}</CustomFont>
+                  </CustomRow>
+                  {index < ticketUsageHistory.length - 1 && <Divider key={`divider-${index}`} />}
+                </React.Fragment>
+              ))
+            ) : (
+              <CustomFont color='white' font='1.3rem'>아직 티켓을 사용하신 내역이 없습니다.</CustomFont>
             )}
           </MyTicketContainer>
 
