@@ -281,7 +281,7 @@ export default function Component() {
     const sortByLikes = () => {
         setLoading(true);
         setTimeout(() => {
-            const sortedContent = [...content].sort((a, b) => b.like_count - a.like_count);
+            const sortedContent = [...content].sort((a, b) => b.likeCount - a.likeCount);
             setContent(sortedContent);
             setLoading(false);
         }, 1000);
@@ -343,7 +343,7 @@ export default function Component() {
         setContent(prevContent => {
             const newContent = [...prevContent];
             newContent[index].liked = true;
-            newContent[index].like_count = (newContent[index].like_count || 0) + 1; // 초기값 설정
+            newContent[index].likeCount = (newContent[index].likeCount || 0) + 1; // 초기값 설정
             return newContent;
         });
 
@@ -358,7 +358,7 @@ export default function Component() {
             await axios.put(`${process.env.REACT_APP_SERVER_IP}/add_like_count`, null, {
                 params: {
                     doc_name: doc.name,
-                    user_name: doc.user_name
+                    user_name: doc.userName
                 }
             });
 
@@ -368,7 +368,7 @@ export default function Component() {
             const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/get_like_count`, {
                 params: {
                     doc_name: doc.name,
-                    user_name: doc.user_name
+                    user_name: doc.userName
                 }
             });
 
@@ -392,7 +392,7 @@ export default function Component() {
             // 인코딩된 doc_name과 user_name을 콘솔에 출력
             console.log('doc_name:', encodeURIComponent(doc.name));
             console.log('user_name:', encodeURIComponent(isLoggedIn));
-            console.log(isLoggedIn);
+            console.log(doc.userName);
             console.log(doc.name);
             console.error('좋아요 추가 실패', error);
         }
@@ -434,17 +434,17 @@ export default function Component() {
                             <CustomButton
                                 active={totalLikes >= 10 && rewards[0]}
                                 onClick={() => handleRewardClick('LEVEL1')}
-                                text={!rewards[0] ? '10' : '이미 보상을 받았어요.'}
+                                text={rewards[0] ? '10' : '이미 보상을 받았어요.'}
                             />
                             <CustomButton
                                 active={totalLikes >= 50 && rewards[1]}
                                 onClick={() => handleRewardClick('LEVEL2')}
-                                text={!rewards[1] ? '50' : '이미 보상을 받았어요.'}
+                                text={rewards[1] ? '50' : '이미 보상을 받았어요.'}
                             />
                             <CustomButton
                                 active={totalLikes >= 100 && rewards[2]}
                                 onClick={() => handleRewardClick('LEVEL3')}
-                                text={!rewards[2] ? '100' : '이미 보상을 받았어요.'}
+                                text={rewards[2] ? '100' : '이미 보상을 받았어요.'}
                             />
                         </CustomRow>
                     </CustomColumn>
@@ -476,7 +476,7 @@ export default function Component() {
                                         {item.name}
                                     </CustomFont>
                                     <CustomFont color='#D389C7' font='1rem'>
-                                        작성자: {item.user_name}
+                                        작성자: {item.userName}
                                     </CustomFont>
 
                                     <CustomFont color='#D389C7' font='1rem'>
@@ -503,7 +503,7 @@ export default function Component() {
                                     <CustomRow width='100%' alignItems='center' justifyContent='flex-start'>
                                         <LikeButton onClick={() => handleLikeClick(index)} />
                                         <CustomFont color='#D389C7' font='1.2rem' fontWeight='bold'>
-                                            좋아요 {item.like_count}개
+                                            좋아요 {item.likeCount}개
                                         </CustomFont>
                                     </CustomRow>
                                 </PurpleBox>
