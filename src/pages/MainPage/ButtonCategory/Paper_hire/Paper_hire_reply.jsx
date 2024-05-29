@@ -10,6 +10,7 @@ import axios from 'axios';
 import { useAuth } from "../../../SubPage/AuthContext";
 import CustomModal from "../../../../Components/Container/CustomModal";
 import CustomChat from "../../../../Components/Container/CustomChat";
+import RefundTicket from "../RefundTicket";
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -38,6 +39,18 @@ const Buttoms = styled.button`
 width: ${props => props.width || '200px'};
 height: 70px;
 background-color: #8CC63F;
+border-radius: 10px;
+padding: 10px;
+display: flex;
+justify-content: center;
+align-items: center;
+border: none;
+`;
+
+const Buttoms_2 = styled.button`
+width: ${props => props.width || '200px'};
+hwight: 70px;
+background-color: #FF7272;
 border-radius: 10px;
 padding: 10px;
 display: flex;
@@ -325,7 +338,7 @@ const StyledImg_Ooops = styled.img`
   animation: ${rotate} 1s linear infinite;
 `;
 
-export default function Component({ onClose }) {
+export default function Component({ username }) {
 
   const [content, setContent] = useState('');
   const navigate = useNavigate();
@@ -337,6 +350,16 @@ export default function Component({ onClose }) {
 
   const [docId_chat, setDocId_chat] = useState(null); // input 조회를 위해서
   const [formattedResponse, setFormattedResponse] = useState(null); // 포맷팅된 응답을 저장할 상태 변수
+
+  const [refund, setRefund] = useState(false); // 환불 버튼 클릭 시 모달 상태 관리
+
+  const openRefundModal = () => {
+    setRefund(true);
+  };
+
+  const closeRefundModal = () => {
+    setRefund(false);
+  };
 
   useEffect(() => {
     // a 파일에서 저장한 문서 ID를 로컬 스토리지에서 가져옴
@@ -582,8 +605,11 @@ BOO, 내가 원하는 문서를 생성해줘!
               </Buttoms>
             </CustomRow>
             <Buttoms width='620px' onClick={Soon}> <CustomFont color="white" fontWeight='bold'>카카오톡으로 공유하기</CustomFont></Buttoms>
+            <Buttoms_2 width='620px' onClick={openRefundModal}><CustomFont color="white" fontWeight='bold'>티켓 환불하기</CustomFont></Buttoms_2>
           </CustomColumn>
         )}
+
+        {refund && <RefundTicket username={isLoggedIn} onClose={closeRefundModal} />}
 
         {
           showComingsoon && (
