@@ -7,6 +7,7 @@ import axios from 'axios';
 import { useAuth } from '../../../AuthContext';
 import CustomCenter from '../../../../../Components/Container/CustomCenter';
 import CustomModal from '../../../../../Components/Container/CustomModal';
+import StyledImg from '../../../../../Components/Container/StyledImg';
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -138,6 +139,25 @@ const BuyModal = styled.div`
   justify-content: center;
   z-index: 1001; /* Modal이 항상 위에 오도록 설정 */
   background-image: url('Modal_Delete.png');
+  background-size: 100% 100%;
+`;
+
+const EditModal = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 50%;
+  height: 60vh;
+  transform: translate(-50%, -50%);
+  background-color: #ECFFE0;
+  padding: 20px;
+  border-radius: 50px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001; /* Modal이 항상 위에 오도록 설정 */
+  background-image: url('Modal_editTitle.png');
   background-size: 100% 100%;
 `;
 
@@ -347,8 +367,41 @@ export default function MyAsk() {
     setShowGood(true);
     setTimeout(() => {
       setShowGood(false);
+    }, 800);
+  }
+
+  // 수정 완료 시 뜨는 모달 상태 제어
+  const [editTitle, setEditTitle] = useState(false);
+
+  const handleEditTitle = () => {
+    setEditTitle(true);
+
+    setTimeout(() => {
+      setEditTitle(false);
     }, 2500);
   }
+
+  useEffect(() => {
+    if (isEditingTitle) {
+      setNewTitle(''); // isEditingTitle이 true로 변경될 때 newTitle을 초기화
+    }
+  }, [isEditingTitle]);
+
+  useEffect(() => {
+    if (selectedDocument) {
+      setNewTitle(''); // 새로운 문서를 선택할 때 newTitle을 초기화
+    }
+  }, [selectedDocument]);
+
+  // '제목 수정하기' 버튼 클릭 핸들러
+  const handleEditTitleClick = () => {
+    setIsEditingTitle(true);
+  };
+
+  // '취소' 버튼 클릭 핸들러
+  const handleCancelEditTitle = () => {
+    setIsEditingTitle(false);
+  };
 
 
   useEffect(() => {
@@ -469,8 +522,9 @@ export default function MyAsk() {
       });
 
       if (response.status === 200) {
-        alert('제목이 성공적으로 수정되었습니다.');
+        //alert('제목이 성공적으로 수정되었습니다.');
         setIsEditingTitle(false);
+        handleEditTitle();
         closeModal_2(); // 모달 닫기
         fetchDocuments(selectedCategory); // 제목 수정 후 문서 목록 갱신
       } else {
@@ -583,7 +637,12 @@ export default function MyAsk() {
                 <CustomFont color='#000000' font='1rem'>대상: {selectedDocument.target}</CustomFont>
                 <CustomFont color='#000000' font='1rem'>분량: {selectedDocument.amount}</CustomFont>
                 <CustomFont color='#000000' font='1rem'>내용: {selectedDocument.name}</CustomFont>
-                <ShareButton onClick={handleShare}>공유하기</ShareButton>
+                <ShareButton onClick={handleShare}>
+                  <CustomRow width='90%' alignItems='center' justifyContent='space-between'>
+                    <StyledImg src={'Button_share.png'} width='100px' height='50px' />
+                    <CustomFont color='black' font='1rem' fontWeight='bold'>공유하기</CustomFont>
+                  </CustomRow>
+                </ShareButton>
                 {isEditingTitle ? (
                   <CustomRow>
                     <InputForm
@@ -593,10 +652,15 @@ export default function MyAsk() {
                       onChange={(e) => setNewTitle(e.target.value)}
                     />
                     <IsValidButton onClick={handleTitleUpdate}>완료</IsValidButton>
-                    <IsValidButton_2 onClick={() => setIsEditingTitle(false)}>취소</IsValidButton_2>
+                    <IsValidButton_2 onClick={handleCancelEditTitle}>취소</IsValidButton_2>
                   </CustomRow>
                 ) : (
-                  <ShareButton onClick={() => setIsEditingTitle(true)}>제목 수정하기</ShareButton>
+                  <ShareButton onClick={handleEditTitleClick}>
+                    <CustomRow width='90%' alignItems='center' justifyContent='space-between'>
+                      <StyledImg src={'Button_editTitle.png'} width='80px' height='50px' />
+                      <CustomFont color='black' font='1rem' fontWeight='bold'>제목 수정하기</CustomFont>
+                    </CustomRow>
+                  </ShareButton>
                 )}
 
               </MyAnswerContainer>
@@ -604,6 +668,15 @@ export default function MyAsk() {
           </CustomModal>
         </ModalOverlay>
       )}
+
+      {
+        editTitle && (
+          <>
+            <ModalOverlay />
+            <EditModal />
+          </>
+        )
+      }
 
       {showGood && (
         <>
