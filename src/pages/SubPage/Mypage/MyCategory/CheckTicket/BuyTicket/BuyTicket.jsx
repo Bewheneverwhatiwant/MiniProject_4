@@ -227,6 +227,10 @@ const TicketIcon = styled.img`
 `;
 
 export default function Component() {
+    useEffect(() => {
+        window.scrollTo(0, 0); // 페이지 로딩 시 스크롤을 맨 위로 설정
+    }, []);
+
     const [ticketCount, setTicketCount] = useState(1); // 초기값 및 최소값 1
     const [totalPrice, setTotalPrice] = useState(500); // 초기 총 가격 500원
     const [isChecked, setIsChecked] = useState(false); // 체크박스 상태

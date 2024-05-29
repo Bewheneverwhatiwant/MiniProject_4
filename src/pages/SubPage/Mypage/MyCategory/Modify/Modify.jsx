@@ -251,6 +251,10 @@ const AnimatedRow = styled(CustomRow)`
 `;
 
 export default function Component() {
+  useEffect(() => {
+    window.scrollTo(0, 0); // 페이지 로딩 시 스크롤을 맨 위로 설정
+  }, []);
+
   const [isLoggedOut, setIsLoggedOut] = useState(false);
   const [userData, setUserData] = useState({ username: '', password: '' });
   const [showModal, setShowModal] = useState(false);

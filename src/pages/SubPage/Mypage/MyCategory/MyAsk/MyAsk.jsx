@@ -348,6 +348,10 @@ const InputForm = styled.input`
 `;
 
 export default function MyAsk() {
+  useEffect(() => {
+    window.scrollTo(0, 0); // 페이지 로딩 시 스크롤을 맨 위로 설정
+  }, []);
+
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('sorry');
   const [documents, setDocuments] = useState([]); // input과 output 필드를 저장

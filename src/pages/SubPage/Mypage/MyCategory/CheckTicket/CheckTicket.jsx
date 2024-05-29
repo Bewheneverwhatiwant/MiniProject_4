@@ -78,6 +78,9 @@ const Divider = styled.div`
 `;
 
 export default function Component() {
+  useEffect(() => {
+    window.scrollTo(0, 0); // 페이지 로딩 시 스크롤을 맨 위로 설정
+  }, []);
 
   // 매일 5번 무려 질문 가능한, 24시간 단위 갱신되는 티켓 개수
   const [remainingFreeQuestions, setRemainingFreeQuestions] = useState(null); // 초기값을 null로 설정

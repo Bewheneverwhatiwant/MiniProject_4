@@ -178,6 +178,10 @@ const ModalButton = styled.button`
 `;
 
 export default function Component() {
+  useEffect(() => {
+    window.scrollTo(0, 0); // 페이지 로딩 시 스크롤을 맨 위로 설정
+  }, []);
+
   const [volume, setVolume] = useState('');
   const [reason, setReason] = useState('');
   const [volumeError, setVolumeError] = useState('');

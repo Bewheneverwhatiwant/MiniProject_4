@@ -172,6 +172,9 @@ const StyledImg_Ooops = styled.img`
 `;
 
 export default function Component() {
+  useEffect(() => {
+    window.scrollTo(0, 0); // 페이지 로딩 시 스크롤을 맨 위로 설정
+  }, []);
 
   // 입력 필드 유효성 검사를 위한 상태
   const [userId, setUserId] = useState('');

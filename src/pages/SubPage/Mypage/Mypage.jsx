@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import CustomColumn from '../../../Components/Container/CustomColumn';
 import CustomRow from '../../../Components/Container/CustomRow';
@@ -49,6 +49,10 @@ const DivideLine = styled.div`
 `;
 
 export default function Component() {
+  useEffect(() => {
+    window.scrollTo(0, 0); // 페이지 로딩 시 스크롤을 맨 위로 설정
+  }, []);
+
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState(null);
 

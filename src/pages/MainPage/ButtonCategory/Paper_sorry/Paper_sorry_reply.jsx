@@ -361,6 +361,10 @@ const StyledImg_Ooops = styled.img`
 
 export default function Component({ username }) {
 
+  useEffect(() => {
+    window.scrollTo(0, 0); // 페이지 로딩 시 스크롤을 맨 위로 설정
+  }, []);
+
   const [content, setContent] = useState('');
   const navigate = useNavigate();
   const [title, setTitle] = useState('');

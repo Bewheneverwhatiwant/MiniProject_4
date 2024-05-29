@@ -213,6 +213,10 @@ const AnimatedImage = styled(StyledImg)`
 `;
 
 export default function CharacterComponent() {
+  useEffect(() => {
+    window.scrollTo(0, 0); // 페이지 로딩 시 스크롤을 맨 위로 설정
+  }, []);
+
   const [documentCount, setDocumentCount] = useState(0);
   const [nickname, setNickname] = useState('');
   const [newNickname, setNewNickname] = useState('');

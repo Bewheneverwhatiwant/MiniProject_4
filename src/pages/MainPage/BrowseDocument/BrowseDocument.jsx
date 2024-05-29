@@ -198,6 +198,10 @@ const Button = styled.button`
 `;
 
 export default function Component() {
+    useEffect(() => {
+        window.scrollTo(0, 0); // 페이지 로딩 시 스크롤을 맨 위로 설정
+    }, []);
+
     const { isLoggedIn } = useAuth(); // useAuth 훅에서 로그인 상태와 유저 정보를 가져옴
     const [userData, setUserData] = useState({ username: '', free_tickets: 0, paid_tickets: 0 });
     const [activeTab, setActiveTab] = useState(0);

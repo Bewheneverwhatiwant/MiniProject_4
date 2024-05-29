@@ -18,6 +18,7 @@ const InputForm = styled.input`
   width: 100%;
   height: 2rem;
   padding: 0.3rem;
+  padding-left: 1rem;
 
   &::placeholder {
     color: #D9D9D9;
@@ -87,6 +88,7 @@ const OverlappingImage = styled(StyledImg)`
   ${props => props.isValid && css`
     animation: ${bounceAnimation} 0.5s ease-in-out infinite;
   `}
+  cursor: pointer;
 `;
 
 const IdDuc = styled.div`
@@ -231,6 +233,12 @@ export default function Component({ onClose, onShowTicketAlert }) {
     }, [emailDuc]);
 
     const handleIdCheck = async () => {
+
+        if (!userId) {
+            alert('아이디를 먼저 입력해주세요.');
+            return;
+        }
+
         try {
             const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/duplicate_confirmation`, {
                 params: {
@@ -253,6 +261,11 @@ export default function Component({ onClose, onShowTicketAlert }) {
 
     // 이메일 중복검사 API. 서버한테 중복 시 400말고 409로 상태코드 달라고 말하기
     const handleEmailCheck = async () => {
+
+        if (!email) {
+            alert('이메일을 먼저 입력해주세요.');
+            return;
+        }
 
         if (!isEmailOk) {
             alert('이메일 양식을 알맞게 작성해주세요.');
@@ -334,7 +347,7 @@ export default function Component({ onClose, onShowTicketAlert }) {
 
                         <CustomColumn width='30%' alignItems='center' justifyContent='center' gap='1px'>
                             <ImageWrapper>
-                                <OverlappingImage src={'icon_boo_small.png'} width='60px' height='60px' isValid={isValid} />
+                                <OverlappingImage src={'icon_boo_small.png'} width='60px' height='60px' isValid={isValid} onClick={handleIdCheck} />
                             </ImageWrapper>
                             <IsValidButton isValid={isValid} onClick={handleIdCheck}>
                                 {isValid ? '사용 가능' : '중복검사'}
@@ -362,7 +375,7 @@ export default function Component({ onClose, onShowTicketAlert }) {
                         {passwordConfirm && !isPasswordsMatch && <ErrorText>비밀번호가 일치하지 않습니다.</ErrorText>}
                     </CustomColumn>
 
-                    <CustomRow width='80%' gap='1.4rem'>
+                    <CustomRow width='80%' gap='2rem'>
                         <CustomColumn width='70%' justifyContent='center' alignItems='flex-start' gap='1rem'>
                             <CustomRow width='30%' justifyContent='flex-start' alignItems='center' gap='0.5rem'>
                                 <CustomFont color='black' font='1rem' fontWeight='bold'>이메일</CustomFont>
@@ -375,7 +388,7 @@ export default function Component({ onClose, onShowTicketAlert }) {
 
                         <CustomColumn width='30%' alignItems='center' justifyContent='center' gap='1px'>
                             <ImageWrapper>
-                                <OverlappingImage src={'icon_boo_small.png'} width='60px' height='60px' isValid={isValid_email} />
+                                <OverlappingImage src={'icon_boo_small.png'} width='60px' height='60px' isValid={isValid_email} onClick={handleEmailCheck} />
                             </ImageWrapper>
                             <IsValidButton isValid={isValid_email} onClick={handleEmailCheck}>
                                 {isValid_email ? '사용 가능' : '중복검사'}

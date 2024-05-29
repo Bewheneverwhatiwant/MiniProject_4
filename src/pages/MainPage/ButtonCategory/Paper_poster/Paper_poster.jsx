@@ -179,6 +179,10 @@ const ModalButton = styled.button`
 `;
 
 export default function Component() {
+  useEffect(() => {
+    window.scrollTo(0, 0); // 페이지 로딩 시 스크롤을 맨 위로 설정
+  }, []);
+
   const [lan, setLan] = useState(''); // 언어 입력 필드 추가
   const [recipient, setRecipient] = useState('');
   const [volume, setVolume] = useState('');

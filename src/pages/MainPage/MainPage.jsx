@@ -81,6 +81,11 @@ const AnimatedRow = styled(CustomRow)`
 // 일단 디자인 개편 완료했으나, 로그인 완료 후 header 상태까지 보고 수정 더 하기(backgroung img 길이 관련)
 
 export default function Component() {
+
+  useEffect(() => {
+    window.scrollTo(0, 0); // 페이지 로딩 시 스크롤을 맨 위로 설정
+  }, []);
+
   const [showBoo, setShowBoo] = useState(false);
   const [userData, setUserData] = useState({ username: '' });
 
