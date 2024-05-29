@@ -182,7 +182,7 @@ color: black;
 width: 80%;
 padding: 5px;
 cursor: pointer;
-margin-top: 10px;
+margin: 10px;
 `;
 
 const ModalOverlay_share = styled.div`
@@ -280,6 +280,53 @@ const StyledImg_mike = styled.img`
   left: 20px;
 `;
 
+const IsValidButton = styled.button`
+  width: 30%;
+  height: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem;
+  color: white;
+  border: none;
+  border-radius: 15px;
+  background-color: #8CC63F;
+  cursor: pointer;
+`;
+
+const IsValidButton_2 = styled.button`
+  width: 30%;
+  height: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem;
+  color: white;
+  border: none;
+  border-radius: 15px;
+  background-color: #FF7474;
+  cursor: pointer;
+`;
+
+
+const InputForm = styled.input`
+  display: flex;
+  border: 1.5px solid #8CC63F;
+  background-color: transparent;
+  border-radius: 15px;
+  width: 100%;
+  height: 2rem;
+  padding: 0.3rem;
+
+  &::placeholder {
+    color: #D9D9D9;
+  }
+
+  &:active {
+    outline: none;
+  }
+`;
+
 export default function MyAsk() {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('sorry');
@@ -289,6 +336,9 @@ export default function MyAsk() {
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [docToDelete, setDocToDelete] = useState(null);
+
+  const [newTitle, setNewTitle] = useState('');
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
 
   // 공유하기 클릭 시 뜨는 모달 상태 제어
   const [showGood, setShowGood] = useState(false);
@@ -408,6 +458,29 @@ export default function MyAsk() {
     }
   };
 
+  const handleTitleUpdate = async () => {
+    try {
+      const response = await axios.put('http://223.130.153.51:8080/update_document_name', null, {
+        params: {
+          doc_name: selectedDocument.content,
+          user_name: isLoggedIn,
+          new_doc_name: newTitle
+        }
+      });
+
+      if (response.status === 200) {
+        alert('제목이 성공적으로 수정되었습니다.');
+        setIsEditingTitle(false);
+        closeModal_2(); // 모달 닫기
+        fetchDocuments(selectedCategory); // 제목 수정 후 문서 목록 갱신
+      } else {
+        console.error('제목 수정 실패:', response);
+      }
+    } catch (error) {
+      console.error('제목 수정 중 오류 발생:', error);
+    }
+  };
+
   return (
     <ContainerCenter>
       <PageContainer>
@@ -511,8 +584,21 @@ export default function MyAsk() {
                 <CustomFont color='#000000' font='1rem'>분량: {selectedDocument.amount}</CustomFont>
                 <CustomFont color='#000000' font='1rem'>내용: {selectedDocument.name}</CustomFont>
                 <ShareButton onClick={handleShare}>공유하기</ShareButton>
-                {/* <CustomFont color='#000000' font='1rem'>출력 제목: {selectedDocument.title}</CustomFont>
-              <CustomFont color='#000000' font='1rem'>출력 내용: {selectedDocument.content}</CustomFont> */}
+                {isEditingTitle ? (
+                  <CustomRow>
+                    <InputForm
+                      type="text"
+                      placeholder="이 문서의 새로운 제목을 지어주세요."
+                      value={newTitle}
+                      onChange={(e) => setNewTitle(e.target.value)}
+                    />
+                    <IsValidButton onClick={handleTitleUpdate}>완료</IsValidButton>
+                    <IsValidButton_2 onClick={() => setIsEditingTitle(false)}>취소</IsValidButton_2>
+                  </CustomRow>
+                ) : (
+                  <ShareButton onClick={() => setIsEditingTitle(true)}>제목 수정하기</ShareButton>
+                )}
+
               </MyAnswerContainer>
             </CustomColumn>
           </CustomModal>
