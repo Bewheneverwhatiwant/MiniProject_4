@@ -1,4 +1,4 @@
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -201,15 +201,19 @@ const RewardButton = styled.button`
   padding: 0.5rem 1rem;
   margin: 1rem;
   font-size: 1rem;
-  cursor: pointer;
   background-color: ${props => props.active ? 'red' : '#D9D9D9'};
   border: none;
   border-radius: 20px;
   color: white;
+  cursor: ${props => props.active ? 'pointer' : 'not-allowed'};
+
+  ${props =>
+        !props.active &&
+        css`
+      cursor: not-allowed;
+    `}
 `;
 
-// 나중에 서버에서 true, true, true로 수정하면 다시 테스트해보기. 현재 셋 다 기본값이 false라서, 버튼이 전부
-// 비활성화 상태라 테스트 불가 상황
 const CustomButton = ({ active, onClick, text }) => (
     <RewardButton active={active} onClick={onClick} disabled={!active}>
         {text}
