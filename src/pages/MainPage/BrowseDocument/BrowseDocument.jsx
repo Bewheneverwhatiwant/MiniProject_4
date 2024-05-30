@@ -329,6 +329,7 @@ export default function Component() {
 
     const handleTabClick = (index) => {
         setActiveTab(index);
+        setLoading(true); // 탭을 클릭하면 로딩 상태로 설정
         let type = '';
         switch (index) {
             case 0:
@@ -353,6 +354,20 @@ export default function Component() {
                 type = '';
         }
         fetchData(type);
+    };
+
+    // fetchData 함수 수정
+    const fetchData = async (type) => {
+        try {
+            const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/shared_documents`);
+            const documents = response.data.filter(doc => doc.type === type).map(doc => ({ ...doc, like: doc.like_count || 0 }));
+            setContent(documents);
+            setOriginalContent(documents); // 원래 데이터를 저장
+            setLoading(false); // 데이터가 로드되면 로딩 상태 해제
+        } catch (error) {
+            console.error('데이터 불러오기 실패', error);
+            setLoading(false); // 에러가 발생해도 로딩 상태 해제
+        }
     };
 
 
@@ -418,18 +433,6 @@ export default function Component() {
         }
     };
 
-    const fetchData = async (type) => {
-        try {
-            const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/shared_documents`);
-            const documents = response.data.filter(doc => doc.type === type).map(doc => ({ ...doc, like: doc.like_count || 0 }));
-            setContent(documents);
-            setOriginalContent(documents); // 원래 데이터를 저장
-            setLoading(false);
-        } catch (error) {
-            console.error('데이터 불러오기 실패', error);
-            setLoading(false);
-        }
-    };
 
     useEffect(() => {
         fetchData('sorry'); // 처음 로드할 때는 사과문 카테고리를 로드합니다.
