@@ -263,6 +263,7 @@ export default function Component() {
   const [level, setLevel] = useState(false);
   const [getGift, setGetGift] = useState(false); // 보상받기 클릭 시 모달
   const [levelStatus, setLevelStatus] = useState([true, true, true, true, true]); // 보상 상태
+  const [loading, setLoading] = useState(true); // 로딩 상태 추가
 
   const [docCount, setDocCount] = useState(0);
 
@@ -525,6 +526,8 @@ export default function Component() {
         }
       } catch (error) {
         console.error('Failed to fetch user data', error);
+      } finally {
+        setLoading(false); // 데이터 로드 완료 후 로딩 상태 false로 설정
       }
     };
 
@@ -573,6 +576,8 @@ export default function Component() {
             <CustomColumn width='100%' justifyContent='flex-start' alignItems='flex-start' gap='1rem'>
               {isLoggedOut ? (
                 <CustomFont font='2rem' color='979797' fontWeight='bold'>로그인해주세요</CustomFont>
+              ) : loading ? (
+                <CustomFont font='2rem' color='979797' fontWeight='bold'>loading...</CustomFont>
               ) : (
                 <CustomFont font='2rem' color='979797' fontWeight='bold'>{userData.username}님 환영합니다.</CustomFont>
               )}
@@ -586,7 +591,7 @@ export default function Component() {
             <CustomRow width='80%' justifyContent='space-between' alignItems='center'>
               <CustomFont color='#8CC63F' fontWeight='bold' font='1.2rem'>아이디</CustomFont>
               <CustomFont color='#8CC63F' fontWeight='bold' font='1.2rem'>
-                {isLoggedOut ? '로그인해주세요' : userData.username}
+                {isLoggedOut ? '로그인해주세요' : loading ? 'loading...' : userData.username}
               </CustomFont>
             </CustomRow>
 
