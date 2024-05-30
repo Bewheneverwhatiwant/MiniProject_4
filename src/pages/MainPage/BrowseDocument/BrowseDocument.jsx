@@ -198,6 +198,16 @@ const Button = styled.button`
   border-radius: 20px;
 `;
 
+const DocShare = styled.button`
+  padding: 0.5rem 1rem;
+  margin: 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  background-color: #FFB9F4;
+  border: none;
+  border-radius: 10px;
+`;
+
 const RewardButton = styled.button`
   padding: 0.5rem 1rem;
   margin: 1rem;
@@ -529,7 +539,9 @@ export default function Component() {
                                             좋아요 {item.likeCount}개
                                         </CustomFont>
                                     </CustomRow>
-                                    <Button onClick={() => handleCommentClick(item.name, item.userName)}>댓글달기</Button>
+                                    <DocShare onClick={() => handleCommentClick(item.name, item.userName)}>
+                                        <CustomFont color='#C06CB2' font='1rem' fontWeight='bold'>댓글달기</CustomFont>
+                                    </DocShare>
                                 </PurpleBox>
                             ))
                         ) : (
