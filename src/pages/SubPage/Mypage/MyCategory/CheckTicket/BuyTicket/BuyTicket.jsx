@@ -311,7 +311,7 @@ export default function Component() {
             // 티켓 개수 업데이트
             setUserData(prevUserData => ({
                 ...prevUserData,
-                paid_tickets: prevUserData.paid_tickets + ticketCount
+                paidTickets: prevUserData.paidTickets + ticketCount
             }));
 
             setIsBuying(false);
@@ -342,8 +342,8 @@ export default function Component() {
                     if (userData) {
                         setUserData({
                             username: userData.username,
-                            free_tickets: userData.free_tickets,
-                            paid_tickets: userData.paid_tickets
+                            freeTickets: userData.freeTickets,
+                            paidTickets: userData.paidTickets
                         });
                         console.log(userData);
                     }
@@ -381,8 +381,8 @@ export default function Component() {
         fetchRemainingFreeQuestions();
     }, [isLoggedIn, userData]);
 
-    const paidTickets = userData.paid_tickets; // 사용자 보유 유료 티켓
-    const freeTickets = userData.free_tickets // 사용자 보유 무료 티켓
+    const paidTickets = userData.paidTickets; // 사용자 보유 유료 티켓
+    const freeTickets = userData.freeTickets // 사용자 보유 무료 티켓
 
     return (
         <ContainerCenter>

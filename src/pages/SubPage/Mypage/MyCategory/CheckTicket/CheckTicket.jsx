@@ -39,7 +39,7 @@ border-radius: 10px;
 width: 150px;
 color: white;
 background-color: #8CC63F;
-`
+`;
 
 const MyTicketContainer = styled.div`
   display: flex;
@@ -82,149 +82,68 @@ export default function Component() {
     window.scrollTo(0, 0); // 페이지 로딩 시 스크롤을 맨 위로 설정
   }, []);
 
-  // 매일 5번 무려 질문 가능한, 24시간 단위 갱신되는 티켓 개수
+  // 매일 5번 무료 질문 가능한, 24시간 단위 갱신되는 티켓 개수
   const [remainingFreeQuestions, setRemainingFreeQuestions] = useState(null); // 초기값을 null로 설정
   const { isLoggedIn } = useAuth(); // useAuth 훅에서 로그인 상태와 유저 정보를 가져옴
   // 닉네임, 보유 무료티켓(매일 5개 무료 x, 이벤트 등 보유하고 있는 무료 티켓 o), 보유 유료티켓
   const [userData, setUserData] = useState({ username: '', free_tickets: 0, paid_tickets: 0 });
   const [ticketUsageHistory, setTicketUsageHistory] = useState([]); // 티켓 사용 내역 상태 추가
-
-  // 티켓 사용 내역을 가져오는 API 호출
-  useEffect(() => {
-    const fetchTicketUsageHistory = async () => {
-      if (isLoggedIn && userData.username) {
-        try {
-          console.log('티켓 사용 내역 불러오는 중...');
-          const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/get_ticket_history`, {
-            params: { user_name: userData.username }
-          });
-          console.log('티켓 사용 내역:', response.data);
-          setTicketUsageHistory(response.data); // 응답 데이터를 직접 설정
-        } catch (error) {
-          console.error(error);
-        }
-      } else {
-        console.log('User is not logged in or username is not available.');
-      }
-    };
-
-    fetchTicketUsageHistory();
-  }, [isLoggedIn, userData]);
+  const [ticketHistory, setTicketHistory] = useState([]); // 티켓 결제 내역 상태 추가
 
   const navigate = useNavigate();
 
+  // 데이터 가져오기 함수 통합
+  useEffect(() => {
+    const fetchData = async () => {
+      if (isLoggedIn) {
+        try {
+          console.log('사용자 데이터 불러오는 중...');
+          const userResponse = await axios.get(`${process.env.REACT_APP_SERVER_IP}/user_total_info`);
+          const userData = userResponse.data.find(u => u.username === isLoggedIn);
+          if (userData) {
+            setUserData({
+              username: userData.username,
+              freeTickets: userData.freeTickets,
+              paidTickets: userData.paidTickets
+            });
+          }
+
+          console.log('티켓 사용 내역 불러오는 중...');
+          const usageResponse = await axios.get(`${process.env.REACT_APP_SERVER_IP}/get_ticket_history`, {
+            params: { user_name: userData.username }
+          });
+          setTicketUsageHistory(usageResponse.data);
+
+          console.log('티켓 결제 내역 불러오는 중...');
+          const paymentResponse = await axios.get(`${process.env.REACT_APP_SERVER_IP}/return_payment`, {
+            params: { user_name: userData.username }
+          });
+          setTicketHistory(paymentResponse.data);
+
+          console.log('무료 티켓 개수 불러오는 중...');
+          const freeTicketResponse = await axios.get(`${process.env.REACT_APP_SERVER_IP}/today_free_ask`, {
+            params: { user_name: userData.username }
+          });
+          setRemainingFreeQuestions(freeTicketResponse.data);
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        console.log('User is not logged in or user data is not available.');
+      }
+    };
+
+    fetchData();
+  }, [isLoggedIn]);
+
   const BuyTrue = () => {
     navigate('/buyticketpage');
-  }
-
-  // 유저 보유 유/무료 티켓을 가져오기 위함
-  useEffect(() => {
-    const fetchUserData = async () => {
-      if (isLoggedIn) {
-        try {
-          console.log('사용자 데이터 불러오는 중...');
-          const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/user_total_info`);
-          console.log(response.data);
-          const userData = response.data.find(u => u.username === isLoggedIn);
-          if (userData) {
-            setUserData({
-              username: userData.username,
-              free_tickets: userData.free_tickets,
-              paid_tickets: userData.paid_tickets
-            });
-            console.log(userData);
-          }
-        } catch (error) {
-          console.error(error);
-        }
-      } else {
-        console.log('User is not logged in or user data is not available.');
-      }
-    };
-
-    fetchUserData();
-  }, [isLoggedIn]);
-
-  // 당일 무료 티켓 반환 및 업데이트 API 호출
-  useEffect(() => {
-    const fetchRemainingFreeQuestions = async () => {
-      if (isLoggedIn && userData.username) {
-        try {
-          console.log('무료 티켓 개수 불러오는 중');
-          const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/today_free_ask`, {
-            params: { user_name: userData.username }
-          });
-          console.log('남은 무료 티켓 개수는:', response.data);
-          setRemainingFreeQuestions(response.data); // 응답 데이터를 직접 설정
-          console.log('업데이트한 남은 무료 티켓 개수는:', response.data);
-        } catch (error) {
-          console.error(error);
-        }
-      } else {
-        console.log('User is not logged in or username is not available.');
-      }
-    };
-
-    fetchRemainingFreeQuestions();
-  }, [isLoggedIn, userData]);
-
-  const paidTickets = userData.paid_tickets; // 사용자 보유 유료 티켓
-  const freeTickets = userData.free_tickets // 사용자 보유 무료 티켓
-
-  const [ticketHistory, setTicketHistory] = useState([]); // 티켓 결제 내역 상태 추가
-
-  // 유저 보유 유/무료 티켓을 가져오기 위함
-  useEffect(() => {
-    const fetchUserData = async () => {
-      if (isLoggedIn) {
-        try {
-          console.log('사용자 데이터 불러오는 중...');
-          const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/user_total_info`);
-          console.log(response.data);
-          const userData = response.data.find(u => u.username === isLoggedIn);
-          if (userData) {
-            setUserData({
-              username: userData.username,
-              free_tickets: userData.free_tickets,
-              paid_tickets: userData.paid_tickets
-            });
-            console.log(userData);
-          }
-        } catch (error) {
-          console.error(error);
-        }
-      } else {
-        console.log('User is not logged in or user data is not available.');
-      }
-    };
-
-    fetchUserData();
-  }, [isLoggedIn]);
-
-  // 티켓 결제 내역을 가져오는 API 호출
-  useEffect(() => {
-    const fetchTicketHistory = async () => {
-      if (isLoggedIn && userData.username) {
-        try {
-          console.log('티켓 결제 내역 불러오는 중...');
-          const response = await axios.get(`${process.env.REACT_APP_SERVER_IP}/return_payment`, {
-            params: { user_name: userData.username }
-          });
-          console.log('티켓 결제 내역:', response.data);
-          setTicketHistory(response.data); // 응답 데이터를 직접 설정
-        } catch (error) {
-          console.error(error);
-        }
-      } else {
-        console.log('User is not logged in or username is not available.');
-      }
-    };
-
-    fetchTicketHistory();
-  }, [isLoggedIn, userData]);
+  };
 
   const formatDate = (dateString) => {
+    if (!dateString) return 'Invalid date'; // 유효하지 않은 날짜 처리
     const date = new Date(dateString);
+    if (isNaN(date)) return 'Invalid date'; // 유효하지 않은 날짜 처리
     const year = date.getFullYear();
     const month = date.getMonth() + 1;
     const day = date.getDate();
@@ -262,7 +181,7 @@ export default function Component() {
                 <CustomFont color='#8CC63F' font='1.3rem'>내 보유 유료 티켓</CustomFont>
               </CustomRow>
 
-              <CustomFont color='#8CC63F' fontWeight='bold' font='1.3rem'>{paidTickets}장</CustomFont>
+              <CustomFont color='#8CC63F' fontWeight='bold' font='1.3rem'>{userData.paidTickets}장</CustomFont>
             </CustomRow>
 
             <Divider />
@@ -273,7 +192,7 @@ export default function Component() {
                 <CustomFont color='#8CC63F' font='1.3rem'>내 보유 무료 티켓</CustomFont>
               </CustomRow>
 
-              <CustomFont color='#8CC63F' fontWeight='bold' font='1.3rem'>{freeTickets}장</CustomFont>
+              <CustomFont color='#8CC63F' fontWeight='bold' font='1.3rem'>{userData.freeTickets}장</CustomFont>
             </CustomRow>
           </MyTicketContainer>
 
@@ -286,7 +205,7 @@ export default function Component() {
               ticketHistory.map((ticket, index) => (
                 <React.Fragment key={index}>
                   <CustomRow width='90%' justifyContent='space-between' alignItems='center'>
-                    <CustomFont color='black' font='1rem'>{formatDate(ticket.paid_time)}</CustomFont>
+                    <CustomFont color='black' font='1rem'>{formatDate(ticket.paidTime)}</CustomFont>
                     <CustomFont color='black' font='1rem'>티켓 {ticket.ticket}장</CustomFont>
                     <CustomFont color='black' font='1rem'>{ticket.price}원</CustomFont>
                   </CustomRow>

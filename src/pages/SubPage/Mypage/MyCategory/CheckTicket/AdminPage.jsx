@@ -79,7 +79,7 @@ export default function Component() {
                             refunds.map((refund, index) => (
                                 <RefundItem key={index}>
                                     <CustomFont font='1rem' fontWeight='bold' color='black'>문서id: {refund.id}</CustomFont>
-                                    <CustomFont font='1rem' color='black'>사용자가 요청한 내용: {refund.setContent}</CustomFont>
+                                    <CustomFont font='1rem' color='black'>사용자가 요청한 내용: {refund.sendContent}</CustomFont>
                                     <CustomFont font='1rem' color='black'>gpt 생성 내용: {refund.content}</CustomFont>
                                     <CustomFont font='1rem' color='black'>생성 시각: {refund.createdAt}</CustomFont>
                                     <CustomFont font='1rem' color='black'>userid: {refund.user_id}</CustomFont>
