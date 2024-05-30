@@ -88,7 +88,7 @@ const Button2 = styled.button`
 
 export default function SoldOutFreeTicket({ onClose, onTicketUsed, category }) {
     const { isLoggedIn } = useAuth(); // useAuth 훅에서 로그인 상태와 유저 정보를 가져옴
-    const [userData, setUserData] = useState({ username: '', free_tickets: 0, paid_tickets: 0 });
+    const [userData, setUserData] = useState({ username: '', freeTickets: 0, paidTickets: 0 });
 
     const navigate = useNavigate();
 
@@ -109,8 +109,8 @@ export default function SoldOutFreeTicket({ onClose, onTicketUsed, category }) {
                     if (userData) {
                         setUserData({
                             username: userData.username,
-                            free_tickets: userData.free_tickets,
-                            paid_tickets: userData.paid_tickets
+                            freeTickets: userData.freeTickets,
+                            paidTickets: userData.paidTickets
                         });
                         console.log(userData);
                     }
@@ -142,7 +142,7 @@ export default function SoldOutFreeTicket({ onClose, onTicketUsed, category }) {
             }
         };
 
-        if (userData.free_tickets >= 1) {
+        if (userData.freeTickets >= 1) {
             // 무료 티켓 사용
             try {
                 const response = await axios.put(`${process.env.REACT_APP_SERVER_IP}/update_free_user_tickets`, null, {
@@ -171,7 +171,7 @@ export default function SoldOutFreeTicket({ onClose, onTicketUsed, category }) {
             // 무료 티켓이 없는 경우
             const usePaidTicket = window.confirm('보유 티켓이 없습니다. 유료 티켓을 사용하시겠습니까?');
             if (usePaidTicket) {
-                if (userData.paid_tickets >= 1) {
+                if (userData.paidTickets >= 1) {
                     // 유료 티켓 사용
                     try {
                         const response = await axios.put(`${process.env.REACT_APP_SERVER_IP}/update_user_paid_tickets`, null, {
