@@ -7,6 +7,7 @@ import { useAuth } from '../../SubPage/AuthContext';
 import CustomFont from '../../../Components/Container/CustomFont';
 import CustomColumn from '../../../Components/Container/CustomColumn';
 import CustomRow from '../../../Components/Container/CustomRow';
+import Comments from './Comments';
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -230,6 +231,21 @@ export default function Component() {
     const [activeTab, setActiveTab] = useState(0);
     const [content, setContent] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [showCommentModal, setShowCommentModal] = useState(false);
+    const [selectedDocName, setSelectedDocName] = useState('');
+    const [selectedDocUserName, setSelectedDocUserName] = useState('');
+
+    const handleCommentClick = (docName, docUserName) => {
+        console.log(`handleCommentClick 호출됨 - docName: ${docName}, docUserName: ${docUserName}`);
+        setSelectedDocName(docName);
+        setSelectedDocUserName(docUserName);
+        setShowCommentModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setShowCommentModal(false);
+    };
+
 
     const [showGood, setShowGood] = useState(false);
 
@@ -510,11 +526,19 @@ export default function Component() {
                                             좋아요 {item.likeCount}개
                                         </CustomFont>
                                     </CustomRow>
+                                    <Button onClick={() => handleCommentClick(item.name, item.userName)}>댓글달기</Button>
                                 </PurpleBox>
                             ))
                         ) : (
                             <p>아직 공유된 문서가 없어요.</p>
                         )
+                    )}
+
+                    {showCommentModal && (
+                        <>
+                            <Comments docName={selectedDocName} docUserName={selectedDocUserName} onClose={handleCloseModal} />
+                            <p>현재 선택된 docUserName: {selectedDocUserName}</p>
+                        </>
                     )}
 
                     {showGood && (
