@@ -443,7 +443,7 @@ BOO, 내가 원하는 문서를 생성해줘!
 
   const handleRemake = () => {
     setShowBad(false);
-    navigate('/paper_job');
+    navigate('/paper_poster');
   }
 
   const handleNotRemake = () => {
@@ -485,7 +485,7 @@ BOO, 내가 원하는 문서를 생성해줘!
   };
 
   const BackToGen = () => {
-    navigate('/paper_hire');
+    navigate('/paper_poster');
   }
 
   const [showComingsoon, setShowcomingsoon] = useState(false);

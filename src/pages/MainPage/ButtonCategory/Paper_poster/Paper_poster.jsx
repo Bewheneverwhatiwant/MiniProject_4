@@ -262,7 +262,7 @@ export default function Component() {
         type: 'poster',
         target: recipient,
         amount: parseInt(volume), // volume을 정수로 변환
-        text: '광고/포스터 카테고리에서 제공되지 않는 필드입니다.'
+        text: reason
       }
     })
       .then(response => {

@@ -445,7 +445,7 @@ export default function Component({ username }) {
 
   const handleRemake = () => {
     setShowBad(false);
-    navigate('/paper_job');
+    navigate('/paper_letter');
   }
 
   const handleNotRemake = () => {
@@ -486,7 +486,7 @@ export default function Component({ username }) {
   };
 
   const BackToGen = () => {
-    navigate('/paper_hire');
+    navigate('/paper_letter');
   }
 
   const [showComingsoon, setShowcomingsoon] = useState(false);
