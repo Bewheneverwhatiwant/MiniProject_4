@@ -8,6 +8,7 @@ import CustomFont from '../../../Components/Container/CustomFont';
 import CustomColumn from '../../../Components/Container/CustomColumn';
 import CustomRow from '../../../Components/Container/CustomRow';
 import Comments from './Comments';
+import StyledImg from '../../../Components/Container/StyledImg';
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -225,11 +226,42 @@ const RewardButton = styled.button`
     `}
 `;
 
+const bounce = keyframes`
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+`;
+
+const AnimatedRow = styled(CustomRow)`
+  animation: ${bounce} 1s infinite;
+  width: 100%;
+`;
+
+const LikeBattle = styled.div`
+background-color: #C1EEA5;
+width: 100%;
+padding: 10px;
+padding-bottom: 20px;
+display: flex;
+flex-direction: row;
+align-items: center;
+justify-content: center;
+border-radius: 20px;
+`;
+
 const CustomButton = ({ active, onClick, text }) => (
     <RewardButton active={active} onClick={onClick} disabled={!active}>
-        {text}
+        {active ? '지금이야!' : text}
     </RewardButton>
 );
+
+const getButtonText = (totalLikes, rewardReceived, requiredLikes) => {
+    if (rewardReceived) return '이미 보상을 받았어요.';
+    return `좋아요 총합 ${requiredLikes}개가 필요해요.`;
+};
 
 export default function Component() {
     useEffect(() => {
@@ -300,6 +332,13 @@ export default function Component() {
             await axios.put(`${process.env.REACT_APP_SERVER_IP}/update_like_levels`, null, {
                 params: { user_name: isLoggedIn, level }
             });
+            // 무료 티켓 증가 API 호출
+            const ticketResponse = await axios.put(`${process.env.REACT_APP_SERVER_IP}/plus_tickets`, null, {
+                params: { username: isLoggedIn }
+            });
+            if (ticketResponse.status === 200) {
+                alert('무료 티켓 1개가 적립되었습니다.');
+            }
             fetchRewards(); // 보상 정보를 다시 가져와 업데이트
         } catch (error) {
             console.error('보상 업데이트에 실패했습니다.', error);
@@ -445,7 +484,7 @@ export default function Component() {
 
 
     useEffect(() => {
-        fetchData('sorry'); // 처음 로드할 때는 사과문 카테고리를 로드합니다.
+        fetchData('sorry'); // 처음 로드할 때는 사과문 카테고리를 로드
     }, []);
 
     return (
@@ -463,21 +502,40 @@ export default function Component() {
                             <CustomFont color='black' font='1rem' fontWeight='bold'>{ranking}등이에요!</CustomFont>
                         </CustomRow>
 
+                        <AnimatedRow>
+                            <CustomRow width='100%' justifyContent='center' alignItems='center' gap='1rem'>
+
+                                <LikeBattle>
+                                    <CustomColumn width='100%' alignItems='center' justifyContent='center'>
+                                        <CustomRow>
+                                            <StyledImg src={'icon_booAndTicket.png'} width='150px' height='100px' />
+                                            <CustomColumn width='100%' gap='5px' alignItems='center' justifyContent='center'>
+                                                <CustomFont color='#5F8F1E' font='0.9rem' fontWeight='bold'>내 문서의 좋아요가 누적되면,</CustomFont>
+                                                <CustomFont color='#5F8F1E' font='0.9rem' fontWeight='bold'>보상이 있다BOO!</CustomFont>
+                                            </CustomColumn>
+                                        </CustomRow>
+                                        <CustomFont color='#5F8F1E' font='1.2rem' fontWeight='bold'>좋아요 기준에 달성하면 버튼이 활성화돼요!</CustomFont>
+                                    </CustomColumn>
+                                </LikeBattle>
+
+                            </CustomRow>
+                        </AnimatedRow>
+
                         <CustomRow width='100%' justifyContent='center' alignItems='center' gap='1rem'>
                             <CustomButton
-                                active={totalLikes >= 10 && rewards[0]}
+                                active={totalLikes >= 6 && rewards[0]}
                                 onClick={() => handleRewardClick('LEVEL1')}
-                                text={rewards[0] ? '10' : '이미 보상을 받았어요.'}
+                                text={getButtonText(totalLikes, !rewards[0], 6)}
                             />
                             <CustomButton
-                                active={totalLikes >= 50 && rewards[1]}
+                                active={totalLikes >= 20 && rewards[1]}
                                 onClick={() => handleRewardClick('LEVEL2')}
-                                text={rewards[1] ? '50' : '이미 보상을 받았어요.'}
+                                text={getButtonText(totalLikes, !rewards[1], 20)}
                             />
                             <CustomButton
-                                active={totalLikes >= 100 && rewards[2]}
+                                active={totalLikes >= 50 && rewards[2]}
                                 onClick={() => handleRewardClick('LEVEL3')}
-                                text={rewards[2] ? '100' : '이미 보상을 받았어요.'}
+                                text={getButtonText(totalLikes, !rewards[2], 50)}
                             />
                         </CustomRow>
                     </CustomColumn>
