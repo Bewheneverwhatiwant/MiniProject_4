@@ -241,15 +241,17 @@ const AnimatedRow = styled(CustomRow)`
 `;
 
 const LikeBattle = styled.div`
-background-color: #C1EEA5;
-width: 100%;
-padding: 10px;
-padding-bottom: 20px;
-display: flex;
-flex-direction: row;
-align-items: center;
-justify-content: center;
-border-radius: 20px;
+  background-color: #C1EEA5;
+  width: 90%;
+  height: 350px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  background-image: url('DocBrowse_event.png');
+  background-size: calc(100% + 60px) calc(100% + 60px);
+  background-position: -20px -20px;
 `;
 
 const CustomButton = ({ active, onClick, text }) => (
@@ -490,36 +492,23 @@ export default function Component() {
     return (
         <ContainerCenter>
             <PageContainer>
+                <AnimatedRow>
+                    <LikeBattle />
+                </AnimatedRow>
                 <CustomColumn width='80%' justifyContent='center' alignItems='center' gap='2rem'>
                     <CustomColumn width='80%' justifyContent='center' alignItems='center' gap='1rem'>
                         <CustomRow width='100%' justifyContent='center' alignItems='center' gap='1rem'>
-                            <CustomFont color='black' font='1rem' fontWeight='bold'>내 문서의 총 좋아요 개수는?</CustomFont>
-                            <CustomFont color='black' font='1rem' fontWeight='bold'>{totalLikes}개</CustomFont>
+                            <CustomFont color='black' font='2.2rem' fontWeight='bold' className="bmjua-text">내 문서의 총 좋아요 개수는?</CustomFont>
+                            <CustomFont color='black' font='2.2rem' fontWeight='bold' className="bmjua-text">{totalLikes}개</CustomFont>
+                            <StyledImg src={'icon_fire_event.png'} width='60px' height='60px' />
                         </CustomRow>
 
                         <CustomRow width='100%' justifyContent='center' alignItems='center' gap='1rem'>
-                            <CustomFont color='black' font='1rem' fontWeight='bold'>나는 문서를 부탁하는 사람들 중에서</CustomFont>
-                            <CustomFont color='black' font='1rem' fontWeight='bold'>{ranking}등이에요!</CustomFont>
+                            <CustomFont color='black' font='1.5rem' fontWeight='bold' className="bmjua-text">나는 문서를 부탁하는 사람들 중에서</CustomFont>
+                            <CustomFont color='black' font='1.5rem' fontWeight='bold' className="bmjua-text">{ranking}등이에요!</CustomFont>
                         </CustomRow>
 
-                        <AnimatedRow>
-                            <CustomRow width='100%' justifyContent='center' alignItems='center' gap='1rem'>
 
-                                <LikeBattle>
-                                    <CustomColumn width='100%' alignItems='center' justifyContent='center'>
-                                        <CustomRow>
-                                            <StyledImg src={'icon_booAndTicket.png'} width='150px' height='100px' />
-                                            <CustomColumn width='100%' gap='5px' alignItems='center' justifyContent='center'>
-                                                <CustomFont color='#5F8F1E' font='0.9rem' fontWeight='bold'>내 문서의 좋아요가 누적되면,</CustomFont>
-                                                <CustomFont color='#5F8F1E' font='0.9rem' fontWeight='bold'>보상이 있다BOO!</CustomFont>
-                                            </CustomColumn>
-                                        </CustomRow>
-                                        <CustomFont color='#5F8F1E' font='1.2rem' fontWeight='bold'>좋아요 기준에 달성하면 버튼이 활성화돼요!</CustomFont>
-                                    </CustomColumn>
-                                </LikeBattle>
-
-                            </CustomRow>
-                        </AnimatedRow>
 
                         <CustomRow width='100%' justifyContent='center' alignItems='center' gap='1rem'>
                             <CustomButton
